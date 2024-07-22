@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# Name:         cidr
+# Author:       Casey Sparks
+# Date:         March 10, 2023
+# Description:
+'''Generate random strings of preset length.'''
+
+from argparse import ArgumentParser, Namespace
+from locale import setlocale, LC_ALL
+from random import SystemRandom
+from string import ascii_letters, digits, punctuation
+
+setlocale(LC_ALL, 'en_US.UTF-8')                                                # Set locale.
+
+
+def get_arguments() -> Namespace:
+    '''
+    Get cmdline arguments.
+        :return:    argparse.Namespace() instance of user-provided commandline arguments.
+    '''
+    (parser := ArgumentParser(description=__doc__)).add_argument(               # --length.
+        '-l', '--length',
+        type=int,
+        default=32,
+        dest='length',
+        help='The number of random bits to generate.',
+        )
+
+    return parser.parse_args()
+
+
+def generate_bits(
+    k: int = 32,
+        ) -> str:
+    '''
+    Generate a number of random, non-whitespace, printable characters.
+        :param k:   The number of characters to generate.
+        :return:    The random string.
+        '''
+    chars = list(set(ascii_letters + digits + punctuation))
+    random = SystemRandom()
+
+    return ''.join(random.choices(chars, k=k))
+
+
+if __name__ == '__main__':
+    cli_args = get_arguments()
+
+    print(generate_bits(cli_args.length))

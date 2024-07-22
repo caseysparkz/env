@@ -30,6 +30,7 @@ disable=
     no-name-in-module,
     protected-access,
     too-few-public-methods,
+    too-many-arguments,
 
 [REPORTS]
 output-format=text

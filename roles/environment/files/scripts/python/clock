@@ -18,46 +18,70 @@ from pytz import utc
 setlocale(LC_ALL, 'en_US.UTF-8')
 
 
-def get_arguments(
-    ) -> Namespace:
+def get_arguments() -> Namespace:
     '''
     Get cmdline arguments.
         :return:    argparse.Namespace instance of user arguments.
     '''
-    parser = ArgumentParser(description=__doc__)                            # Instantiate argument parser.
+    parser = ArgumentParser(description=__doc__)                                # Instantiate argument parser.
+    mutex = parser.add_mutually_exclusive_group()
 
-    parser.add_argument(                                                    # -12
+    parser.add_argument(                                                        # -12
         '-12',
         action='store_true',
         dest='twelve',
         help='Set format to 12hr time.'
         )
-    parser.add_argument(                                                    # -12
-        '-u', '--utc',
-        dest='utc',
+    mutex.add_argument(                                                         # --to-utc
+        '-u', '--to-utc',
+        dest='to_utc',
         nargs='?',
         type=str,
-        help='Convert %H%m time string to UTC and exit. Default: [now].'
+        help='Convert local HHmm time string to UTC and exit. Default: [now].'
+        )
+    mutex.add_argument(                                                         # --from-utc
+        '-U', '--from-utc',
+        dest='from_utc',
+        nargs='?',
+        type=str,
+        help='Convert UTC HHmm time string to local and exit. Default: [now].'
         )
 
     arguments = parser.parse_args()
-    arguments.utc = datetime.now().strftime('%H%m') if arguments.utc is None else arguments.utc
+    if arguments.to_utc:
+        arguments.to_utc = datetime.now().strftime('%H%m') if arguments.to_utc is None else arguments.to_utc
+    if arguments.from_utc:
+        arguments.from_utc = datetime.now().strftime('%H%m') if arguments.from_utc is None else arguments.from_utc
 
     return arguments
 
 
-def get_utc_time(
-    input_time: str = datetime.now().strftime('%H%m')
-    ) -> str:
+def to_utc(
+    local_time: str = datetime.now().strftime('%H%m')
+        ) -> str:
     '''
     Continuously display a text-based clock.
-        :param input_time:         Boolean indicating if clock should show UTC time.
+        :param local_time:  Time string (like %H%m) to convert to UTC [defaults to current local time].
     '''
-    assert isinstance(input_time, (str, type(None))), ':param input_time: must be instance of str() or Nonetype.'
-    assert input_time.isdigit(), ':param input_time: must be time string or None.'
-    assert 0 <= int(input_time[:2]) < 24 and 0 <= int(input_time[2:4]) < 60, ':param input_time: invalid time.'
+    assert isinstance(local_time, (str, type(None))), ':param local_time: must be instance of str() or Nonetype.'
+    assert local_time.isdigit(), ':param local_time: must be time string or None.'
+    assert 0 <= int(local_time[:2]) < 24 and 0 <= int(local_time[2:4]) < 60, ':param local_time: invalid time.'
 
-    return datetime.strptime(input_time, '%H%M').astimezone(utc).strftime('%H%M')
+    return datetime.strptime(local_time, '%H%M').astimezone(utc).strftime('%H%M')
+
+
+def from_utc(
+    utc_str: str = datetime.utcnow().strftime('%H%m')
+        ) -> str:
+    '''
+    Continuously display a text-based clock.
+        :param utc_str:    Time string (like %H%m) to convert to local time [defaults to current UTC time].
+    '''
+    assert isinstance(utc_str, (str, type(None))), ':param utc_str: must be instance of str() or Nonetype.'
+    assert utc_str.isdigit(), ':param utc_str: must be time string or None.'
+    assert 0 <= int(utc_str[:2]) < 24 and 0 <= int(utc_str[2:4]) < 60, ':param utc_str: invalid time.'
+
+    return (datetime.strptime(utc_str, '%H%m') + datetime.utcnow() - datetime.now()).strftime('%H%m')
 
 
 def run_clock(
@@ -73,14 +97,14 @@ def run_clock(
 
     while True:
         try:
-            system('clear')                                                 # Clear screen.
+            system('clear')                                                     # Clear screen.
 
-            time = datetime.now()                                           # UTC or local time.
+            time = datetime.now()                                               # UTC or local time.
 
-            print(f'{div}\n{time.strftime(time_string)}\n{div}')            # Print clock.
-            sleep(1)                                                        # Sleep one second.
+            print(f'{div}\n{time.strftime(time_string)}\n{div}')                # Print clock.
+            sleep(1)                                                            # Sleep one second.
 
-        except KeyboardInterrupt:                                           # Exit without stack trace.
+        except KeyboardInterrupt:                                               # Exit without stack trace.
             print()
             sys_exit(1)
 
@@ -88,7 +112,9 @@ def run_clock(
 if __name__ == '__main__':
     args = get_arguments()
 
-    if args.utc:
-        print(get_utc_time(args.utc))
+    if args.to_utc:
+        print(to_utc(args.to_utc))
+    elif args.from_utc:
+        print(from_utc(args.from_utc))
     else:
         run_clock(args.twelve)
