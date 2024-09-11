@@ -8,11 +8,13 @@
 
 from argparse import ArgumentParser, Namespace
 from locale import setlocale, LC_ALL
-from logging import FileHandler, Formatter, RootLogger, StreamHandler, getLogger
+from logging import FileHandler, Formatter, StreamHandler, getLogger
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from PIL import ImageGrab
 from cv2 import QRCodeDetector, imread
+
+LOG = getLogger()                                                               # Root logger instance.
 
 setlocale(LC_ALL, 'en_US.UTF-8')                                                # Set locale.
 
@@ -45,39 +47,35 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(
+def configure_log(
     log_level: int = 30,
     log_file: (Path, None) = None
-        ) -> RootLogger:
+        ) -> None:
     '''
-    Enable logging and handle outputs.
+    Configure the root logger.
         :param log_level:   User-specified log level. Default NOTSET.
         :param log_file:    User-specified path to write log file. Default None.
-        :return:            Instantiated logger.RootLogger instance.
     '''
     assert isinstance(log_level, int), ':param log_level: must be instance of int().'
     assert log_level >= 0, ':param log_level: must be >=0.'
 
-    formatter = Formatter(                                                  # Log message header format.
+    formatter = Formatter(                                                      # Log message header format.
         '{asctime} {threadName:12} {levelname:8}: "{message}"',
         style='{',
         )
-    log_root = getLogger()                                                  # Root logger instance.
-    log_console = StreamHandler()                                           # Log to screen.
+    log_console = StreamHandler()                                               # Log to screen.
 
-    log_console.setFormatter(formatter)                                     # Set log stream format.
-    log_root.addHandler(log_console)                                        # Log to screen.
-    log_root.setLevel(log_level)                                            # User-specified log_level.
+    log_console.setFormatter(formatter)                                         # Set log stream format.
+    LOG.addHandler(log_console)                                                 # Log to screen.
+    LOG.setLevel(log_level)                                                     # User-specified log_level.
 
-    if log_file:                                                            # Log to file.
+    if log_file:                                                                # Log to file.
         assert isinstance(log_file, Path), ':param log_file: must be instance of pathlib.Path() or None.'
 
-        log_file = FileHandler(log_file)                                    # Set log file.
+        log_file = FileHandler(log_file)                                        # Set log file.
 
-        log_file.setFormatter(formatter)                                    # Set log file format.
-        log_root.addHandler(log_file)                                       # Log to file.
-
-    return log_root
+        log_file.setFormatter(formatter)                                        # Set log file format.
+        LOG.addHandler(log_file)                                                # Log to file.
 
 
 def screenshot() -> Path:
@@ -87,7 +85,7 @@ def screenshot() -> Path:
     '''
     with NamedTemporaryFile(mode='w+b', suffix='.png', dir=Path('/tmp'), delete=False) as temp_file:
         ImageGrab.grab().save(temp_file.name, 'PNG')                            # Take screenshot.
-        log.debug(f'Saved screenshot to {temp_file.name}')
+        LOG.debug(f'Saved screenshot to {temp_file.name}')
 
     return Path(temp_file.name)
 
@@ -103,15 +101,15 @@ def read_qr_code_from_file(
     assert isinstance(filename, (Path, str)), '`filename` must be instance of Path() or str().'
 
     try:
-        log.debug(f'Reading QR code from {filename}.')
+        LOG.debug(f'Reading QR code from {filename}.')
 
         value, _, _ = QRCodeDetector().detectAndDecode(imread(str(filename)))
 
         if value == '':
-            log.warning((value := 'No QR data found'))
+            LOG.warning((value := 'No QR data found'))
 
         else:
-            log.debug(f'QR data found: {value}')
+            LOG.debug(f'QR data found: {value}')
 
     except BaseException as exc:
         raise exc
@@ -121,6 +119,7 @@ def read_qr_code_from_file(
 
 if __name__ == '__main__':
     args = get_arguments()
-    log = enable_log(args.log_level, args.log_file)
+
+    configure_log(args.log_level, args.log_file)
 
     print(read_qr_code_from_file(Path(screenshot())))
