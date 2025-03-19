@@ -1,0 +1,20 @@
+---
+- name: "[gather_facts]"
+  gather_facts: true
+  hosts: "localhost"
+
+- name: "[security]"
+  hosts: "localhost"
+  roles: ["security"]
+
+- name: "[performance]"
+  hosts: "localhost"
+  roles: ["performance"]
+
+- name: "[packages]"
+  hosts: "localhost"
+  roles: ["packages"]
+
+- name: "[environment]"
+  hosts: "localhost"
+  roles: ["environment"]

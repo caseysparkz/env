@@ -1,0 +1,6 @@
+---
+- name: "[handler.initramfs]"
+  become: true
+  when: "ansible_facts.packages['dracut']"
+  ansible.builtin.command: "dracut --force --regenerate-all -v"
+  changed_when: false

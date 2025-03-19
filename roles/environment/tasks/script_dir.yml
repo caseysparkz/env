@@ -1,21 +1,20 @@
 ---
-- name: '[environment.scripts]'
-  tags: ['scripts']
+- name: "[environment.scripts]"
+  tags: ["scripts"]
   block:
-      - name: '[environment.scripts] Make ~/.local/lib/'
-        ansible.builtin.file:
-            path: '{{ ansible_env.HOME }}/.local/lib'
-            state: 'directory'
-            owner: '{{ ansible_effective_user_id }}'
-            group: '{{ ansible_effective_group_id }}'
-            mode: '0700'
+    - name: "[environment.scripts.create_local_lib]"
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/lib"
+        state: "directory"
+        owner: "{{ ansible_effective_user_id }}"
+        group: "{{ ansible_effective_group_id }}"
+        mode: "0700"
 
-      - name: '[environment.scripts] Symlink ~/.local/lib/scripts'
-        ansible.builtin.file:
-            src: 'scripts/'
-            dest: '{{ ansible_env.HOME }}/.local/lib/scripts'
-            owner: '{{ ansible_effective_user_id }}'
-            group: '{{ ansible_effective_group_id }}'
-            force: true
-            state: 'link'
-...
+    - name: "[environment.scripts.symlink_local_lib_scripts]"
+      ansible.builtin.file:
+        src: "scripts/"
+        dest: "{{ ansible_env.HOME }}/.local/lib/scripts"
+        owner: "{{ ansible_effective_user_id }}"
+        group: "{{ ansible_effective_group_id }}"
+        force: true
+        state: "link"

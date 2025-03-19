@@ -1,0 +1,28 @@
+---
+- name: "[security.disable_crash_reporters]"
+  become: true
+  when: "ansible_distribution == 'Ubuntu'"
+  tags:
+    - "apport"
+    - "crash_reporters"
+    - "whoopsie"
+  block:
+    - name: "[security.disable_crash_reporters.whoopsie]"
+      ansible.builtin.apt:
+        name: "whoopsie"
+        state: "absent"
+        purge: true
+
+    - name: "[security.disable_crash_reporters.whoopsie_preferences]"
+      ansible.builtin.apt:
+        name: "whoopsie-preferences"
+        state: "absent"
+        purge: true
+
+    - name: "[security.disable_crash_reporters.apport]"
+      ansible.builtin.apt:
+        name: "apport"
+        state: "absent"
+        purge: true
+        autoremove: true
+        autoclean: true

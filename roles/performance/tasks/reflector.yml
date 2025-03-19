@@ -1,0 +1,11 @@
+---
+- name: "[performance.reflector]"
+  when: "ansible_os_family == 'ArchLinux'"
+  become: true
+  tags: ["reflector"]
+  notify: "[handler.reflector]"
+  community.general.pacman:
+    upgrade: true
+    update_cache: true
+    name: "reflector"
+    state: "present"

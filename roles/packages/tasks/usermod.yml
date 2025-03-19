@@ -1,21 +1,20 @@
 ---
-- name: '[packages.usermod]'
+- name: "[packages.usermod]"
   become: true
-  tags: ['usermod']
+  tags: ["usermod"]
+  vars:
+    user_groups: ["docker"]
   block:
-      - name: '[packages.usermod] Create system groups'
-        loop:
-            - 'docker'
-        ansible.builtin.group:
-            name: '{{ item }}'
-            state: 'present'
-            system: true
+    - name: "[packages.usermod] Create system groups"
+      loop: "{{ user_groups }}"
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: "present"
+        system: true
 
-      - name: '[packages.usermod] Add ansible_user to groups'
-        loop:
-            - 'docker'
-        ansible.builtin.user:
-            name: '{{ ansible_user_id }}'
-            groups: '{{ item }}'
-            append: true
-...
+    - name: "[packages.usermod] Add ansible_user to groups"
+      loop: "{{ user_groups }}"
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        groups: "{{ item }}"
+        append: true
