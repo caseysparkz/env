@@ -6,17 +6,18 @@ Host git
 # Catchall
 Host *
     AddKeysToAgent          yes
-    IdentitiesOnly          yes
-    ServerAliveInterval     5
-    ServerAliveCountMax     120
-    PubkeyAcceptedKeyTypes  +ssh-rsa
+    CanonicalizeHostname    yes
     CheckHostIP             yes
     ConnectTimeout          5
-    ForwardX11              no
     ForwardAgent            no
-    #IPQoS=throughput
-    #LogLevel                QUIET
-    #StrictHostKeyChecking   no
+    ForwardX11              no
+    IdentitiesOnly          yes
+    PubkeyAcceptedKeyTypes  +ssh-rsa
+    ServerAliveCountMax     120
+    ServerAliveInterval     5
     #ControlMaster           auto
     #ControlPath             ~/.ssh/control_paths/master-%u-%C
     #ControlPersist          72h
+    #IPQoS=throughput
+    #LogLevel                QUIET
+    #StrictHostKeyChecking   no

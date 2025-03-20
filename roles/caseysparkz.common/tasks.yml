@@ -1,0 +1,11 @@
+---
+- name: "[common]"
+  tags: ["common"]
+  block:
+    - name: "[common.security]"
+      ansible.builtin.include_role:
+        name: "caseysparkz.security"
+
+    - name: "[common.performance]"
+      ansible.builtin.include_role:
+        name: "caseysparkz.performance"

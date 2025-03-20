@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: "Casey Sparks"
+  description: "Apply security baselines to a Linux system."
+  issue_tracker_url: "https://github.com/caseysparkz/env/issues"
+  license: "GPL"
+  min_ansible_version: "2.0"
+  platforms:
+    - name: "Ubuntu"
+      versions:
+        - "xenial"
+        - "focal"
+        - "jammy"
+    - name: "Debian"
+      versions:
+        - "jessie"
+        - "trixie"
+  galaxy_tags: ["security"]
+dependencies: []

@@ -5,16 +5,16 @@
 
 - name: "[security]"
   hosts: "localhost"
-  roles: ["security"]
+  roles: ["caseysparkz.security"]
 
 - name: "[performance]"
   hosts: "localhost"
-  roles: ["performance"]
+  roles: ["caseysparkz.performance"]
 
 - name: "[packages]"
   hosts: "localhost"
-  roles: ["packages"]
+  roles: ["caseysparkz.packages"]
 
 - name: "[environment]"
   hosts: "localhost"
-  roles: ["environment"]
+  roles: ["caseysparkz.environment"]
