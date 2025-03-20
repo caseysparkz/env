@@ -19,7 +19,7 @@
         paths: "ssh/keys/"
         file_type: "file"
         use_regex: true
-        patterns: "^.*\.pub$"
+        patterns: "^.*\\.pub$"
 
     - name: "[environment.ssh.copy_pubkeys]"
       loop: "{{ role_ssh_pubkeys.files }}"
@@ -46,7 +46,7 @@
         paths: "{{ ansible_env.HOME }}/.ssh/keys/"
         file_type: "file"
         use_regex: true
-        patterns: "^.*\.pub$"
+        patterns: "^.*\\.pub$"
 
     - name: "[environment.ssh.configure.1]"
       ansible.builtin.copy:
@@ -62,7 +62,7 @@
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.ssh/config"
         line: "    IdentityFile            {{ item.path }}"
-        insertafter: "Host\s\*"
+        insertafter: "Host\\s\\*"
         firstmatch: true
         owner: "{{ ansible_effective_user_id }}"
         group: "{{ ansible_effective_group_id }}"

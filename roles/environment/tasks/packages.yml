@@ -111,17 +111,17 @@
       when: "ansible_os_family == 'RHEL'"
       loop: "{{ environment_packages.unwanted.dnf }}"
       ansible.builtin.dnf:
-          name: "{{ item }}"
-          state: "absent"
-          autoremove: true
+        name: "{{ item }}"
+        state: "absent"
+        autoremove: true
 
     - name: "[environment.packages.uninstall]"
       tags: ["pacman"]
       when: "ansible_os_family == 'ArchLinux'"
       loop: "{{ environment_packages.unwanted.pacman }}"
       ansible.builtin.dnf:
-          name: "{{ item }}"
-          state: "absent"
+        name: "{{ item }}"
+        state: "absent"
 
 - name: "[environment.packages.system.uninstall]"
   become: true
@@ -138,7 +138,7 @@
         state: "present"
         update_cache: true
         purge: true
-        auto_remove: true
+        autoremove: true
         clean: true
         cache_valid_time: 3600                                                  # 1hr.
 
@@ -155,8 +155,8 @@
       when: "ansible_os_family == 'ArchLinux'"
       loop: "{{ environment_packages.wanted.pacman }}"
       ansible.builtin.dnf:
-          name: "{{ item }}"
-          state: "present"
+        name: "{{ item }}"
+        state: "present"
 
 - name: "[environment.packages.pip]"
   tags:
