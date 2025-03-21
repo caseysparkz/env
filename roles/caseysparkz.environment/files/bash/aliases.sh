@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+#-*- coding:utf-8 -*-
+
 alias ....='cd ../../..'
 alias ...='cd ../..'
 alias ..='cd ..'
@@ -43,6 +46,7 @@ alias q='exit'
 alias rmf='rm -rf'
 alias src='source ${HOME}/.bashrc'
 alias tf='terraform'
+complete -C "$(which terraform)" tf
 alias tg='terragrunt'
 alias va='source ./venv/bin/activate'
 alias ve='python3 -m venv ./venv'

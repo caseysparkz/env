@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 #-*- coding:utf-8 -*-
 
-BROWSER="$(which google-chrome)"
 GPG_TTY="$(tty)"
 SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 
 # Application defaults
-export BROWSER
 export EDITOR="vim"
 export TERM="xterm-256color"
 
