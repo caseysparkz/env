@@ -1,5 +1,5 @@
 ---
-- name: "[performance.timeshift.install]"
+- name: "[performance.timeshift]"
   become: true
   when: "ansible_os_family == 'ArchLinux'"
   tags:

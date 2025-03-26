@@ -26,10 +26,10 @@ and they are supported by this repository.
 
 This playbook consists of four roles:
 
-* [packages](./roles/packages/README.md)
-* [security](./roles/security/README.md)
-* [performance](./roles/performance/README.md)
-* [environment](./roles/environment/README.md)
+* [`packages`](./roles/packages/README.md)
+* [`security`](./roles/security/README.md)
+* [`performance`](./roles/performance/README.md)
+* [`environment`](./roles/environment/README.md)
 
 Further information on each roles' tasks can be found in the corresponding
 directory's README.
@@ -41,7 +41,7 @@ directory's README.
 This playbook makes **significant** changes to kernel, grub, sysctl, filesystem
 modes, system services.
 It also removes system crash reporters and enables unattended upgrades for
-_security packages only_.
+_`security` packages only_.
 
 Read and understand the tasks before running. Similarly: don't hold a lit
 firework in your hand, wait an hour after eating to go swimming, and wear your
@@ -58,8 +58,8 @@ The largest role in this playbook, and the least relevant for people who are not
 me.
 
 This role sets up my preferred user environments and configuration files for
-Bash, Git, GnuPG, Gnu Screen, SSH, Vim, etc, as well as installing my own CA
-certificates, and removing Snap.
+Bash, Git, GnuPG, Gnu Screen, SSH, Vim, etc, as well as installing my own
+certificate authority, and removing Snap.
 
 **NB:** If you intend to use this role, first ensure that the git submodules are
 initialized and up-to-date.

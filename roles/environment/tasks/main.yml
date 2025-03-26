@@ -29,8 +29,8 @@
     - name: "[environment.screen]"
       ansible.builtin.import_tasks: "screen.yml"
 
-    - name: "[environment.script_dir]"
-      ansible.builtin.import_tasks: "script_dir.yml"
+    - name: "[environment.scripts]"
+      ansible.builtin.import_tasks: "scripts.yml"
 
     - name: "[environment.ssh]"
       ansible.builtin.import_tasks: "ssh.yml"

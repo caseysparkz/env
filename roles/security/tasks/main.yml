@@ -23,8 +23,8 @@
     - name: "[security.passwords]"
       ansible.builtin.import_tasks: "passwords.yml"
 
-    - name: "[security.priviledge_escalation]"
-      ansible.builtin.import_tasks: "priviledge_escalation.yml"
+    - name: "[security.privilege_escalation]"
+      ansible.builtin.import_tasks: "privilege_escalation.yml"
 
     - name: "[security.ssh]"
       ansible.builtin.import_tasks: "ssh.yml"
