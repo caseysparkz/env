@@ -1,0 +1,9 @@
+---
+- name: "[common]"
+  ignore_errors: false
+  hosts: "localhost"
+  roles:
+    - "security"
+    - "performance"
+    - "packages"
+    - "environment"
