@@ -1,0 +1,23 @@
+---
+name: 'Conventional Commits'
+# Author:       Casey Sparks
+# Date:         August 22, 2024
+# Description:  Ensures that commit titles adhere to the Conventional Commit syntax.
+# Notes:        See https://www.conventionalcommits.org/en/v1.0.0/
+
+on:
+  pull_request:
+    branches: ['main']
+jobs:
+  conventional_commits:
+    name: 'Conventional Commits'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683'  # v4.2.2
+
+      - name: 'Check conventional commit compliance'
+        uses: 'webiny/action-conventional-commits@8bc41ff4e7d423d56fa4905f6ff79209a78776c7'  # v1.3.0
+        with:
+          GITHUB_TOKEN: '${{ github.token }}'
+...

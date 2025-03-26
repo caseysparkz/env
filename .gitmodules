@@ -1,0 +1,20 @@
+[submodule "vim-nerdtree"]
+	path = roles/environment/files/vim/pack/plugins/start/nerdtree
+	url = git@github.com:preservim/nerdtree
+	branch = master
+	shallow = true
+[submodule "vim-gnupg"]
+	path = roles/environment/files/vim/pack/plugins/start/gnupg
+	url = git@github.com:jamessan/vim-gnupg
+	branch = main
+	shallow = true
+[submodule "vim-terraform"]
+	path = roles/environment/files/vim/pack/plugins/start/terraform
+	url = git@github.com:hashivim/vim-terraform
+	branch = master
+	shallow = true
+[submodule "vim-ale"]
+	path = roles/environment/files/vim/pack/plugins/start/ale
+	url = git@github.com:dense-analysis/ale.git
+	branch = master
+	shallow = true

@@ -1,0 +1,22 @@
+---
+name: 'Validate Markdown files'
+# Author:       Casey Sparks
+# Date:         November 22, 2024
+# Description:  Lint all markdown files with mdl (mdlint).
+
+on:
+  pull_request:
+    branches: ['main']
+jobs:
+  mdlint:
+    name: 'mdl'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683'  # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: 'Run Markdown Lint'
+        uses: 'actionshub/markdownlint@6c82ff529253530dfbf75c37570876c52692835f'  # v3.1.4
+...
