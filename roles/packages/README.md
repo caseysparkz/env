@@ -5,14 +5,14 @@ packages and starting system services like Docker.
 
 ## Tasks
 
-### [Install](./tasks/install.yml)
+### [`install`](./tasks/install.yml)
 
-Installs Apt, DNF, Pacman, and Pip packages.
+Installs `apt`, `dnf`, `pacman`, and `pip` packages.
 
-### [System Services](./tasks/system_services.yml)
+### [`system_services`](./tasks/system_services.yml)
 
 Starts `systemd` sockets, services, and timers for installed packages.
 
-### [Usermod](./tasks/usermod.yml)
+### [`usermod`](./tasks/usermod.yml)
 
 Creates requisite user groups and adds the system user.

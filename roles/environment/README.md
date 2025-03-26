@@ -17,19 +17,19 @@ Creates symbolic links to the following [files](./files/):
 Creates `~/.bashrc.local`, for bash run-commands that should **not** exist in
 this Git repository.
 
-### [CA Certificates](./tasks/ca_certificates.yml)
+### [`ca_certificates`](./tasks/ca_certificates.yml)
 
 Imports and installs my public CA certificates.
 
-### [Config Files](./tasks/dotfiles.yml)
+### [`dotfiles`](./tasks/dotfiles.yml)
 
 Links portable and non-sensitive dotfiles to `~/.config`.
 
-### [Git](./tasks/git.yml)
+### [`git`](./tasks/git.yml)
 
 Links `~/.gitconfig`.
 
-### [GnuPG](./tasks/gnupg.yml)
+### [`gnupg`](./tasks/gnupg.yml)
 
 Creates `~/.gnupg/` and copies in:
 
@@ -37,22 +37,22 @@ Creates `~/.gnupg/` and copies in:
 * `gpg.conf`
 * `gpg-agent.conf`
 
-### [Gnu Screen](./tasks/screen.yml)
+### [(Gnu) `screen`](./tasks/screen.yml)
 
 Links `~/.screenrc`.
 
-### [Scripts](./tasks/script_dir.yml)
+### [`scripts`](./tasks/scripts.yml)
 
 Creates `~/.local/lib/` and links `~/.local/lib/scripts`.
 
-### [SSH](./tasks/ssh.yml)
+### [`ssh`](./tasks/ssh.yml)
 
 Creates `~/.ssh/` and copies:
 
 * My public key.
 * `~/.ssh/config`
 
-### [Vim](./tasks/vim.yml)
+### [`vim`](./tasks/vim.yml)
 
 Links:
 
