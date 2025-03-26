@@ -1,0 +1,15 @@
+---
+- name: "[performance]"
+  tags: ["performance"]
+  block:
+    - name: "[performance.io_sched]"
+      ansible.builtin.import_tasks: "io_sched.yml"
+
+    - name: "[performance.reflector]"
+      ansible.builtin.import_tasks: "reflector.yml"
+
+    - name: "[performance.timeshift]"
+      ansible.builtin.import_tasks: "timeshift.yml"
+
+    - name: "[performance.filesystem]"
+      ansible.builtin.import_tasks: "filesystem.yml"

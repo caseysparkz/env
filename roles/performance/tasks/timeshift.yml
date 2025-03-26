@@ -1,0 +1,15 @@
+---
+- name: "[performance.timeshift.install]"
+  become: true
+  when: "ansible_os_family == 'ArchLinux'"
+  tags:
+    - "pacman"
+    - "timeshift"
+  notify:
+    - "[handler.timeshift.boot]"
+    - "[handler.timeshift.hourly]"
+  community.general.pacman:
+    name: "timeshift"
+    state: "present"
+    upgrade: true
+    update_cache: true

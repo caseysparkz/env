@@ -1,0 +1,20 @@
+---
+- name: "[handler.timeshift.boot]"
+  become: true
+  tags: &timeshift_tags
+    - "timeshift"
+    - "systemd"
+  ansible.builtin.systemd_service:
+    name: "timeshift-boot.timer"
+    state: "started"
+    enabled: true
+    daemon_reload: true
+
+- name: "[handler.timeshift.hourly]"
+  become: true
+  tags: *timeshift_tags
+  ansible.builtin.systemd_service:
+    name: "timeshift-hourly.timer"
+    state: "started"
+    enabled: true
+    daemon_reload: true
