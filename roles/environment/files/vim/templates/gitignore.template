@@ -1,0 +1,6 @@
+# Misc. files.
+**/*.log
+**/*.lock
+**/*.tmp
+**/bin
+**/out

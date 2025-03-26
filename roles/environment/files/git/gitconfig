@@ -1,0 +1,30 @@
+[user]
+    email = himself@caseyspar.kz
+    name = caseysparkz
+    signingKey = 0x2027DEDFECE6A3D5
+[core]
+    editor = vim
+[init]
+    defaultBranch = main
+[fetch]
+    prune = true
+    pruneTags = true
+[pull]
+    default = current
+    rebase = true
+[push]
+    default = current
+[commit]
+    gpgsign = true
+[merge]
+    squash = true
+[diff]
+    colorMoved = zebra
+[http]
+    postBuffer = 1048576000
+[ssh]
+    postBuffer = 1048576000
+[gc]
+    pruneexpire = 14 days
+[advice]
+    addIgnoredFile = false

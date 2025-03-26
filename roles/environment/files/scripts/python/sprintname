@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# Name:         sprintname
+# Author:       Casey Sparks
+# Date:         September 13, 2022
+# Description:
+'''Generate a random sprint name.'''
+
+from locale import LC_ALL, setlocale
+from pathlib import Path
+from random import choice
+from string import punctuation
+
+setlocale(LC_ALL, 'en_US.UTF-8')                                            # Set locale.
+
+
+def create_sprint_name(
+    wordfile: (str, Path) = Path('/usr/share/dict/words'),
+    count: int = 2,
+        ) -> str:
+    '''
+    Generate a sprint name from two random words.
+        :param wordfile:    Path() object of the word file to use. Defaults to /usr/share/dict/words, installed by
+                            'words' package.
+        :param count:       The number of words to choose.
+        :return:            Error message, or sprint name.
+    '''
+    assert isinstance(wordfile, (str, Path)), ':param wordfile: must be instance of str() or Path().'
+    assert Path(wordfile).exists(), ':param wordfile: does not exist. Install "words" package.'
+    assert isinstance(count, int), ':param count: must be instance of int().'
+    assert 5 >= count >= 1, ':param count: must be >= 1, <= 5.'
+
+    with open(wordfile, 'r', encoding='utf-8') as file:
+        wordlist = file.read().splitlines()
+
+        return '-'.join([choice(wordlist).lower().translate(str.maketrans('', '', punctuation)) for i in range(count)])
+
+
+if __name__ == '__main__':
+    print(create_sprint_name())

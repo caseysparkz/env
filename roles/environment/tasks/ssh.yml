@@ -1,0 +1,50 @@
+---
+- name: "[environment.ssh]"
+  tags: ["ssh"]
+  block:
+    - name: "[environment.ssh.create_dir]"
+      loop:
+        - ".ssh"
+        - ".ssh/keys"
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/{{ item }}"
+        state: "directory"
+        owner: "{{ ansible_effective_user_id }}"
+        group: "{{ ansible_effective_group_id }}"
+        mode: "0700"
+
+    - name: "[environment.ssh.configure]"
+      ansible.builtin.copy:
+        src: "files/ssh/config"
+        dest: "{{ ansible_env.HOME }}/.ssh/config"
+        owner: "{{ ansible_effective_user_id }}"
+        group: "{{ ansible_effective_group_id }}"
+        mode: "0600"
+        force: false
+
+    - name: "[environment.ssh.find_pubkeys]"
+      register: "role_ssh_pubkeys"
+      ansible.builtin.find:
+        paths: "ssh/keys/"
+        file_type: "file"
+        use_regex: true
+        patterns: "^.*\\.pub$"
+
+    - name: "[environment.ssh.install_pubkeys]"
+      loop: "{{ role_ssh_pubkeys.files }}"
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ ansible_env.HOME }}/.ssh/keys/"
+        owner: "{{ ansible_effective_user_id }}"
+        group: "{{ ansible_effective_group_id }}"
+        mode: "0600"
+        force: true
+
+    - name: "[environment.ssh.authorized_keys]"
+      loop: "{{ role_ssh_pubkeys.files }}"
+      ansible.builtin.assemble:
+        src: "ssh/keys/"
+        dest: "{{ ansible_env.HOME }}/.ssh/authorized_keys"
+        owner: "{{ ansible_effective_user_id }}"
+        group: "{{ ansible_effective_group_id }}"
+        mode: "0600"

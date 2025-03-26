@@ -1,0 +1,42 @@
+---
+- name: "[environment]"
+  tags: ["environment"]
+  block:
+    - name: "[environment.ca_certificates]"
+      ansible.builtin.import_tasks: "ca_certificates.yml"
+
+    - name: "[environment.gnupg]"
+      ansible.builtin.import_tasks: "gnupg.yml"
+
+    - name: "[environment.bash]"
+      ansible.builtin.import_tasks: "bash.yml"
+
+    - name: "[environment.cron]"
+      ansible.builtin.import_tasks: "cron.yml"
+
+    - name: "[environment.dotfiles]"
+      ansible.builtin.import_tasks: "dotfiles.yml"
+
+    - name: "[environment.git]"
+      ansible.builtin.import_tasks: "git.yml"
+
+    - name: "[environment.gnupg]"
+      ansible.builtin.import_tasks: "gnupg.yml"
+
+    - name: "[environment.packages]"
+      ansible.builtin.import_tasks: "packages.yml"
+
+    - name: "[environment.screen]"
+      ansible.builtin.import_tasks: "screen.yml"
+
+    - name: "[environment.script_dir]"
+      ansible.builtin.import_tasks: "script_dir.yml"
+
+    - name: "[environment.ssh]"
+      ansible.builtin.import_tasks: "ssh.yml"
+
+    - name: "[environment.vim]"
+      ansible.builtin.import_tasks: "vim.yml"
+
+    - name: "[environment.filesystem]"
+      ansible.builtin.import_tasks: "filesystem.yml"

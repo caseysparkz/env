@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# Name:         www
+# Author:       Casey Sparks
+# Date:         March 20, 2023
+# Description:
+'''Run a simple local webserver.'''
+
+from argparse import ArgumentParser, Namespace
+from http import server
+from os import chdir
+from pathlib import Path
+from socketserver import TCPServer
+from sys import exit as sysexit
+
+
+def get_arguments() -> Namespace:
+    '''
+    Get cmdline arguments.
+        :return:    argparse.Namespace instance of user arguments.
+    '''
+    parser = ArgumentParser(description=__doc__)                                # Instantiate argument parser.
+
+    parser.add_argument(                                                        # PATH
+        'path',
+        type=Path,
+        default=Path('.'),
+        help="The path to run the webserver from. Default ${PWD}.",
+        )
+    parser.add_argument(                                                        # --expose
+        '--expose',
+        dest='expose',
+        action='store_true',
+        help="Pass :arg --expose: to run the web server on 0.0.0.0.",
+        )
+    parser.add_argument(                                                        # --port
+        '--port', '-p',
+        dest='port',
+        type=int,
+        default=8000,
+        help="The port to run the webserver on. Default 8000",
+        )
+
+    return parser.parse_args()
+
+
+def run_http_server(server_address: str = '127.0.0.1', port: int = 8000) -> None:
+    '''
+    Run a simple HTTP server.
+        :param server_address:  The IP address of the interface to run the server on.
+        :param port:            The port to run the server on.
+        '''
+    assert isinstance(server_address, str), f":param {server_address=}: must be str()."
+    assert port >= 1024, '`port should be instance of int() in the non-reserved range of 1024-65535.'
+
+    try:
+        httpd = TCPServer((server_address, port), server.SimpleHTTPRequestHandler)
+
+        print(f"HTTP server running on http://{server_address}:{port}")
+        httpd.serve_forever()
+
+    except KeyboardInterrupt:
+        print("\nExiting.")
+        httpd.shutdown()
+        sysexit(0)
+
+
+if __name__ == '__main__':
+    cmd_args = get_arguments()
+
+    chdir(cmd_args.path)                                                        # Serve this directory.
+    run_http_server('0.0.0.0' if cmd_args.expose else '127.0.0.1', cmd_args.port)

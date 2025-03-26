@@ -1,0 +1,8 @@
+---
+- name: "[environment.screen]"
+  tags: ["screen"]
+  ansible.builtin.file:
+    src: "screen/screenrc"
+    dest: "{{ ansible_env.HOME }}/.screenrc"
+    force: true
+    state: "link"

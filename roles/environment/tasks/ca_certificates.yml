@@ -1,0 +1,63 @@
+---
+- name: "[environment.ca_certificates]"
+  become: true
+  tags: ["ca_certificates"]
+  block:
+    - name: "[environment.ca_certificates.find_role_certificates]"
+      register: "ca_certificates"
+      ansible.builtin.find:
+        paths: "{{ role_path }}/files/ca-certificates/"
+        file_type: "file"
+        patterns: "*.pem"
+
+    - name: "[environment.ca_certificates.install]"
+      when: "ansible_os_family == 'Debian' and ca_certificates.matched >= 1"
+      loop: "{{ ca_certificates.files }}"
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "/usr/local/share/ca-certificates/{{ item.path | basename }}"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+
+    - name: "[environment.ca_certificates.create_trust_anchors]"
+      when: "ansible_os_family == 'RedHat' and ca_certificates.matched >= 1"
+      ansible.builtin.file:
+        path: "/etc/pki/ca-trust/source/anchors/"
+        state: "directory"
+        owner: "root"
+        group: "root"
+        mode: "0755"
+
+    - name: "[environment.ca_certificates.install]"
+      when: "ansible_os_family == 'RedHat' and ca_certificates.matched >= 1"
+      loop: "{{ ca_certificates.files }}"
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "/etc/pki/ca-trust/source/anchors/{{ item.path | basename }}"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+
+    - name: "[environment.ca_certificates.create_trust_anchors]"
+      when: "ansible_os_family == 'ArchLinux' and ca_certificates.matched >= 1"
+      ansible.builtin.file:
+        path: "usr/local/share/ca-certificates/"
+        state: "directory"
+        owner: "root"
+        group: "root"
+        mode: "0755"
+
+    - name: "[environment.ca_certificates.install]"
+      when: "ansible_os_family == 'ArchLinux' and ca_certificates.matched >= 1"
+      loop: "{{ ca_certificates.files }}"
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "/etc/pki/ca-trust/source/anchors/{{ item.path | basename }}"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+
+    - name: "[environment.ca_certificates.update_ca_trust]"
+      ansible.builtin.command: "update-ca-certificates"
+      changed_when: false

@@ -1,0 +1,17 @@
+---
+- name: "[environment.vim]"
+  tags: ["vim"]
+  block:
+    - name: "[environment.vim.vimrc]"
+      ansible.builtin.file:
+        src: "vim/vimrc"
+        dest: "{{ ansible_env.HOME }}/.vimrc"
+        force: true
+        state: "link"
+
+    - name: "[environment.vim.vim_dir]"
+      ansible.builtin.file:
+        src: "vim"
+        dest: "{{ ansible_env.HOME }}/.vim"
+        force: true
+        state: "link"

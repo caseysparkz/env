@@ -1,0 +1,10 @@
+---
+- name: "[environment.cron]"
+  tags: ["cron"]
+  block:
+    - name: "[environment.cron.delete_screenshots]"
+      ansible.builtin.cron:
+        name: "Delete screenshots."
+        minute: 0
+        hour: 10
+        job: "rm ${HOME}/Pictures/{S,s}creenshots/*"

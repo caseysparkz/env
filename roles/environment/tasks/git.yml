@@ -1,0 +1,10 @@
+---
+- name: "[environment.git]"
+  tags: ["git"]
+  ansible.builtin.file:
+    src: "git/gitconfig"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_user_id }}"
+    mode: "0600"
+    force: true

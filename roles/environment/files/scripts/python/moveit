@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# Name:         moveit
+# Author:       Casey Sparks
+# Date:         August 14, 2023
+# Description:
+'''You know what it do.'''
+
+from random import randint
+from time import sleep
+from pyautogui import moveTo, size
+
+
+if input('Press <ENTER> to start.\nPress any other key to abort. ') == '':
+    x_center = size().width / 2                                                 # Horizontal screen center.
+    y_center = size().height / 2                                                # Vertical screen center.
+
+    print('Move it, move it.')
+
+    while True:
+        try:
+            c = randint(0, 10)
+
+            sleep(3)
+            moveTo(x_center, y_center)                                          # Center the cursor.
+            sleep(3)
+            moveTo(x_center + c, y_center + c)                                  # Move random vector (0px to 10px).
+
+        except KeyboardInterrupt:
+            break
+
+print('\nExiting.')

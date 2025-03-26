@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#-*- coding:utf-8 -*-
+# git wrapper.
+git(){
+    ARGS=("$@")
+
+    case "$1" in
+        log)
+            command git log                                                 \
+                "${ARGS[@]:1:}"                                             \
+                --graph                                                     \
+                --abbrev-commit                                             \
+                --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset';;
+        *)
+            command git "${ARGS[@]}"
+    esac
+}

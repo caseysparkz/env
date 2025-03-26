@@ -1,0 +1,159 @@
+---
+- name: "[enviroment.packages.gather_facts]"
+  ansible.builtin.package_facts:
+  tags: ["packages"]
+  register: "packages_state"
+
+- name: "[enviroment.packages.snap]"
+  when: "ansible_distribution == 'Ubuntu' and 'snapd' in packages_state.packages"
+  become: true
+  tags:
+    - "packages"
+    - "uninstall"
+    - "snap"
+  block:
+    - name: "[environment.packages.gather_facts]"
+      ansible.builtin.service_facts:
+      register: "services_state"
+
+    - name: "[enviroment.packages.snap.disable_service]"
+      when: "'snapd.service' in services_state.ansible_facts.services"
+      ansible.builtin.systemd_service:
+        name: "snapd.service"
+        state: "stopped"
+        enabled: false
+        masked: true
+
+    - name: "[enviroment.packages.snap.uninstall]"
+      ansible.builtin.apt:
+        name: "snapd"
+        state: "absent"
+        purge: true
+        autoclean: true
+        autoremove: true
+        force: true
+
+    - name: "[enviroment.packages.snap.apt_hold]"
+      ansible.builtin.dpkg_selections:
+        name: "snapd"
+        selection: "hold"
+
+    - name: "[enviroment.packages.snap.apt_pref]"
+      ansible.builtin.copy:
+        dest: "/etc/apt/preferences.d/nosnap.pref"
+        force: true
+        owner: "root"
+        group: "root"
+        mode: "0644"
+        content: |
+          Package: snapd
+          Pin: release a=*
+          Pin-Priority: -10
+
+    - name: "[enviroment.packages.snap.rm_dirs]"
+      loop:
+        - "/snap/"
+        - "/var/lib/snapd/"
+        - "/var/snap/"
+        - "/root/snapd/"
+      ansible.builtin.file:
+        name: "{{ item }}"
+        state: "absent"
+
+    - name: "[enviroment.packages.snap.apt_cache]"
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: "[enviroment.packages.snap.find_user_dirs]"
+      register: "user_snap_dirs"
+      ansible.builtin.find:
+        paths: "/home"
+        depth: 2
+        file_type: "directory"
+        recurse: true
+        patterns: "snap"
+
+    - name: "[enviroment.packages.snap.rm_user_dirs]"
+      when: "user_snap_dirs.files | length > 0"
+      loop: "{{ user_snap_dirs.files }}"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: "absent"
+
+- name: "[environment.packages.apt]"
+  become: true
+  when: "ansible_os_family == 'Debian'"
+  tags:
+    - "apt"
+    - "packages"
+  block:
+    - name: "[environment.packages.apt.uninstall]"
+      tags: ["uninstall"]
+      loop: "{{ environment_packages.unwanted.apt }}"
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: "absent"
+        autoremove: true
+        purge: true
+        clean: true
+
+    - name: "[environment.packages.apt.install]"
+      tags: ["install"]
+      loop: "{{ environment_packages.wanted.apt }}"
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: "present"
+        update_cache: true
+        cache_valid_time: 3600
+
+- name: "[environment.packages.dnf]"
+  become: true
+  when: "ansible_os_family == 'RHEL'"
+  tags:
+    - "dnf"
+    - "packages"
+  block:
+    - name: "[environment.packages.dnf.uninstall]"
+      tags: ["uninstall"]
+      loop: "{{ environment_packages.unwanted.dnf }}"
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: "absent"
+        autoremove: true
+
+    - name: "[environment.packages.dnf.install]"
+      tags: ["install"]
+      loop: "{{ environment_packages.wanted.dnf }}"
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: "present"
+
+- name: "[environment.packages.pacman]"
+  become: true
+  when: "ansible_os_family == 'ArchLinux'"
+  tags:
+    - "pacman"
+    - "packages"
+  block:
+    - name: "[environment.packages.pacman.uninstall]"
+      tags: ["uninstall"]
+      loop: "{{ environment_packages.unwanted.pacman }}"
+      community.general.pacman:
+        name: "{{ item }}"
+        state: "absent"
+
+    - name: "[environment.packages.arch.install]"
+      tags: ["install"]
+      loop: "{{ environment_packages.wanted.pacman }}"
+      community.general.pacman:
+        name: "{{ item }}"
+        state: "present"
+
+- name: "[environment.packages.pip.install]"
+  tags:
+    - "packages"
+    - "install"
+    - "python"
+    - "pip"
+  ansible.builtin.pip:
+    name: "{{ environment_packages.wanted.python }}"
