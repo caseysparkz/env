@@ -5,7 +5,7 @@ packages and starting system services like Docker.
 
 ## Tasks
 
-### [Install Packages](./tasks/install_packages.yml)
+### [Install](./tasks/install.yml)
 
 Installs Apt, DNF, Pacman, and Pip packages.
 

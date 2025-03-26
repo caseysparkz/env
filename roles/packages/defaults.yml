@@ -71,6 +71,7 @@ packages_pacman:
   - "yubikey-manager"
   - "yubico-pam"
   - "yubikey-personalization"
+packages_pip: []
 packages_systemd:
   services:
     - "NetworkManager"
