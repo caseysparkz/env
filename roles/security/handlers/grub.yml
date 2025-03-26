@@ -1,0 +1,13 @@
+---
+- name: "[handler.grub]"
+  become: true
+  block:
+    - name: "[handler.grub.check_bootloader]"
+      register: "efi_boot"
+      ansible.builtin.stat:
+        path: "/sys/firmware/efi/efivars/"
+
+    - name: "[handler.grub.rebuild_kernel]"
+      when: "not efi_boot.exists"
+      ansible.builtin.command: "grub2-mkconfig"
+      changed_when: false

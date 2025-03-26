@@ -1,0 +1,11 @@
+---
+- name: "[handler.fail2ban]"
+  become: true
+  tags:
+      - "fail2ban"
+      - "systemd"
+  ansible.builtin.systemd_service:
+      name: "fail2ban.service"
+      state: "started"
+      enabled: true
+      daemon_reload: true
