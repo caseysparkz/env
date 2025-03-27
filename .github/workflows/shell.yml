@@ -1,29 +1,27 @@
----
-name: 'Validate shell code'
 # Author:       Casey Sparks
 # Date:         November 08, 2024
 # Description:  Lint all shell scripts files with shellcheck.
-
+---
+name: "Validate shell code"
 on:
   pull_request:
-    branches: ['main']
+    branches: ["main"]
     paths:
-      - '**/*.bash'
-      - '**/*.sh'
+      - "**/*.bash"
+      - "**/*.sh"
 jobs:
   shellcheck:
-    name: 'ruff format --check'
-    runs-on: 'ubuntu-latest'
+    name: "ruff format --check"
+    runs-on: "ubuntu-latest"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683'  # v4.2.2
+      - name: "Checkout"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"  # v4.2.2
         with:
           fetch-depth: 0
 
-      - name: 'Run shellcheck'
-        uses: 'ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38'  # v2.0.0
+      - name: "Run shellcheck"
+        uses: "ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38"  # v2.0.0
         with:
-          severity: 'warning'
-          check_together: 'yes'
-          format: 'tty'
-...
+          severity: "warning"
+          check_together: "yes"
+          format: "tty"

@@ -2,29 +2,29 @@
 # Date:         June 06, 2024
 # Description:  Run yamllint against YAML files in the repository.
 ---
-name: 'Validate YAML files'
+name: "Validate YAML files"
 on:
   pull_request:
-    branches: ['main']
+    branches: ["main"]
     paths:
-      - '**/*.yml'
-      - '**/*.yaml'
+      - "**/*.yml"
+      - "**/*.yaml"
 jobs:
   yamllint:
-    name: 'Yamllint'
-    runs-on: 'ubuntu-latest'
+    name: "Yamllint"
+    runs-on: "ubuntu-latest"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683'  # v4.2.2
+      - name: "Checkout"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"  # v4.2.2
         with:
           fetch-depth: 0
 
-      - name: 'Yamllint'
-        uses: 'karancode/yamllint-github-action@4052d365f09b8d34eb552c363d1141fd60e2aeb2'  # v3.0.0
+      - name: "Yamllint"
+        uses: "karancode/yamllint-github-action@4052d365f09b8d34eb552c363d1141fd60e2aeb2"  # v3.0.0
         with:
-          yamllint_file_or_dir: './'
+          yamllint_file_or_dir: "./"
           yamllint_strict: true
           yamllint_comment: true
-          yamllint_config_filepath: '.github/config/yamllint.yml'
+          yamllint_config_filepath: ".github/config/yamllint.yml"
         env:
-          GITHUB_ACCESS_TOKEN: '${{ github.token }}'
+          GITHUB_ACCESS_TOKEN: "${{ github.token }}"

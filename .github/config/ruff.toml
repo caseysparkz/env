@@ -88,7 +88,6 @@ ignore = [
     "CPY",                                                                      # flake8-copyright
     "D300",                                                                     # triple-single-quotes
     "DJ",                                                                       # django
-    "ERA001",                                                                   # commented-out-code
     "G004",                                                                     # logging-f-string
     "INT",                                                                      # flake8-gettext
     "ISC001",                                                                   # single-line-implicit-string-concat...
