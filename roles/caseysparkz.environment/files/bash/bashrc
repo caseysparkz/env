@@ -79,8 +79,8 @@ if [ -x /usr/bin/gpgconf ]; then                                                
 fi
 
 
-if [ -f "${HOME}/.env/roles/environment/files/bash/vars.sh" ]; then             # Source env vars.
-    source "${HOME}/.env/roles/environment/files/bash/vars.sh"
+if [ -f "${HOME}/.env/roles/caseysparkz.environment/files/bash/vars.sh" ]; then
+    source "${HOME}/.env/roles/caseysparkz.environment/files/bash/vars.sh"
 fi
 
 # shellcheck disable=SC1090
@@ -97,9 +97,6 @@ if [ -x "$(which thefuck)" ]; then                                              
   eval "$(thefuck --alias)"
 fi
 
-#if [ -x "$(which wal)" ]; then                                                  # FIXME
-#  wal -i "$(grep file "${HOME}/.config/nitrogen/bg-saved.cfg" | cut -c 6-99)" -q -b 000000
-#fi
 if [ -f /home/caseysparkz/.cache/wal/sequences ]; then
   cat /home/caseysparkz/.cache/wal/sequences
 fi
