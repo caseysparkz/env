@@ -1,0 +1,11 @@
+---
+- name: "Configure IO scheduler"
+  become: true
+  tags: ["ioscheduler"]
+  ansible.builtin.blockinfile:
+    path: "/etc/modules-load.d/iosched.conf"
+    mode: "0644"
+    block: |
+      bfq
+      mq-deadline
+      kyber-iosched

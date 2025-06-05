@@ -1,0 +1,49 @@
+---
+- name: "Symlink ~/.bash directory"
+  tags: ["bash"]
+  ansible.builtin.file:
+    src: "bash/" # TODO
+    dest: "{{ ansible_env.HOME }}/.bash"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    state: "link"
+    force: true
+
+- name: "Symlink ~/.profile"
+  tags: ["bash"]
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/.bash/profile"
+    dest: "{{ ansible_env.HOME }}/.profile"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    state: "link"
+    force: true
+
+- name: "Symlink ~/.bashrc"
+  tags: ["bash"]
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/.bash/bashrc"
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    state: "link"
+    force: true
+
+- name: "Symlink ~/.bash_logout"
+  tags: ["bash"]
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/.bash/bash_logout"
+    dest: "{{ ansible_env.HOME }}/.bash_logout"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    state: "link"
+    force: true
+
+- name: "Touch ~/.bashrc.local"
+  tags: ["bash"]
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.bashrc.local"
+    state: "touch"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    mode: "0755"

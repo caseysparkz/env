@@ -1,0 +1,8 @@
+---
+- name: "Run roles: caseysparkz.*.all"
+  ignore_errors: false
+  hosts: "localhost"
+  roles:
+    - "caseysparkz.security.all"
+    - "caseysparkz.performance.all"
+    - "caseysparkz.environment.all"

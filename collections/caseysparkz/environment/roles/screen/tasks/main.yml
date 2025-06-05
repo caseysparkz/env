@@ -1,0 +1,26 @@
+---
+- name: "Install Gnu Screen"
+  become: true
+  when: "ansible_os_family == 'Debian'"
+  tags: ["screen"]
+  ansible.builtin.apt:
+    pkg: "screen"
+    state: "present"
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: "Install ~/.screen/"
+  tags: ["screen"]
+  ansible.builtin.file:
+    src: "screen/"
+    dest: "{{ ansible_env.HOME }}/.screen"
+    state: "link"
+    force: true
+
+- name: "Install ~/.screenrc"
+  tags: ["screen"]
+  ansible.builtin.file:
+    src: "${{ ansible_env.HOME }}/.screen/screenrc"
+    dest: "{{ ansible_env.HOME }}/.screenrc"
+    state: "link"
+    force: true

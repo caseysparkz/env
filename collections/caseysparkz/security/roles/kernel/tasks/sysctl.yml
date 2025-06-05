@@ -1,0 +1,11 @@
+---
+- name: "Set sysctl vars"
+  become: true
+  loop: "{{ kernel_sysctlvars }}"
+  ansible.posix.sysctl:
+    ignoreerrors: true
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: "present"
+    sysctl_set: true
+    reload: true

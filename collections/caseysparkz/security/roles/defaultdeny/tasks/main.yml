@@ -1,0 +1,20 @@
+---
+- name: "Install iptables"
+  become: true
+  tags: ["apt"]
+  when: "ansible_os_family == 'Debian'"
+  ansible.builtin.apt:
+    pkg:
+      - "iptables-persistent"
+      - "netfilter-persistent"
+    state: "present"
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: "Drop all"
+  notify: "Restart iptables"
+  become: true
+  ansible.builtin.iptables:
+    action: "append"
+    chain: "INPUT"
+    policy: "DROP"

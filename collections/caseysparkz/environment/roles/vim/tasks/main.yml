@@ -1,0 +1,6 @@
+---
+- name: "Install vim"
+  ansible.builtin.import_tasks: "install.yml"
+
+- name: "Configure vim"
+  ansible.builtin.import_tasks: "configure.yml"

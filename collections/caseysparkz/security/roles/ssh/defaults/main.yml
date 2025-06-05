@@ -1,0 +1,32 @@
+---
+ssh_config:
+  - regexp: "(?i)^\\s*^AllowAgentForwarding" # Turn off agent forwarding
+    line: "AllowAgentForwarding no"
+  - regexp: "(?i)^\\s*^AllowGroups" # Limit ssh users to sshusers group
+    line: "AllowGroups sshusers"
+  - regexp: "(?i)^\\s*^ClientAliveCountMax" # Allow zero non-responsive packets before drop
+    line: "ClientAliveCountMax 0"
+  - regexp: "(?i)^\\s*^ClientAliveInterval" # Wait five min before sending null packet
+    line: "ClientAliveInterval 300"
+  - regexp: "(?i)^\\s*^HostbasedAuthentication" # Disable host-based auth
+    line: "HostbasedAuthentication no"
+  - regexp: "(?i)^\\s*^ListenAddress" # Listen on all ifaces
+    line: "ListenAddress 0.0.0.0"
+  - regexp: "(?i)^\\s*^LoginGraceTime" # Set login grace time to three seconds
+    line: "LoginGraceTime 3"
+  - regexp: "(?i)^\\s*^MaxAuthTries" # Max two auth failures per session
+    line: "MaxAuthTries 2"
+  - regexp: "(?i)^\\s*^MaxSessions" # Limit to two active sessions
+    line: "MaxSessions 2"
+  - regexp: "(?i)^\\s*^MaxStartups" # Max two unauthenticated sessions before drop
+    line: "MaxStartups 2"
+  - regexp: "(?i)^\\s*^PasswordAuthentication" # Disable password auth
+    line: "PasswordAuthentication no"
+  - regexp: "(?i)^\\s*^PermitRootLogin" # Disable root login
+    line: "PermitRootLogin no"
+  - regexp: "(?i)^\\s*^Port" # Set SSH port
+    line: "Port 22"
+  - regexp: "(?i)^\\s*^Subsystem" # Set SFTP subsystem
+    line: "Subsystem sftp  internal-sftp -f AUTHPRIV -l INFO"
+  - regexp: "(?i)^\\s*^X11Forwarding" # Disable X11 forwarding
+    line: "X11Forwarding no"

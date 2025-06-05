@@ -1,0 +1,9 @@
+---
+- name: "Disable securetty"
+  ansible.builtin.copy:
+    content: ""
+    dest: "/etc/securetty"
+    owner: "root"
+    group: "root"
+    mode: "0400"
+    force: false

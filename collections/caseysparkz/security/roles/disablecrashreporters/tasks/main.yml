@@ -1,0 +1,6 @@
+---
+- name: "Disable Apport"
+  ansible.builtin.include_tasks: "apport.yml"
+
+- name: "Disable Whoopsie"
+  ansible.builtin.include_tasks: "whoopsie.yml"

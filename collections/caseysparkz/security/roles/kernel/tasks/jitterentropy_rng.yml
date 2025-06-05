@@ -1,0 +1,10 @@
+---
+- name: "Configure jitterentropy RNG"
+  become: true
+  ansible.builtin.blockinfile:
+    block: "jitterentropy_rng"
+    path: "/etc/modules-load.d/jitterentropy_rng.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    create: true

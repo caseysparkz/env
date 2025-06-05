@@ -1,0 +1,17 @@
+---
+- name: "Find su binary"
+  register: "su_path"
+  ansible.builtin.find:
+    patterns: "^su$"
+    paths:
+      - "/bin"
+      - "/usr/bin"
+
+- name: "Disable su"
+  become: true
+  loop: "{{ su_path.files }}"
+  ansible.builtin.file:
+    dest: "{{ item.path }}"
+    owner: "root"
+    group: "root"
+    mode: "0700"

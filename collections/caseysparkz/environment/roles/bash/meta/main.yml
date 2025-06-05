@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  author: "Casey Sparks <ansible@caseysparkz.com> https://www.caseysparkz.com"
+  description: "Sets up my ~/.bash/ directory."
+  license: "GPL-2.0-or-later"
+  min_ansible_version: "2.17.10"
+  galaxy_tags:
+    - "linux"
+    - "bash"
+dependencies: []

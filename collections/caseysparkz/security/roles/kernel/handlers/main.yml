@@ -1,0 +1,18 @@
+---
+- name: "Rebuild kernel"
+  become: true
+  block:
+    - name: "Check bootloader"
+      register: "efi_boot"
+      ansible.builtin.stat:
+        path: "/sys/firmware/efi/efivars"
+
+    - name: "Run grub2-mkconfig"
+      when: "not efi_boot.exists"
+      changed_when: false
+      ansible.builtin.command: "grub2-mkconfig"
+
+- name: "Generate initramfs"
+  become: true
+  changed_when: false
+  ansible.builtin.command: "dracut --force --regenerate-all -v"

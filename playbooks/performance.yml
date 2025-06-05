@@ -1,0 +1,5 @@
+---
+- name: "Run caseysparkz.performance.all"
+  ignore_errors: false
+  hosts: "localhost"
+  roles: ["caseysparkz.performance.all"]

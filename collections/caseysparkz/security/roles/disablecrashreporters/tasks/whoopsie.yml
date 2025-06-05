@@ -1,0 +1,12 @@
+---
+- name: "Disable Whoopsie"
+  become: true
+  tags: ["whoopsie"]
+  ansible.builtin.apt:
+    pkg:
+      - "whoopsie"
+      - "whoopsie-preferences"
+    state: "absent"
+    purge: true
+    autoremove: true
+    autoclean: true

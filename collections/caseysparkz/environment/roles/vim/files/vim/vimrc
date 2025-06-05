@@ -1,0 +1,48 @@
+" Global default config -------------------------------------------------------
+filetype indent on                      " Turn indent, filetype checking.
+syntax on                               " Turn on syntax highlighting.
+
+set title                               " Show the title.
+set colorcolumn=80,121                  " Set vertical columns marking line 80, line 121.
+set encoding=utf-8                      " Set encoding.
+set expandtab                           " Expand tabs to spaces.
+set fileformat=unix                     " Duh.
+set foldenable                          " Enable tab folding
+set foldmethod=indent                   " Set fold for indented lines.
+set hlsearch                            " Highlight search results.
+set incsearch                           " Start highlighting at search.
+set wrap linebreak nolist               " Don't break in the middle of a word.
+set lazyredraw                          " Don't rerender the screen.
+set number                              " Enable line numbers.
+set showmatch                           " Match brackets.
+set tabstop=4                           " The width of a TAB is set to 4.
+set softtabstop=4                       " Sets the number of columns for a TAB.
+set ruler                               " Enable the ruler.
+set shiftwidth=0                        " Indents will match tabstop.
+set shell=bash                          " Set external shell to bash.
+set spellfile=~/.vim/spell.utf-8.add    " Spelling/dictionary (but don't enable spellcheck).
+
+cnoreabbrev nt NERDTree
+cnoreabbrev nT NERDTreeToggle
+
+let g:ale_python_ruff_use_global = 1
+let g:ale_fix_on_save = 1
+let g:ale_linters={
+\   'docker': ['hadolint'],
+\   'javascript': ['eslint'],
+\   'python': ['ruff'],
+\   'shell': ['shellcheck'],
+\   'yaml': ['yamllint --config-data ~/.config/yamllint.yml'],
+\   'markdown': ['mdl'],
+\   }
+
+"let g:ale_fixers={
+"\   '*': [
+"\       'remove_trailing_lines',
+"\       'trim_whitespace',
+"\       ],
+"\   'python': [
+"\       'ruff',
+"\       'ruff_format'
+"\       ],
+"\   }

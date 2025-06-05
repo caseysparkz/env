@@ -1,0 +1,9 @@
+---
+- name: "Set sudo timeout"
+  become: true
+  when: "privilegeescalation_sudotimeout"
+  ansible.builtin.lineinfile:
+    line: "Defaults timestamp_timeout={{ privilegeescalation_sudotimeout }}"
+    path: "/etc/sudoers"
+    state: "present"
+    backup: true

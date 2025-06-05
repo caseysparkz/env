@@ -1,0 +1,7 @@
+---
+exclude_paths:
+  - ".ansible-lint"
+  - ".git*"
+  - "collections/ansible_collections/**"
+  - "collections/caseysparkz/*/roles/*/files/**"
+  - "roles/**"

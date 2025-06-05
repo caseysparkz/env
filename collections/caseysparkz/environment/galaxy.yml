@@ -1,0 +1,16 @@
+---
+namespace: "caseysparkz"
+name: "environment"
+version: "1.0.0"
+readme: "README.md"
+authors: ["Casey Sparks <ansible@caseysparkz.com> https://www.caseysparkz.com"]
+description: "An Ansible collection to set up my preferred user environment."
+license: ["GPL-2.0-or-later"]
+tags: ["linux"]
+dependencies:
+  community.general: ">=10.7.0,<11.0.0"
+repository: &repo "https://github.com/caseysparkz/ansible"
+documentation: "https://github.com/caseysparkz/ansible/blob/main/collections/caseysparkz/environment/README.md"
+homepage: *repo
+issues: "https://github.com/caseysparkz/ansible/issues"
+build_ignore: []

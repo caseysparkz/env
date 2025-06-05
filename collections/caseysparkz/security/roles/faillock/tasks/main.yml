@@ -1,0 +1,9 @@
+---
+- name: "Configure faillock"
+  become: true
+  tags: ["faillock"]
+  loop: "{{ faillock_config }}"
+  ansible.builtin.lineinfile:
+    path: "/etc/security/faillock.conf"
+    regexp: "{{ item.regex }}"
+    line: "{{ item.string }}"

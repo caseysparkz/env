@@ -1,0 +1,14 @@
+---
+- name: "Configure GRUB flags"
+  become: true
+  loop: "{{ kernel_grubflags }}"
+  notify:
+    - "Rebuild kernel"
+    - "Generate initramfs"
+  ansible.builtin.replace:
+    path: "/etc/default/grub"
+    regexp: >
+      ^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.option | regex_escape }}=).)*)(?:[" ]
+      {{ item.option | regex_escape }}=\\S+)?(.*")$
+    replace: "\\1 {{ item.option }}={{ item.value }}\\2"
+    backup: true

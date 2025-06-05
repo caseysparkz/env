@@ -1,0 +1,67 @@
+---
+- name: "Enable unattended upgrades"
+  become: true
+  when: "ansible_distribution == 'Debian'"
+  tags: ["unattendedupgrades"]
+  ansible.builtin.blockinfile:
+    path: "/etc/apt/apt.conf.d/51unattended-upgrades"
+    create: true
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    block: |
+      APT::Periodic::Enable "1";
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::AutocleanInterval "7";
+      APT::Periodic::Unattended-Upgrade "1";
+      Unattended-Upgrade::Origins-Pattern {
+        "o=Debian,a=stable";
+        "o=Debian,a=stable-updates";
+        "origin=Debian,codename=${distro_codename},label=Debian-Security";
+      };
+      Unattended-Upgrade::Package-Blacklist {};
+      Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+      Unattended-Upgrade::InstallOnShutdown "false";
+      Unattended-Upgrade::Mail "root";
+      Unattended-Upgrade::MailOnlyOnError "false";
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+      Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+      Unattended-Upgrade::Automatic-Reboot "false";
+      Unattended-Upgrade::Automatic-Reboot-WithUsers "false";
+
+- name: "Enable unattended upgrades"
+  become: true
+  when: "ansible_distribution == 'Ubuntu'"
+  tags: ["unattendedupgrades"]
+  ansible.builtin.blockinfile:
+    path: "/etc/apt/apt.conf.d/51unattended-upgrades"
+    create: true
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    block: |
+      Unattended-Upgrade::Allowed-Origins {
+        "${distro_id}:${distro_codename}";
+        "${distro_id}:${distro_codename}-security";
+        "${distro_id}ESMApps:${distro_codename}-apps-security";
+        "${distro_id}ESM:${distro_codename}-infra-security";
+      };
+      Unattended-Upgrade::Package-Blacklist {};
+      Unattended-Upgrade::DevRelease "auto";
+      Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+      Unattended-Upgrade::MinimalSteps "true";
+      Unattended-Upgrade::InstallOnShutdown "false";
+      Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+      Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+      Unattended-Upgrade::Remove-Unused-Dependencies "false";
+      Unattended-Upgrade::Automatic-Reboot "false";
+      Unattended-Upgrade::Automatic-Reboot-WithUsers "false";
+      Unattended-Upgrade::SyslogEnable "true";
+      Unattended-Upgrade::SyslogFacility "daemon";
+      Unattended-Upgrade::OnlyOnACPower "true";
+      Unattended-Upgrade::Skip-Updates-On-Metered-Connections "true";
+      Unattended-Upgrade::Verbose "false";
+      Unattended-Upgrade::Debug "false";
+      Unattended-Upgrade::Allow-downgrade "false";
+      Unattended-Upgrade::Allow-APT-Mark-Fallback "true";

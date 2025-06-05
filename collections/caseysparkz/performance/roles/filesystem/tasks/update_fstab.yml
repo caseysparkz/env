@@ -1,0 +1,10 @@
+---
+- name: "Update /etc/fstab"
+  become: true
+  tags: ["filesystem"]
+  ansible.builtin.lineinfile:
+    path: "/etc/fstab"
+    regexp: "tmpfs /tmp tmpfs"
+    line: "tmpfs /tmp tmpfs defaults,lazytime,noatime,nodiratime 0 0"
+    state: "present"
+    backup: true

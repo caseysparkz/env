@@ -1,0 +1,6 @@
+---
+- name: "Install git packages"
+  ansible.builtin.import_tasks: "install.yml"
+
+- name: "Configure git"
+  ansible.builtin.import_tasks: "configure.yml"

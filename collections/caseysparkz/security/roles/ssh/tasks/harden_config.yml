@@ -1,0 +1,15 @@
+---
+- name: "Harden SSH configuration"
+  become: true
+  tags: ["ssh"]
+  loop: "{{ ssh_config }}"
+  ansible.builtin.lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: "present"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    create: true
+    validate: "/usr/bin/sshd -t -f %s"

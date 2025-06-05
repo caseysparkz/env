@@ -1,0 +1,5 @@
+---
+- name: "Run caseysparkz.security.all"
+  ignore_errors: false
+  hosts: "localhost"
+  roles: ["caseysparkz.security.all"]

@@ -1,0 +1,17 @@
+---
+- name: "Find pkexec binary"
+  register: "pkexec_path"
+  ansible.builtin.find:
+    patterns: "^pkexec$"
+    paths:
+      - "/bin"
+      - "/usr/bin"
+
+- name: "Disable pkexec"
+  become: true
+  loop: "{{ pkexec_path.files }}"
+  ansible.builtin.file:
+    dest: "{{ item.path }}"
+    owner: "root"
+    group: "root"
+    mode: "0700"

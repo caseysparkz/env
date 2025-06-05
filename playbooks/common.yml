@@ -1,9 +1,0 @@
----
-- name: "[common]"
-  ignore_errors: false
-  hosts: "localhost"
-  roles:
-    - "caseysparkz.security"
-    - "caseysparkz.performance"
-    - "caseysparkz.packages"
-    - "caseysparkz.environment"

@@ -1,0 +1,8 @@
+---
+- name: "Remove short Diffie-Helman curves"
+  changed_when: false
+  notify: "Restart SSHD"
+  ansible.builtin.shell: |
+    set -o pipefail
+    awk '$5 >= 3071' /etc/ssh/moduli | tee /tmp/ssh_moduli
+    mv /tmp/ssh_moduli /etc/ssh/moduli

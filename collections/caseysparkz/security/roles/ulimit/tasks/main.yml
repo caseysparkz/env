@@ -1,0 +1,21 @@
+---
+- name: "Create /etc/security/limits.d"
+  become: true
+  tags: ["ulimit"]
+  ansible.builtin.file:
+    path: "/etc/security/limits.d/"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+    state: "directory"
+
+- name: "Configure ulimits"
+  become: true
+  tags: ["ulimit"]
+  loop: "{{ ulimit_values }}"
+  community.general.pam_limits:
+    dest: "/etc/security/limits.d/hardening.conf"
+    domain: "{{ item.domain }}"
+    limit_type: "{{ item.type }}"
+    limit_item: "{{ item.item }}"
+    value: "{{ value.value }}"

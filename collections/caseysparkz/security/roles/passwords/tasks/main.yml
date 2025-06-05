@@ -1,0 +1,13 @@
+---
+- name: "Get common-passward PAM config"
+  register: "common_password_file"
+  ansible.builtin.stat:
+    path: &file "/etc/pam.d/common-password"
+
+- name: "Harden PAM password requirements"
+  become: true
+  when: "common_password_file.exists"
+  ansible.builtin.lineinfile:
+    dest: *file
+    regexp: "(^.*\\spam_pwquality.so).*$"
+    line: "\\1 retry=3 minlen=10 difok=3 ucredit=-1 dcredit=-1 ocredit=-1 maxrepeat=3 gecoschec"

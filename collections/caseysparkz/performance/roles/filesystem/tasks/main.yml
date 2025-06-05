@@ -1,0 +1,6 @@
+---
+- name: "Update /etc/fstab"
+  ansible.builtin.include_tasks: "update_fstab.yml"
+
+- name: "Enable fstrim.timer"
+  ansible.builtin.include_tasks: "discard_trim_enable.yml"

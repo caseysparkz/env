@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: "Casey Sparks"
+  description: "Runs all environment collection roles."
+  issue_tracker_url: "https://github.com/caseysparkz/ansible/issues"
+  license: "GPL-2.0-or-later"
+  min_ansible_version: "2.17"
+  galaxy_tags: ["linux"]
+dependencies:
+  - "caseysparkz.environment.bash"
+  - "caseysparkz.environment.ca_certificates"
+  - "caseysparkz.environment.dotfiles"
+  - "caseysparkz.environment.filesystem"
+  - "caseysparkz.environment.git"
+  - "caseysparkz.environment.gnupg"
+  - "caseysparkz.environment.packages"
+  - "caseysparkz.environment.screen"
+  - "caseysparkz.environment.scripts"
+  - "caseysparkz.environment.ssh"
+  - "caseysparkz.environment.vim"

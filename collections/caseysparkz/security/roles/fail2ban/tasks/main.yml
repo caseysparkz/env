@@ -1,0 +1,35 @@
+---
+- name: "Install fail2ban"
+  become: true
+  when: "ansible_os_family == 'Debian'"
+  ansible.builtin.apt:
+    name: "fail2ban"
+    state: "present"
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: "Create local jail"
+  become: true
+  ansible.builtin.copy:
+    src: "/etc/fail2ban/jail.conf"
+    dest: &config "/etc/fail2ban/jail.local"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "Enable default jail"
+  become: true
+  ansible.builtin.replace:
+    path: *config
+    after: "[DEFAULT]"
+    regexp: "^backend = .*$"
+    replace: "backend = systemd"
+
+- name: "Enable default jails"
+  become: true
+  notify: "Enable fail2ban"
+  loop: "{{ fail2ban_services }}"
+  ansible.builtin.lineinfile:
+    path: *config
+    insertafter: "[{{ item }}]"
+    line: "enabled = true"

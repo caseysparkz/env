@@ -1,10 +1,8 @@
 ---
 collections:
-  - name: "ansible.posix"
-    version: "1.6.2"
-
-  - name: "community.docker"
-    version: "4.5.2"
-
-  - name: "community.general"
-    version: "9.5.5"
+  - name: "./collections/caseysparkz/environment"
+    version: "1.0.0"
+  - name: "./collections/caseysparkz/performance"
+    version: "1.0.0"
+  - name: "./collections/caseysparkz/security"
+    version: "1.0.0"

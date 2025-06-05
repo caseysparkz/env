@@ -19,8 +19,13 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Check PR name compliance to conventional commits"
-        uses: "amannn/action-semantic-pull-request@0723387faaf9b38adef4775cd42cfd5155ed6017"
+        uses: "amannn/action-semantic-pull-request@0723387faaf9b38adef4775cd42cfd5155ed6017"  # v5.5.3
         with:
+          requireScope: false
+          scopes: ".*"  # Regex patterns auto-wrapped in `^ $`
+          ignoreLabels: "ignore-semantic-pull-request"
+          headerPattern: "^(\\w*)(?:\\(([\\w$.\\-*/ ]*)\\))?: (.*)$"
+          headerPatternCorrespondence: "type, scope, subject"
           types: |
             build
             chore
@@ -32,8 +37,3 @@ jobs:
             refactor
             style
             test
-          requireScope: false
-          scopes: ".*"                                                          # Regex patterns auto-wrapped in `^ $`
-          ignoreLabels: "ignore-semantic-pull-request"
-          headerPattern: "^(\\w*)(?:\\(([\\w$.\\-*/ ]*)\\))?: (.*)$"
-          headerPatternCorrespondence: "type, scope, subject"
