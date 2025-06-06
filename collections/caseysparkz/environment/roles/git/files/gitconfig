@@ -1,5 +1,8 @@
 [user]
-    email = himself@caseyspar.kz
+#   email = casey@taumotors.com
+#   name = tau-caseysparkz
+#   signingKey = 0xF64015B97A016D10
+    email = himself@caseysparkz.com
     name = caseysparkz
     signingKey = 0x2027DEDFECE6A3D5
 [core]
@@ -7,17 +10,18 @@
 [init]
     defaultBranch = main
 [fetch]
-    prune = true
+	prune = true
     pruneTags = true
 [pull]
     default = current
-    rebase = true
+	rebase = true
+    twohead = ort
 [push]
     default = current
 [commit]
     gpgsign = true
 [merge]
-    squash = true
+    tool = kdiff3
 [diff]
     colorMoved = zebra
 [http]
@@ -26,5 +30,23 @@
     postBuffer = 1048576000
 [gc]
     pruneexpire = 14 days
-[advice]
-    addIgnoredFile = false
+[alias]
+    cbranch = branch --show-current
+    cp = cherry-pick
+    diff = difftool
+    fucked = reset HEAD --hard
+    rootdir = rev-parse --show-toplevel
+    largest = ! git rev-list --objects --all                                                                \
+        | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)'                    \
+        | sed -n 's/^blob //p'                                                                              \
+        | sort --numeric-sort --key=2 --reverse                                                             \
+        | cut -c 1-7,41-                                                                                    \
+        | numfmt --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+    plog = log                                                                                              \
+            --graph                                                                                         \
+            --abbrev-commit                                                                                 \
+            --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/usr/bin/gh auth git-credential

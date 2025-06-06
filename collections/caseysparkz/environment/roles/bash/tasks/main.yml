@@ -29,6 +29,16 @@
     state: "link"
     force: true
 
+- name: "Symlink ~/.bash_aliases"
+  tags: ["bash"]
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/.bash/bash_aliases"
+    dest: "{{ ansible_env.HOME }}/.bash_aliases"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    state: "link"
+    force: true
+
 - name: "Symlink ~/.bash_logout"
   tags: ["bash"]
   ansible.builtin.file:

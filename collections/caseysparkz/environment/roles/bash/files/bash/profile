@@ -1,14 +1,16 @@
 # If running bash, include .bashrc.
 if [ -n "${BASH_VERSION}" ]; then
-    if [ -f "${HOME}/.bashrc" ]; then . "${HOME}/.bashrc"; fi
+    if [ -f "${HOME}/.bashrc" ];
+        then . "${HOME}/.bashrc"
+    fi
 fi
 
 PATH_DIRS=(
-    "/usr/local/bin"
     "${HOME}/.local/bin"
+    "${HOME}/.local/lib/scripts/gsh"
     "${HOME}/.local/lib/scripts/python"
     "${HOME}/.local/lib/scripts/sh"
-    "${HOME}/.local/lib/scripts/gsh"
+    "/usr/local/bin"
 )
 
 for DIR in ${PATH_DIRS[@]}; do

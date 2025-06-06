@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 #-*- coding:utf-8 -*-
-cdc() {                                                                         # Change dir, clear terminal.
-  cd ${1} || exit
+cdc() {  # Change dir, clear terminal.
+  cd "${1}" || exit
   clear
 }
 
-cdl() {                                                                         # Change dir, clear terminal, display dir contents.
-  cd ${1} || exit
+cdl() {  # Change dir, clear terminal, display dir contents.
+  cd "${1}" || exit
   clear
   ls -l
 }
 
-mkcd() {                                                                        # Make/enter a dir.
+mkcd() {  # Make/enter a dir.
   mkdir -p "${1}" &&
     cd "${1}" || exit
 }
