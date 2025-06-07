@@ -9,4 +9,7 @@ galaxy_info:
     - "linux"
     - "performance"
     - "ioscheduler"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

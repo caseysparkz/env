@@ -8,22 +8,3 @@
     state: "present"
     update_cache: true
     cache_valid_time: 3600
-
-- name: "Install system packages"
-  become: true
-  when: "ansible_os_family == 'RedHat'"
-  tags: ["dnf"]
-  ansible.builtin.dnf:
-    name: "{{ packages_dnf }}"
-    state: "present"
-    update_cache: true
-
-- name: "Install system packages"
-  become: true
-  when: "ansible_os_family == 'ArchLinux'"
-  tags: ["pacman"]
-  community.general.pacman:
-    name: "{{ packages_pacman }}"
-    state: "present"
-    upgrade: true
-    update_cache: true

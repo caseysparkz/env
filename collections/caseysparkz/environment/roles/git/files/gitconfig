@@ -35,7 +35,6 @@
     cp = cherry-pick
     diff = difftool
     fucked = reset HEAD --hard
-    rootdir = rev-parse --show-toplevel
     largest = ! git rev-list --objects --all                                                                \
         | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)'                    \
         | sed -n 's/^blob //p'                                                                              \
@@ -43,9 +42,10 @@
         | cut -c 1-7,41-                                                                                    \
         | numfmt --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
     plog = log                                                                                              \
-            --graph                                                                                         \
-            --abbrev-commit                                                                                 \
-            --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+        --graph                                                                                             \
+        --abbrev-commit                                                                                     \
+        --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    rootdir = rev-parse --show-toplevel
 [credential "https://github.com"]
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]

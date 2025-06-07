@@ -8,4 +8,7 @@ galaxy_info:
   galaxy_tags:
     - "gnupg"
     - "gpg"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

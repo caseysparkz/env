@@ -9,4 +9,7 @@ galaxy_info:
     - "performance"
     - "linux"
     - "filesystem"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

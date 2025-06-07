@@ -5,6 +5,8 @@ galaxy_info:
   issue_tracker_url: "https://github.com/caseysparkz/ansible/issues"
   license: "GPL-2.0-or-later"
   min_ansible_version: "2.17"
-  galaxy_tags:
-    - "linux"
+  galaxy_tags: ["linux"]
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

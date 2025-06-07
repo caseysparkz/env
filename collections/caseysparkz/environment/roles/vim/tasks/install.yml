@@ -8,22 +8,3 @@
     state: "present"
     update_cache: true
     cache_valid_time: 3600
-
-- name: "Install vim"
-  become: true
-  tags: ["dnf"]
-  when: "ansible_os_distribution == 'RedHat'"
-  ansible.builtin.dnf:
-    name: "vim"
-    state: "present"
-    update_cache: true
-
-- name: "Install vim"
-  become: true
-  tags: ["pacman"]
-  when: "ansible_os_distribution == 'ArchLinux'"
-  community.general.pacman:
-    pkg: "vim"
-    state: "present"
-    update_cache: true
-    upgrade: true

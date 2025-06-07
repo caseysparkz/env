@@ -8,4 +8,7 @@ galaxy_info:
   galaxy_tags:
     - "linux"
     - "pki"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

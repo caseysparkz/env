@@ -8,6 +8,9 @@ galaxy_info:
   galaxy_tags:
     - "linux"
     - "performance"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies:
-  - "caseysparkz.performance.filesystem"
-  - "caseysparkz.performance.ioscheduler"
+  - role: "caseysparkz.performance.filesystem"
+  - role: "caseysparkz.performance.ioscheduler"

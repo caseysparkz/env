@@ -9,4 +9,7 @@ galaxy_info:
     - "auditd"
     - "linux"
     - "security"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

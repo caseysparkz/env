@@ -9,4 +9,7 @@ galaxy_info:
     - "linux"
     - "security"
     - "faillock"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

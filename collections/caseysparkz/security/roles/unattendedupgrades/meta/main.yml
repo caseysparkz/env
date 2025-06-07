@@ -10,4 +10,7 @@ galaxy_info:
     - "security"
     - "apt"
     - "unattendedupgrades"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

@@ -9,4 +9,7 @@ galaxy_info:
     - "linux"
     - "security"
     - "ssh"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []

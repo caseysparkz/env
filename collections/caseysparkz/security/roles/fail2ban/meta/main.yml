@@ -8,4 +8,7 @@ galaxy_info:
   galaxy_tags:
     - "security"
     - "fail2ban"
+  platforms:
+    - name: "Debian"
+      versions: ["bookworm"]
 dependencies: []
