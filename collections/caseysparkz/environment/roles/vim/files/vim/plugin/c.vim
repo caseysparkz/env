@@ -1,5 +1,5 @@
 " C/C++ config ----------------------------------------------------------------
-autocmd BufNewFile *.{c{,pp},h}
+autocmd BufNewFile *.{c,h}{,pp}
     \ set filetype=c
 
 autocmd Filetype c

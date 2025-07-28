@@ -1,7 +1,17 @@
 " Python config ---------------------------------------------------------------
+autocmd BufNewFile test_*.py
+    \ :0r ~/.vim/templates/test_python.template                             |
+    \ :%s/\<YEAR\>/\=strftime("%Y")/                                        |
+    \ :%s/\<DATE\>/\=strftime("%B %d, %Y")/
+
+autocmd BufNewFile pyproject.toml
+    \ :0r ~/.vim/templates/pyproject.toml.template                          |
+    \ :%s/\<DIR\>/\=substitute(getcwd(), '^.*\/', '', '')/g
+
 autocmd BufNewFile *.py
     \ :0r ~/.vim/templates/python.template                                  |
-    \ :4s/\<DATE\>/\=strftime("%B %d, %Y")/
+    \ :%s/\<YEAR\>/\=strftime("%Y")/                                        |
+    \ :%s/\<DATE\>/\=strftime("%B %d, %Y")/
 
 autocmd Filetype python
     \ set autoindent                                                        |

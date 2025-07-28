@@ -1,0 +1,106 @@
+[project]
+name = "DIR"
+authors = [{name = "Casey Sparks", email = "python@caseysparkz.com"}]
+version = "0.0.1"
+description = "{DESCRIPTION}"  # TODO
+requires-python = ">= 3.10"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "GPL-3.0-or-later"
+keywords = []  # TODO
+classifiers = [  # TODO
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+]
+dynamic = [
+    "dependencies",
+    "optional-dependencies",
+]
+
+[project.urls]
+Homepage = "https://github.com/caseysparkz/DIR"
+Repository = "https://github.com/caseysparkz/DIR"
+Issues = "https://github.com/caseysparkz/DIR/issues"
+Documentation = "https://github.com/caseysparkz/DIR/blob/main/README.md"
+
+[project.scripts]
+{NAME} = "{NAME}:{SCRIPT}"  # TODO
+
+[build-system]
+requires-python = ">= 3.10"
+requires = ["setuptools>=64", "setuptools_scm>=7.1"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ccf" = ["__assets__/**"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+#optional-dependencies.dev = {file = ["requirements-dev.txt"]}
+#optional-dependencies.test = {file = ["requirements-test.txt"]}
+
+[tool.ruff]
+indent-width = 4
+line-length = 120
+target-version = "py311"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+preview = true
+pydocstyle.convention = "google"
+fixable = ["ALL"]
+unfixable = []
+select = ["ALL"]
+ignore = [
+    "COM812",   # flake8-commas::missing-trailing-comma
+    "D203",     # pydocstyle::incorrect-blank-line-before-class
+    "D213",     # pydocstyle::multi-line-summary-second-line
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+
+[tool.ruff.lint.per-file-ignores]
+"**/test_*.py" = [
+    "C901",     # mccabe::complex-structure
+    "PLR2004",  # Pylint Refactor::magic-value-comparison
+    "S101",     # flake8-bandit::assert
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10

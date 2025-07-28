@@ -1,80 +1,98 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
+# Copyright (C) YEAR
 # Author:       Casey Sparks
 # Date:         DATE
 # Description:
-'''SCRIPT DOCSTRING'''
+"""SCRIPT DOCSTRING."""
 
 from argparse import ArgumentParser, Namespace
 from logging import FileHandler, Formatter, StreamHandler, getLogger
 from pathlib import Path
 
-LOG = getLogger()                                                               # Root logger instance.
+LOG = getLogger(__name__)
 
 
 def get_arguments() -> Namespace:
-    '''
-    Get cmdline arguments.
-        :return:    argparse.Namespace instance of user arguments.
-        '''
-    parser = ArgumentParser(description=__doc__)                                # Argument parser.
+    """Get cmdline arguments.
 
-    parser.add_argument(                                                        # --logfile
-        '-l', '--logfile',
-        dest='log_file',
+    Raises:
+        FileNotFoundError:
+
+    Returns:
+        argparse.Namespace instance of user arguments.
+    """
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument(  # --logfile
+        "-l",
+        "--logfile",
+        dest="log_file",
         default=None,
         type=Path,
-        help='Absolute path to write the logfile to. Default `None`.',
-        )
-    parser.add_argument(                                                        # --verbose
-        '-v', '--verbose',
-        dest='log_level',
-        action='count',
+        help="Absolute path to write the logfile to. Default `None`.",
+    )
+    parser.add_argument(  # --verbose
+        "-v",
+        "--verbose",
+        dest="log_level",
+        action="count",
         default=0,
-        help='Specify logging verbosity. Default `WARNING`.',
-        )
+        help="Specify logging verbosity. Default `WARNING`.",
+    )
 
-    arguments = parser.parse_args()                                             # Parse arguments.
-    arguments.log_file = arguments.log_file.absolute()                          # Cast log file path to absolute path.
-    arguments.log_level = range(30, -1, -10)[min(arguments.log_level, 3)]       # Set log verbosity.
+    arguments = parser.parse_args()  # Parse arguments.
+    arguments.log_file = arguments.log_file.absolute()  # Cast log file path to absolute path.
+    arguments.log_level = range(30, -1, -10)[min(arguments.log_level, 3)]  # Set log verbosity.
 
-    assert arguments.log_file.parent.exists(), f":--log-file {arguments.log_file=}: parent dir does not exist."
+    if not arguments.log_file.parent.exists():
+        msg = f":--log-file {arguments.log_file}: parent dir does not exist."
+
+        raise FileNotFoundError(msg)
 
     return arguments
 
 
-def configure_log(
-    log_level: int = 30,
-    log_file: (Path, str) = None
-        ) -> None:
-    '''
-    Configure logger and log handles.
-        :param log_level:   User-specified log level. Default WARNING (30).
-        :param log_file:    User-specified path to write log file. Default None.
-        '''
-    assert isinstance(log_level, int), f":param {log_level=}: must be instance of int()"
+def configure_log(log_level: int = 30, log_file: Path | str | None = None) -> None:
+    """Configure logger and log handles.
 
-    handle_stream = StreamHandler()                                             # Log stream handler.
-    formatter = Formatter(
-        '{asctime} {threadName:12} {levelname:8}: {message}',
-        style='{',
-        )
+    Args:
+        log_level:  User-specified log level. Default WARNING (30).
+        log_file:   User-specified path to write log file. Default None.
 
-    handle_stream.setFormatter(formatter)                                       # Set log stream format.
-    LOG.setLevel(log_level)                                                     # Set log level.
-    LOG.addHandler(handle_stream)                                               # Log to screen.
+    Raises:
+        FileNotFoundError:
+        TypeError:
+        ValueError:
+    """
+    if log_level < 0:
+        msg = f":param {log_level=}: must be instance of int() >= 0"
+
+        raise ValueError(msg)
+
+    handle_stream = StreamHandler()  # Log stream handler.
+    formatter = Formatter("{asctime} {threadName:12} {levelname:8}: {message}", style="{")  # Log formatter
+
+    handle_stream.setFormatter(formatter)  # Set log stream format.
+    LOG.setLevel(log_level)  # Set log level.
+    LOG.addHandler(handle_stream)  # Log to screen.
 
     if log_file:
-        assert isinstance(log_file, (str, Path)), f":param {log_file=}: must be str() or pathlib.Path()."
-        assert log_file.parent.exists(), f":param {log_file=}: parent dir does not exist."
+        if not isinstance(log_file, Path | str):
+            msg = f":param {log_file=}: must be str() or pathlib.Path()."
 
-        handle_file = FileHandler(log_file)                                     # Log file handler.
+            raise TypeError(msg)
 
-        handle_file.setFormatter(formatter)                                     # Set log file format.
-        LOG.addHandler(handle_file)                                             # Log to file.
+        if not log_file.parent.exists():
+            msg = f":param {log_file=}: parent dir does not exist."
+
+            raise FileNotFoundError(msg)
+
+        handle_file = FileHandler(Path(log_file))  # Log file handler.
+
+        handle_file.setFormatter(formatter)  # Set log file format.
+        LOG.addHandler(handle_file)  # Log to file.
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_arguments()
 
     configure_log(args.log_level, args.log_file)

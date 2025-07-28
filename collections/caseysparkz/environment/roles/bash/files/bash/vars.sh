@@ -7,7 +7,7 @@ SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 
 # Application defaults
 export BROWSER
-export EDITOR="vim"
+export EDITOR="/usr/bin/vim"
 #export TERM="xterm-256color"
 
 # Misc.

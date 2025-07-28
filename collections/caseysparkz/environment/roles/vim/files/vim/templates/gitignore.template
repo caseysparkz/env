@@ -1,6 +1,8 @@
 # Misc. files.
-**/*.log
 **/*.lock
+**/*.log
+**/*.swo
+**/*.swp
 **/*.tmp
 **/bin
 **/out

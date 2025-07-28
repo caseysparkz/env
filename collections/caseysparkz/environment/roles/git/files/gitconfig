@@ -19,9 +19,11 @@
 [push]
     default = current
 [commit]
-    gpgsign = true
+	gpgsign = true
 [merge]
     tool = kdiff3
+[tag]
+	gpgSign = true
 [diff]
     colorMoved = zebra
 [http]
@@ -35,6 +37,7 @@
     cp = cherry-pick
     diff = difftool
     fucked = reset HEAD --hard
+    root-dir = rev-parse --show-toplevel
     largest = ! git rev-list --objects --all                                                                \
         | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)'                    \
         | sed -n 's/^blob //p'                                                                              \
@@ -45,8 +48,9 @@
         --graph                                                                                             \
         --abbrev-commit                                                                                     \
         --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-    rootdir = rev-parse --show-toplevel
 [credential "https://github.com"]
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = !/usr/bin/gh auth git-credential
+[advice]
+    skippedCherryPicks = false
