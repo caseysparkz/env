@@ -2,7 +2,7 @@
 - name: "Symlink ~/.bash directory"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "bash/" # TODO
+    src: "bash/"  # TODO
     dest: "{{ ansible_env.HOME }}/.bash"
     owner: "{{ ansible_effective_user_id }}"
     group: "{{ ansible_effective_group_id }}"

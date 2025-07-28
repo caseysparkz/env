@@ -3,31 +3,34 @@
 # Date:         June 06, 2024
 # Description:  Yamllint configuration for yamllint.yml workflow.
 
-extends: 'default'
+extends: "default"
+ignore:  # git submodules
+  - "collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/nerdtree/**"
+  - "collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/gnupg/**"
+  - "collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/terraform/**"
+  - "collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/ale/**"
 rules:
   braces:
-    level: 'warning'
+    level: "warning"
     max-spaces-inside: 1
   brackets:
-    level: 'warning'
+    level: "warning"
     max-spaces-inside: 1
   colons:
-    level: 'warning'
+    level: "warning"
   commas:
-    level: 'warning'
-  comments: 'disable'
-  comments-indentation: 'disable'
-  document-start: 'disable'
+    level: "warning"
+  comments-indentation: "disable"
   empty-lines:
-    level: 'warning'
+    level: "warning"
   hyphens:
-    level: 'warning'
+    level: "warning"
   indentation:
-    level: 'warning'
-    indent-sequences: 'consistent'
+    level: "warning"
+    indent-sequences: "consistent"
   line-length:
     max: 120
-    level: 'warning'
+    level: "warning"
     allow-non-breakable-inline-mappings: true
-  truthy: 'disable'
-...
+  truthy:
+    ignore: [".github/workflows/*"]
