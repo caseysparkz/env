@@ -1,0 +1,7 @@
+---
+profile: "production"  # Linting profile
+offline: false  # Force installation of requirements.yml
+exclude_paths:  # Exclude the following paths from linting
+  - ".github/**"  # GitHub actions
+  - "collections/caseysparkz/*/roles/*/files/**"  # Some files are YAML and ansible-lint doesn't discriminate
+  - "collections/ansible_collections/**"  # Installed dependencies
