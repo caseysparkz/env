@@ -7,8 +7,11 @@
     signingKey = 0x2027DEDFECE6A3D5
 [core]
     editor = vim
+    compression = 9
 [init]
     defaultBranch = main
+[branch]
+    sort = -commiterdate
 [fetch]
 	prune = true
     pruneTags = true
@@ -18,20 +21,31 @@
     twohead = ort
 [push]
     default = current
+    autoSetupRemote = true
 [commit]
 	gpgsign = true
+    verbose = true
 [merge]
     tool = kdiff3
+[status]
+    branch = true
+[rerere]
+    enabled = true
+    autoUpdate = true
 [tag]
 	gpgSign = true
+    sort = -version:refname
 [diff]
     colorMoved = zebra
+    algorithm = histogram
 [http]
     postBuffer = 1048576000
 [ssh]
     postBuffer = 1048576000
 [gc]
     pruneexpire = 14 days
+[column]
+    ui = auto
 [alias]
     cbranch = branch --show-current
     cp = cherry-pick
@@ -48,9 +62,16 @@
         --graph                                                                                             \
         --abbrev-commit                                                                                     \
         --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    graph = log --all --graph --decorate --oneline
+    ignore = "!gi() { local IFS=','; curl -sL https://www.toptal.com/developers/gitignore/api/\"$*\"; }; gi"
 [credential "https://github.com"]
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = !/usr/bin/gh auth git-credential
 [advice]
     skippedCherryPicks = false
+[help]
+    autocorrect = prompt
+[maintenance]
+    auto = true
+    strategy = incremental

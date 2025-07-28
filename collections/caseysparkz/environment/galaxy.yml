@@ -1,7 +1,7 @@
 ---
 namespace: "caseysparkz"
 name: "environment"
-version: "1.1.0"
+version: "1.1.1"
 readme: "README.md"
 authors: ["Casey Sparks <ansible@caseysparkz.com> https://www.caseysparkz.com"]
 description: "An Ansible collection to set up my preferred user environment."
