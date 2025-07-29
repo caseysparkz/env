@@ -11,7 +11,7 @@
 [init]
     defaultBranch = main
 [branch]
-    sort = -commiterdate
+    sort = -committerdate
 [fetch]
 	prune = true
     pruneTags = true
@@ -44,8 +44,6 @@
     postBuffer = 1048576000
 [gc]
     pruneexpire = 14 days
-[column]
-    ui = auto
 [alias]
     cbranch = branch --show-current
     cp = cherry-pick
