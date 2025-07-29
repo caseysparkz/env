@@ -49,6 +49,7 @@
 [alias]
     cbranch = branch --show-current
     cp = cherry-pick
+    cmsg = ! echo 'fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest'
     diff = difftool
     fucked = reset HEAD --hard
     root-dir = rev-parse --show-toplevel

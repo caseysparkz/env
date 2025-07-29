@@ -1,7 +1,7 @@
 ---
 collections:
   - name: "./collections/caseysparkz/environment"
-    version: "1.1.2"
+    version: "1.1.3"
   - name: "./collections/caseysparkz/performance"
     version: "1.0.0"
   - name: "./collections/caseysparkz/security"

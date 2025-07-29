@@ -1,5 +1,11 @@
 <!--
-    Author:         Casey Sparks
-    Date:           DATE
-    Description:    x
-    -->
+Author:         Casey Sparks
+Date:           DATE
+Description:    x
+-->
+<!DOCTYPE html>
+<html>
+    <title>{TITLE}</title>
+    <body>
+    </body>
+</html>
