@@ -13,4 +13,4 @@ HOSTNAME="$(cat /etc/hostname)"
         "${HOME}"/Pictures/backgrounds/"${HOSTNAME}".*                  \
         >/dev/null 2>&1 &
 
-command . "${HOME}/.bashrc"
+command exec bash

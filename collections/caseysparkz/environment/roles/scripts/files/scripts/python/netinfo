@@ -1,43 +1,46 @@
 #!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-# Name:         netinfo
+# Copyright (C) 2025
 # Author:       Casey Sparks
 # Date:         February 09, 2022.
 # Description:
-'''Display information about a network interface.'''
+"""Display information about a network interface."""
 
 from argparse import ArgumentParser, Namespace
 from collections.abc import Iterator
 from fcntl import ioctl
-from locale import setlocale, LC_ALL
-from logging import getLogger, Formatter, RootLogger, StreamHandler
-from socket import inet_ntoa, socket, SOCK_DGRAM, AF_INET
+from logging import Formatter, StreamHandler, getLogger
+from pathlib import Path
+from socket import AF_INET, SOCK_DGRAM, inet_ntoa, socket
 from struct import pack
+
 from requests import get
 
-setlocale(LC_ALL, 'en_US.UTF-8')
+LOG = getLogger(__name__)
 
 
 def get_arguments() -> Namespace:
-    '''
-    Get cmdline arguments.
-        :return:    argparse.Namespace instance of user arguments.
-    '''
-    parser = ArgumentParser(description=__doc__)                                # Instantiate argument parser.
+    """Get cmdline arguments.
 
-    parser.add_argument(                                                        # --interface
-        '-i', '--interface',
-        dest='interface',
+    Returns:
+        argparse.Namespace instance of user arguments.
+    """
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument(  # --interface
+        "-i",
+        "--interface",
+        dest="interface",
         type=str,
         help='Specify the network interface (like "eth0").',
-        )
-    parser.add_argument(                                                        # --verbose
-        '--verbose', '-v',
-        dest='log_level',
+    )
+    parser.add_argument(  # --verbose
+        "--verbose",
+        "-v",
+        dest="log_level",
         default=0,
-        action='count',
-        help='Specify logging verbosity. Default `CRITICAL`.',
-        )
+        action="count",
+        help="Specify logging verbosity. Default `CRITICAL`.",
+    )
 
     arguments = parser.parse_args()
     arguments.log_level = range(40, -1, -10)[min(arguments.log_level, 3)]
@@ -45,164 +48,138 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(
-    log_level: int = 30,
-        ) -> RootLogger:
-    '''
-    Enable logging and handle outputs.
-        :param log_level:   User-specified log level. Default WARNING.
-        :return:            Instantiated logger.RootLogger instance.
-    '''
-    assert isinstance(log_level, int), '`log_level` must be instance of int().'
-    assert log_level >= 0, '`log_level` must be >= 0.'
+def enable_log(log_level: int = 30) -> None:
+    """Enable logging and handle outputs.
 
-    formatter = Formatter(                                                      # Log message header format.
-        '{asctime} {threadName:12} {levelname:8}: "{message}"',
-        style='{'
-        )
-    log_root = getLogger()                                                      # Root logger instance.
-    log_console = StreamHandler()                                               # Log to screen.
+    Args:
+        log_level:   User-specified log level. Default WARNING.
+    """
+    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
+    log_console = StreamHandler()  # Log to screen.
 
-    log_console.setFormatter(formatter)                                         # Set log stream format.
-    log_root.addHandler(log_console)                                            # Log to screen.
-    log_root.setLevel(log_level)                                                # User-specified log_level.
-
-    return log_root
+    log_console.setFormatter(formatter)  # Set log stream format.
+    LOG.addHandler(log_console)  # Log to screen.
+    LOG.setLevel(log_level)  # User-specified log_level.
 
 
 def get_wan_interface() -> str:
-    '''
-    Read the default gateway directly from /proc.
-        :return:    The name of the WAN interface.
-    '''
-    gw_iface_name = [
-        route
-        for route
-        in all_routes()
-        if route[1] == '00000000'
-        ][0][0]
+    """Read the default gateway directly from /proc.
 
-    log.debug(f'Gateway interface: {gw_iface_name}')
+    Returns:
+        The name of the WAN interface.
+    """
+    gw_iface_name = next(route for route in all_routes() if route[1] == "00000000")[0]
+
+    LOG.debug("Gateway interface: %s", gw_iface_name)
 
     return gw_iface_name
 
 
 def all_routes() -> Iterator[list]:
-    '''
-    Iterator returning all routes read from '/proc/net/route'.
-        :yield: All system network routes.
-    '''
-    with open('/proc/net/route', 'r', encoding='utf-8') as route_file:
-        for line in route_file.readlines():                                 # Each line is a route.
+    """Iterator returning all routes read from '/proc/net/route'.
+
+    Yields:
+        All system network routes.
+    """
+    with Path("/proc/net/route").open(encoding="utf-8") as route_file:
+        for line in route_file:
             route = line.strip().split()
 
-            log.debug(f'Route: {route}')
+            LOG.debug("Route: %s", route)
 
             yield route
 
 
-def public_ip(
-    stun_server: str = 'https://ipinfo.io/ip',
-        ) -> str:
-    '''
-    Get our public IP address.
-        :return:    The public IP address of the device.
-    '''
+def public_ip(stun_server: str = "https://ipinfo.io/ip") -> str:
+    """Get our public IP address.
+
+    Returns:
+        The public IP address of the device.
+    """
     public_ip_addr = get(stun_server, timeout=2).text
 
-    log.debug(f'Public IP: {public_ip_addr}')
+    LOG.debug("Public IP: %s", public_ip_addr)
 
     return public_ip_addr
 
 
-def hex_to_octet(
-    hex_data: str,
-        ) -> str:
-    '''
-    Convert hexadecimal data to usable octets.
-        :param hex_data:    Hex data to convert to octet notation.
-        :return:            Octal notation of the input hexadecimal notation.
-    '''
-    assert isinstance(hex_data, str), '`hex_data` must be instance if str().'
-    assert 0 <= int('hex_data', 16) <= 4294967295, '`int(hex_data) invalid.'
+def hex_to_octet(hex_data: str) -> str:
+    """Convert hexadecimal data to usable octets.
 
-    log.debug(f'Converting hex data ({hex_data}) to octet.')
+    Args:
+        hex_data:    Hex data to convert to octet notation.
 
-    octet = inet_ntoa(pack('<L', int(hex_data, 16)))
+    Returns:
+        Octal notation of the input hexadecimal notation.
+    """
+    LOG.debug("Converting hex data (%s) to octet.", hex_data)
 
-    log.debug(f'Octet: {octet}')
+    octet = inet_ntoa(pack("<L", int(hex_data, 16)))
+
+    LOG.debug("Octet: %s", octet)
 
     return octet
 
 
-def interface_info(
-    iface: str,
-        ) -> tuple:
-    '''
-    Get the default gateway.
-        :param iface:           The network interface to query.
-        :return:                Tuple of: (str(iface_ip), str(iface_gateway), str(iface_netmask))
-    '''
-    assert isinstance(iface, str), '`iface` must be instance of str().'
+def interface_info(iface: str) -> tuple:
+    """Get the default gateway.
 
-    sock = socket(AF_INET, SOCK_DGRAM)                                      # Open a socket.
-    iface_ip = inet_ntoa(ioctl(                                             # IP address.
-        sock.fileno(),
-        0x8915,
-        pack('256s', bytes(iface[:15], 'utf-8'))
-        )[20:24])
-    iface_gateway = hex_to_octet([                                          # Gateway.
-        route
-        for route
-        in all_routes()
-        if route[0] == iface
-        and route[1] == '00000000'
-        ][0][2])
-    iface_netmask = hex_to_octet([                                          # Netmask.
-        route
-        for route
-        in all_routes()
-        if route[0] == iface                                                # Is spec'd iface.
-        and route[7] != '00000000'                                          # Is not WAN gateway iface.
-        ][0][7])
+    Args:
+        iface:           The network interface to query.
 
-    log.debug(f'Netmask: {iface_netmask}')
-    log.debug(f'Gateway: {iface_gateway}')
-    log.debug(f'IP: {iface_ip}')
+    Returns:
+        Tuple of: (str(iface_ip), str(iface_gateway), str(iface_netmask))
+    """
+    sock = socket(AF_INET, SOCK_DGRAM)  # Open a socket.
+    iface_ip = inet_ntoa(ioctl(sock.fileno(), 0x8915, pack("256s", bytes(iface[:15], "utf-8")))[20:24])
+    iface_gateway = hex_to_octet(
+        next(route for route in all_routes() if route[0] == iface and route[1] == "00000000")[2]
+    )
+    iface_netmask = hex_to_octet(
+        next(
+            route
+            for route in all_routes()
+            if route[0] == iface  # Is spec'd iface
+            and route[7] != "00000000"  # Is not WAN gateway iface
+        )[7]
+    )
+
+    LOG.debug("Netmask: %s", iface_netmask)
+    LOG.debug("Gateway: %s", iface_gateway)
+    LOG.debug("IP: %s", iface_ip)
 
     return iface_ip, iface_gateway, iface_netmask
 
 
-def print_table(
-    iface: str,
-        ) -> None:
-    '''
-    Create and print a table.
-        :param iface: The network interface to tabulate.
-    '''
-    assert isinstance(iface, str), '`iface` must be instance of str().'
+def print_table(iface: str) -> None:
+    """Create and print a table.
 
-    head_foot = 34 * '-'                                                    # For table formatting.
-    ip_address, gateway, netmask = interface_info(iface)                    # Important data.
-    table = [                                                               # Instantiate network info array.
-        [head_foot, ''],
-        [iface, ''],
-        [head_foot, ''],
-        ['Interface', iface],
-        ['Public IP', public_ip()],
-        ['Local IP', ip_address],
-        ['Gateway', gateway],
-        ['Netmask', netmask],
-        [head_foot, '']
-        ]
+    Args:
+        iface: The network interface to tabulate.
+    """
+    head_foot = 34 * "-"  # For table formatting
+    ip_address, gateway, netmask = interface_info(iface)
+    table = [
+        [head_foot, ""],
+        [iface, ""],
+        [head_foot, ""],
+        ["Interface", iface],
+        ["Public IP", public_ip()],
+        ["Local IP", ip_address],
+        ["Gateway", gateway],
+        ["Netmask", netmask],
+        [head_foot, ""],
+    ]
 
-    for heading, data in table:                                             # Print and format table.
-        print(f'{heading:<18}{data:>16}')
+    for heading, data in table:
+        print(f"{heading:<18}{data:>16}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_arguments()
-    log = enable_log(args.log_level)
+
+    enable_log(args.log_level)
+
     interface = args.interface or get_wan_interface()
 
     print_table(interface)

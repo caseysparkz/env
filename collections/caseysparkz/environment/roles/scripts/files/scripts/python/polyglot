@@ -1,71 +1,73 @@
 #!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-# Name:         polyglot
+# Copyright (C) 2025
 # Author:       Casey Sparks
 # Date:         August 09, 2022
 # Description:
-'''Convert structured data between HTML, INI, JSON, XML, and YAML.'''
+"""Convert structured data between HTML, INI, JSON, XML, and YAML."""
 
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from io import TextIOWrapper
-from json import dumps as json_dumps, load as json_load
-from locale import setlocale, LC_ALL
-from logging import getLogger, Formatter, RootLogger, StreamHandler
+from json import dumps as json_dumps
+from json import load as json_load
+from logging import Formatter, StreamHandler, getLogger
 from pathlib import Path
-from sys import exit as sys_exit, stdout
+from sys import exit as sys_exit
+from sys import stdout
+
 from dict2xml import dict2xml
 from pandas import json_normalize, read_csv
-from toml import dumps as toml_dumps, load as toml_load
+from toml import dumps as toml_dumps
+from toml import load as toml_load
 from xmltodict import parse
-from yaml import safe_load, dump as ydump
+from yaml import dump as ydump
+from yaml import safe_load
 
+LOG = getLogger(__name__)
 
-setlocale(LC_ALL, 'en_US.UTF-8')                                                # Set locale.
-
-SUPPORTED_TYPES = {                                                             # Supported outfile types.
-    'csv',
-    'ini',
-    'json',
-    'toml',
-    'xml',
-    'yml',
-    }
+SUPPORTED_TYPES = {  # Supported outfile types.
+    "csv",
+    "ini",
+    "json",
+    "toml",
+    "xml",
+    "yml",
+}
 
 
 def get_arguments() -> Namespace:
-    '''
-    Get cmdline arguments.
-        :return:    argparse.Namespace instance of user arguments.
-        '''
-    parser = ArgumentParser(description=__doc__)                                # Instantiate argument parser.
+    """Get cmdline arguments.
 
-    parser.add_argument(                                                        # infile
-        'infile',
-        type=Path,
-        help='File to read data from.',
-        )
-    parser.add_argument(                                                        # --output-format
-        '--output-format', '-o',
-        dest='format',
+    Returns:
+        argparse.Namespace instance of user arguments.
+    """
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument("infile", type=Path, help="File to read data from.")
+    parser.add_argument(  # --output-format
+        "--output-format",
+        "-o",
+        dest="format",
         choices=SUPPORTED_TYPES,
-        default='yml',
+        default="yml",
         type=str,
-        help='Data format to output.',
-        )
-    parser.add_argument(                                                        # --write
-        '--write', '-w',
-        dest='write',
-        action='store_true',
-        help='Write file to disk instead of stdout.',
-        )
-    parser.add_argument(                                                        # --verbose
-        '--verbose', '-v',
-        dest='log_level',
+        help="Data format to output.",
+    )
+    parser.add_argument(  # --write
+        "--write",
+        "-w",
+        dest="write",
+        action="store_true",
+        help="Write file to disk instead of stdout.",
+    )
+    parser.add_argument(  # --verbose
+        "--verbose",
+        "-v",
+        dest="log_level",
         default=0,
-        action='count',
-        help='Specify logging verbosity. Default `CRITICAL`.',
-        )
+        action="count",
+        help="Specify logging verbosity. Default `CRITICAL`.",
+    )
 
     arguments = parser.parse_args()
     arguments.log_level = range(40, -1, -10)[min(arguments.log_level, 3)]
@@ -73,160 +75,137 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(log_level: int = 30) -> RootLogger:
-    '''
-    Enable logging and handle outputs.
-        :param log_level:   User-specified log level. Default WARNING.
-        :return:            Instantiated logger.RootLogger instance.
-        '''
-    assert 50 >= log_level >= 0, '`log_level` must be instance of int() >= 0.'
+def enable_log(log_level: int = 30) -> None:
+    """Enable logging and handle outputs.
 
-    formatter = Formatter(                                                      # Log message header format.
-        '{asctime} {threadName:12} {levelname:8}: "{message}"',
-        style='{'
-        )
-    log_root = getLogger()                                                      # Root logger instance.
-    log_console = StreamHandler()                                               # Log to screen.
+    Args:
+        log_level:   User-specified log level. Default WARNING.
+    """
+    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
+    log_console = StreamHandler()
 
-    log_console.setFormatter(formatter)                                         # Set log stream format.
-    log_root.addHandler(log_console)                                            # Log to screen.
-    log_root.setLevel(log_level)                                                # User-specified log_level.
-    log_root.debug(f'Log level set to {log_level}.')
-
-    return log_root
+    log_console.setFormatter(formatter)
+    LOG.addHandler(log_console)
+    LOG.setLevel(log_level)
 
 
 def ingest_data(infile: Path) -> dict:
-    '''
-    Ingests a YAML or JSON object from a file or STDIN.
-        :param infile:  The file to ingest data from. Instance of Path().
-        :return:        Dictionary containing parsed data.
-        '''
-    assert isinstance(infile, Path), '`infile` must be instance of Path().'
+    """Ingests a YAML or JSON object from a file or STDIN.
 
+    Args:
+        infile:  The file to ingest data from. Instance of Path().
+
+    Returns:
+        Dictionary containing parsed data.
+    """
     infile_suffix = infile.suffix.lower()
 
-    with open(infile, 'r', encoding='utf-8') as data:
-        log.debug(f'Reading from {str(infile_suffix).upper()} file: {infile.name}')
+    with Path(infile).open(encoding="utf-8") as data:
+        LOG.debug("Reading from %s file: %s", infile_suffix.upper(), infile.name)
 
         match infile_suffix:
-            case '.csv':                                                        # CSV.
-                payload = read_csv(data, skip_blank_lines=True, encoding='utf-8', index_col=False).to_dict()
+            case ".csv":
+                payload = read_csv(data, skip_blank_lines=True, encoding="utf-8", index_col=False).to_dict()
 
-            case '.html' | '.xml':                                              # HTML/XML.
+            case ".html" | ".xml":
                 payload = parse(data.read())
 
-            case '.json':                                                       # JSON.
+            case ".json":
                 payload = json_load(data)
 
-            case '.ini':                                                        # INI.
+            case ".ini":
                 (config := ConfigParser()).read(infile)
-                payload = config._sections
+                payload = config._sections  # noqa: SLF001
 
-            case '.toml':                                                       # TOML
+            case ".toml":
                 payload = toml_load(data)
 
-            case '.yaml' | '.yml':                                              # [DEFAULT] YAML.
+            case ".yaml" | ".yml":
                 payload = safe_load(data)
 
             case _:
-                print('Unsupported filetype. Please check the extension and try again.')
+                print("Unsupported filetype. Please check the extension and try again.")
                 sys_exit(1)
 
-    log.debug(
-        f'Input: {infile}\n',
-        f'Input filetype: {infile.suffix.upper().replace(".", "")}\n',
-        f'Payload: {payload}\n\n'
-        )
+    LOG.debug("Input: %s\nInput filetype: %s\nPayload: %s\n\n", infile, infile.suffix.upper().replace(".", ""), payload)
 
     return payload
 
 
-def output_data(
+def output_data(  # noqa: C901
     payload: dict,
     infile: Path,
-    out_format: str = 'yaml',
-    write: bool = False,
-        ) -> None:
-    '''
-    Formats and outputs a data object as JSON or YAML to a file or STDOUT.
-        :param payload:     The Python dict to format and output.
-        :param infile:      Path of the input file.
-        :param out_format:  Output format of the data. One of ['ini', 'json', 'xml', 'yaml']
-        :param write:       Boolean specifying whether data should be written to a file.
-        '''
-    def _write_out(
-        payload: dict,
-        out_format: str,
-        outfile: TextIOWrapper = stdout,
-            ) -> None:
-        '''
-        Write data to a TextIOWrapper.
-            :param payload:     The Python dict to format and output.
-            :param out_format:  Output format of the data. One of ['ini', 'json', 'xml', 'yaml']
-            :param outfile:     TextIOWrapper to write data to. Either an open filehandle, or stdout.
-            '''
-        assert isinstance(outfile, TextIOWrapper), '`outfile` must be instance of io.TextIOWrapper().'
+    out_format: str = "yaml",
+    write: bool = False,  # noqa: FBT001,FBT002
+) -> None:
+    """Formats and outputs a data object as JSON or YAML to a file or STDOUT.
 
-        log.debug(f'Writing {out_format.upper()} output to {outfile.name}.')
+    Args:
+        payload:     The Python dict to format and output.
+        infile:      Path of the input file.
+        out_format:  Output format of the data. One of ['ini', 'json', 'xml', 'yaml']
+        write:       Boolean specifying whether data should be written to a file.
+    """
+
+    def _write_out(payload: dict, out_format: str, outfile: TextIOWrapper = stdout) -> None:
+        """Write data to a TextIOWrapper.
+
+        Args:
+            payload:     The Python dict to format and output.
+            out_format:  Output format of the data. One of ['ini', 'json', 'xml', 'yaml']
+            outfile:     TextIOWrapper to write data to. Either an open filehandle, or stdout.
+        """
+        LOG.debug("Writing %s output to %s.", out_format.upper(), outfile.name)
 
         match out_format.lower():
-            case 'csv':                                                         # CSV.
-                json_normalize(payload).to_csv(outfile, index=False, encoding='utf-8')
+            case "csv":
+                json_normalize(payload).to_csv(outfile, index=False, encoding="utf-8")
 
-            case 'html' | 'xml':                                                # HTML/XML.
+            case "html" | "xml":
                 outfile.write(dict2xml(payload))
 
-            case 'ini':                                                         # INI.
+            case "ini":
                 config = ConfigParser()
-                config._sections = payload                                      # Write data into class.
+                config._sections = payload  # noqa: SLF001
                 keys_nested = False
 
-                for key in payload.keys():
-                    if iter(key):                                               # Keys are nested.
+                for key in payload:
+                    if iter(key):  # Keys are nested.
                         keys_nested = True
 
                 if keys_nested:
-                    log.critical(
-                        'Warning! INI does not support nested values.\n'
-                        'Values will be flattened to strings.'
-                        )
+                    LOG.critical("Warning! INI does not support nested values.\nValues will be flattened to strings.")
 
-                    if input('Proceed? [Y/n] ').lower().startswith('n'):
-                        log.critical('Exiting.')
+                    if input("Proceed? [Y/n] ").lower().startswith("n"):
+                        LOG.critical("Exiting.")
                         sys_exit(0)
 
                     config.write(outfile)
 
-            case 'json':                                                        # JSON.
+            case "json":
                 outfile.write(json_dumps(payload, indent=2))
 
-            case 'toml':                                                        # TOML.
+            case "toml":
                 outfile.write(toml_dumps(payload))
 
-            case _:                                                             # [DEFAULT] YAML.
+            case _:  # Default to YAML
                 outfile.write(ydump(payload))
 
-    assert isinstance(payload, dict), '`payload` must be instance of dict().'
-    assert isinstance(infile, Path), '`infile` must be instance of Path().'
-    assert isinstance(out_format, str), '`out_format` must be instance of str().'
-    assert isinstance(write, bool), '`write` must be instance of bool().'
-    assert out_format in SUPPORTED_TYPES, f'`out_format must be one of {SUPPORTED_TYPES}'
-
-    if write:                                                                   # Write to file.
-        with open(infile.with_suffix(f'.{out_format}'), 'w', encoding='utf-8') as outfile:
+    if write:
+        with Path(infile.with_suffix(f".{out_format}")).open("w", encoding="utf-8") as outfile:
             _write_out(payload, out_format, outfile)
-    else:                                                                       # Write to stdout.
+    else:
         _write_out(payload, out_format, stdout)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_arguments()
-    log = enable_log(args.log_level)
+
+    enable_log(args.log_level)
 
     output_data(
         payload=ingest_data(args.infile),
         infile=args.infile,
         out_format=args.format,
         write=args.write,
-        )
+    )

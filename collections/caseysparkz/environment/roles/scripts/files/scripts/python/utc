@@ -1,54 +1,57 @@
 #!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-# Name:         utc
+# Copyright (C) 2025
 # Author:       Casey Sparks
 # Date:         January 05, 2024
 # Description:
-'''Print UTC time or convert localtime to UTC.'''
+"""Print UTC time or convert localtime to UTC."""
 
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
+
 from pytz import utc
 
 
 def get_arguments() -> Namespace:
-    '''
-    Get cmdline arguments.
-        :return:    argparse.Namespace instance of user arguments.
-        '''
-    parser = ArgumentParser(description=__doc__)                                # Instantiate argument parser.
+    """Get cmdline arguments.
 
-    parser.add_argument(                                                        # --time
-        '-t', '--time',
+    Returns:
+        argparse.Namespace instance of user arguments.
+    """
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument(  # --time
+        "-t",
+        "--time",
         default=get_local_time(),
         type=str,
-        help='Time to convert to UTC in HH:mm format, like 18:30.',
-        )
+        help="Time to convert to UTC in HH:mm format, like 18:30.",
+    )
 
     return parser.parse_args()
 
 
 def get_local_time() -> str:
-    '''
-    Get local system time.
-        :return:    Formatted time string, like '%H%m'.
-        '''
-    return datetime.now().strftime('%H:%M')
+    """Get local system time.
+
+    Returns:
+        Formatted time string, like '%H%m'.
+    """
+    return datetime.now().strftime("%H:%M")  # noqa: DTZ005
 
 
 def convert_to_utc(input_time: str) -> str:
-    '''
-    Continuously display a text-based clock.
-        :param input_time:  Time string to convert, like HH:mm.
-        :return:            UTC time string, like HH:mm.
-        '''
-    assert isinstance(input_time, str), ':param input_time: must be time string or None.'
-    assert int(input_time.split(':')[0]) < 24 and int(input_time.split(':')[1]) < 60, ':param input_time: invalid time.'
+    """Continuously display a text-based clock.
 
-    return datetime.strptime(input_time, '%H:%M').astimezone(utc).strftime('%H:%M')
+    Args:
+        input_time:  Time string to convert, like HH:mm.
+
+    Returns:
+        UTC time string, like HH:mm.
+    """
+    return datetime.strptime(input_time, "%H:%M").astimezone(utc).strftime("%H:%M")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_arguments()
 
     print(convert_to_utc(args.time))

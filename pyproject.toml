@@ -1,0 +1,119 @@
+[project]
+name = "ccf"
+authors = [{name = "Casey Sparks", email = "ccf@caseysparkz.com"}]
+version = "0.2.1"
+description = "Common controls framework for compliance."
+requires-python = ">= 3.10"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "GPL-3.0-or-later"
+keywords = ["compliance", "policy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Legal Industry",
+    "Intended Audience :: Other Audience",
+    "Natural Language :: English",
+    "Topic :: Security :: Build Tools",
+]
+dynamic = [
+    "dependencies",
+    "optional-dependencies",
+]
+
+[project.urls]
+Homepage = "https://github.com/caseysparkz/common_controls_framework"
+Repository = "https://github.com/caseysparkz/common_controls_framework"
+Issues = "https://github.com/caseysparkz/common_controls_framework/issues"
+Documentation = "https://github.com/caseysparkz/common_controls_framework/blob/main/README.md"
+
+[project.scripts]
+ccf = "ccf:main"
+
+[build-system]
+requires-python = ">= 3.10"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ccf" = ["__assets__/**"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies.api = {file = ["requirements-api.txt"]}
+optional-dependencies.dev = {file = ["requirements-dev.txt"]}
+optional-dependencies.test = {file = ["requirements-test.txt"]}
+
+[tool.pytest.ini_options]
+minversion = "8.3"
+addopts = "--cache-clear --cov-report=term-missing --cov=ccf -vvv"
+testpaths = ["src/ccf/tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+markers = [
+    "constants",
+    "database",
+    "init",
+    "policy",
+    "utils",
+]
+
+[tool.ruff]
+indent-width = 4
+line-length = 120
+target-version = "py311"
+exclude = [
+    ".git",
+    ".git-rewrite",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+preview = true
+pydocstyle.convention = "google"
+fixable = ["ALL"]
+unfixable = []
+select = ["ALL"]
+ignore = [
+    "T20",      # flake8-print
+    "COM812",   # flake8-commas::missing-trailing-comma
+    "D203",     # pydocstyle::incorrect-blank-line-before-class
+    "D213",     # pydocstyle::multi-line-summary-second-line
+    "FIX002",   # flake8-fixme::line-contains-todo
+    "TD002",    # flake8-todos::missing-todo-author
+    "TD003",    # flake8-todos::missing-todo-link
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["ALL"]  # Auto-generated.
+"**/test_?*.py" = [
+    "ANN",      # flake8-annotations
+    "CPY001",   # flake8-copyright::missing-copyright-notice
+    "D",        # pydocstyle
+    "INP001",   # flake8-no-pep420::implicit-namespace-package
+    "PLR2004",  # Pylint Refactor::magic-value-comparison
+    "S101",     # flake8-bandit::assert
+    "SLF001",   # flake8-self::private-member-access
+    "T201",     # flake8-print::print
+]

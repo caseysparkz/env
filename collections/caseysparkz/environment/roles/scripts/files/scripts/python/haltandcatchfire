@@ -1,44 +1,44 @@
 #!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-# Name:         haltandcatchfire
+# Copyright (C) 2025
 # Author:       Casey Sparks
 # Date:         December 14, 2022
 # Description:
-'''Check an endpoint and wipe local user data. Should be cron on sensitive systems.'''
+"""Check an endpoint and wipe local user data. Should be cron on sensitive systems."""
 
 from argparse import ArgumentParser, Namespace
-from locale import setlocale, LC_ALL
-from logging import getLogger, Formatter, RootLogger, StreamHandler
+from logging import Formatter, StreamHandler, getLogger
 from os import getlogin
 from pathlib import Path
 from shutil import rmtree
 from socket import gethostname
+
 from requests import get
 
-
-setlocale(LC_ALL, 'en_US.UTF-8')                                                # Set locale.
+LOG = getLogger(__name__)
 
 
 def get_arguments() -> Namespace:
-    '''
-    Get cmdline arguments.
-        :return:    argparse.Namespace instance of user arguments.
-    '''
-    parser = ArgumentParser(description=__doc__)                                # Instantiate argument parser.
+    """Get cmdline arguments.
 
-    parser.add_argument(                                                        # --debug
-        '--dry-run',
-        dest='debug',
-        action='store_true',
-        help='Run application in debug mode without performing any action.',
-        )
-    parser.add_argument(                                                        # --verbose
-        '--verbose', '-v',
-        dest='log_level',
+    Returns:
+        argparse.Namespace instance of user arguments.
+    """
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument(  # --debug
+        "--dry-run",
+        dest="debug",
+        action="store_true",
+        help="Run application in debug mode without performing any action.",
+    )
+    parser.add_argument(  # --verbose
+        "--verbose",
+        "-v",
+        dest="log_level",
         default=0,
-        action='count',
-        help='Specify logging verbosity. Default `CRITICAL`.',
-        )
+        action="count",
+        help="Specify logging verbosity. Default `CRITICAL`.",
+    )
 
     arguments = parser.parse_args()
     arguments.log_level = range(40, -1, -10)[min(arguments.log_level, 3)]
@@ -46,91 +46,82 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(
-    log_level: int = 30,
-        ) -> RootLogger:
-    '''
-    Enable logging and handle outputs.
-        :param log_level:   User-specified log level. Default WARNING.
-        :return:            Instantiated logger.RootLogger instance.
-    '''
-    assert isinstance(log_level, int), '`log_level` must be instance of int().'
-    assert log_level >= 0, '`log_level` must be >= 0.'
+def enable_log(log_level: int = 30) -> None:
+    """Enable logging and handle outputs.
 
-    formatter = Formatter(                                                      # Log message header format.
-        '{asctime} {threadName:12} {levelname:8}: "{message}"',
-        style='{'
-        )
-    log_root = getLogger()                                                      # Root logger instance.
-    log_console = StreamHandler()                                               # Log to screen.
+    Args:
+        log_level:   User-specified log level. Default WARNING.
+    """
+    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
+    log_console = StreamHandler()  # Log to screen.
 
-    log_console.setFormatter(formatter)                                         # Set log stream format.
-    log_root.addHandler(log_console)                                            # Log to screen.
-    log_root.setLevel(log_level)                                                # User-specified log_level.
-
-    return log_root
+    log_console.setFormatter(formatter)  # Set log stream format.
+    LOG.addHandler(log_console)  # Log to screen.
+    LOG.setLevel(log_level)  # User-specified log_level.
 
 
 def remote_flag() -> bool:
-    '''
-    Checks remote for hostname match and returns true if true.
-        :return:    Boolean for the existence of the remote flag.
-    '''
-    log.info('Checking for remote flag.')
+    """Checks remote for hostname match and returns true if true.
 
-    status_code = get(                                                          # Check if flag exists.
-        f'https://raw.githubusercontent.com/caseysparkz/haltandcatchfire/main/{gethostname()}',
-        timeout=5
-        ).status_code
+    Returns:
+        Boolean for the existence of the remote flag.
+    """
+    LOG.info("Checking for remote flag.")
+
+    status_code = get(  # Check if flag exists
+        f"https://raw.githubusercontent.com/caseysparkz/haltandcatchfire/main/{gethostname()}",
+        timeout=5,
+    ).status_code
 
     match status_code:
         case 200:
             flag = True
 
-            log.info('Flag found.')
+            LOG.info("Flag found.")
 
         case _:
             flag = False
 
-            log.info('Flag not found.')
+            LOG.info("Flag not found.")
 
     return flag
 
 
-def destroy_user_data(
-    debug: bool = True,
-        ) -> None:
-    '''
-    Wipe sensitive user data from disk.
-        :param debug:   Run steps without taking any action.
-    '''
-    assert isinstance(debug, bool), '`debug` must be instance of bool().'
+def destroy_user_data(debug: bool = True) -> None:  # noqa: FBT001,FBT002
+    """Wipe sensitive user data from disk.
 
-    dir_list = [                                                                # List of directories to erase.
-        Path.home(),                                                            # Home directory.
-        Path(f'/var/spool/cron/{getlogin()}')                                   # User cronjobs.
-        ]
+    Args:
+        debug:   Run steps without taking any action.
 
-    log.debug(f'Directory list: {dir_list}')
+    Raises:
+        OSError:    If data cannot be removed.
+    """
+    dir_list = [  # List of directories to erase
+        Path.home(),  # Home directory
+        Path(f"/var/spool/cron/{getlogin()}"),  # User cronjobs
+    ]
+
+    LOG.debug("Directory list: %s", dir_list)
 
     for directory in dir_list:
-        if debug:                                                               # Log removal ONLY.
-            log.debug(f'Debug mode. Not removing {directory}')
+        if debug:  # Log removal ONLY
+            LOG.debug("Debug mode. Not removing %s.", directory)
 
         else:
-            try:                                                                # Remove data.
+            try:  # Remove data
                 rmtree(directory)
-                log.info(f'Removed {directory}.')
+                LOG.info("Removed %s.", directory)
 
             except OSError as exc:
-                log.critical(f'Failed to remove {directory}.')
+                LOG.critical(msg := "Failed to remove %s.", directory)
 
-                raise exc
+                raise OSError(msg) from exc
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_arguments()
-    log = enable_log(args.log_level)
+
+    enable_log(args.log_level)
 
     if any([args.debug, remote_flag()]):
         destroy_user_data(args.debug)

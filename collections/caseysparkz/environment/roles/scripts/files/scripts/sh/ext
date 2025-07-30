@@ -8,41 +8,18 @@
 for FILE in "${@}"; do
     if [ -f "${FILE}" ] ; then
         case "${FILE}" in
-            *.tar|*.tar.xz)
-                tar -xf "${FILE}";;
-
-            *.tbz2|*.tar.bz2)
-                tar -xjf "${FILE}";;
-
-            *.tgz|*.tar.gz)
-                tar -xzf "${FILE}";;
-
-            *.bz2)
-                bunzip2 "${FILE}";;
-
-            *.rar)
-                unrar x "${FILE}";;
-
-            *.gz)
-                gunzip "${FILE}";;
-
-            *.xz)
-                xz -d "${FILE}";;
-
-            *.zip)
-                unzip "${FILE}";;
-
-            *.zst)
-                zstd -d "${FILE}";;
-
-            *.Z)
-                uncompress "${FILE}";;
-
-            *.7z)
-                7z x "${FILE}";;
-
-            *)
-                tar -zcvf "${FILE}".tar.gz "${FILE}";;
+            *.7z)               7z x "${FILE}"                          ;;
+            *.tbz2|*.tar.bz2)   tar -xjf "${FILE}"                      ;;
+            *.tgz|*.tar.gz)     tar -xzf "${FILE}"                      ;;
+            *.Z)                uncompress "${FILE}"                    ;;
+            *.bz2)              bunzip2 "${FILE}"                       ;;
+            *.gz)               gunzip "${FILE}"                        ;;
+            *.rar)              unrar x "${FILE}"                       ;;
+            *.tar|*.tar.xz)     tar -xf "${FILE}"                       ;;
+            *.xz)               xz -d "${FILE}"                         ;;
+            *.zip)              unzip "${FILE}"                         ;;
+            *.zst)              zstd -d "${FILE}"                       ;;
+            *)                  tar -zcvf "${FILE}".tar.gz "${FILE}"    ;;
         esac
     fi
 done
