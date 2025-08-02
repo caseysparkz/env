@@ -1,4 +1,14 @@
 ---
+- name: "Install libpam-pwquality"
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - "libpam-pwquality"
+      - "libpamtest0"
+    state: "present"
+    update_cache: true
+    cache_valid_time: 3600
+
 - name: "Get common-passward PAM config"
   register: "common_password_file"
   ansible.builtin.stat:
@@ -6,8 +16,10 @@
 
 - name: "Harden PAM password requirements"
   become: true
-  when: "common_password_file.exists"
+  if: false  # TODO
+  when: "common_password_file.stat.exists"
   ansible.builtin.lineinfile:
     dest: *file
-    regexp: "(^.*\\spam_pwquality.so).*$"
+    regexp: "(^password\\s+requisite\\s+pam_pwquality.so)\\s+.*$"
     line: "\\1 retry=3 minlen=10 difok=3 ucredit=-1 dcredit=-1 ocredit=-1 maxrepeat=3 gecoschec"
+    # validate: %s

@@ -11,7 +11,7 @@ galaxy_info:
       versions: ["bookworm"]
 dependencies:
   - role: "caseysparkz.security.auditd"
-  - role: "caseysparkz.security.defaultdeny"
+  # role: "caseysparkz.security.defaultdeny"
   - role: "caseysparkz.security.disablecrashreporters"
   - role: "caseysparkz.security.fail2ban"
   - role: "caseysparkz.security.faillock"

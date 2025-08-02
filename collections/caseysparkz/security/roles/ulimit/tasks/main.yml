@@ -18,4 +18,4 @@
     domain: "{{ item.domain }}"
     limit_type: "{{ item.type }}"
     limit_item: "{{ item.item }}"
-    value: "{{ value.value }}"
+    value: "{{ item.value }}"
