@@ -37,7 +37,7 @@ let g:ale_linters={
 \   'yaml': ['yamllint --config-data ~/.config/yamllint.yml'],
 \   }
 let g:ale_fixers={
-\   '*': ['remove_trailing_lines', 'trim_whitespace' ],
 \   'go': ['gofmt'],
 \   'python': ['ruff', 'ruff_format'],
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   }

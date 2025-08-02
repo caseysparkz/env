@@ -9,9 +9,10 @@ mouse_warping none
 for_window [class="^.*"] border pixel 0
 
 ## Misc. keybindings.
-bindsym $mod+Return exec urxvt
+bindsym $mod+Return exec xterm
 bindsym $mod+Escape kill
-bindsym $mod+d exec --no-startup-id dmenu_recency
+#bindsym $mod+d exec --no-startup-id dmenu_run -i  -nb \#000000 -nf \#ddc6f3 -sb \#ddc6f3 -sf \#000000
+bindsym $mod+d exec --no-startup-id ${HOME}/.local/bin/dmenu_recency
 #bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 
 ## Function Keys
@@ -188,23 +189,16 @@ mode "resize" {
 
 # Autostart applications
 ## Background apps
-exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+#exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore
-exec --no-startup-id nm-applet --sm-disable
-exec --no-startup-id volumeicon
 exec --no-startup-id xfce4-power-manager
-exec --no-startup-id start_conky
 exec --no-startup-id xautolock -time 5 -locker 'betterlockscreen --lock' -notify 1
 exec --no-startup-id dunst
-exec xrdb ~/.Xresources
-exec_always --no-startup-id ff-theme-util
-exec_always --no-startup-id fix_xcursor
 
 ## User apps
-exec --no-startup-id slack
-exec --no-startup-id signal-desktop --password-store="gnome-libsecret"
-exec --no-startup-id spotify
-exec --no-startup-id chrome
+#exec --no-startup-id signal-desktop
+#exec --no-startup-id spotify
+#exec --no-startup-id firefox
 
 # Color palette used for the terminal ( ~/.Xresources file )
 # Colors are gathered based on the documentation:
@@ -248,18 +242,18 @@ bar {
 	bindsym button5 nop
 	strip_workspace_numbers yes
 
-#   colors {
-#       background          $background
-#       statusline          $color3
-#       separator           $color1
+    colors {
+        background          $background
+        statusline          $color3
+        separator           $color1
 
-#       #                   border    backgr.       text
-#       focused_workspace   $color3   $foreground   $background
-#       active_workspace    $color1   $background   $color1
-#       inactive_workspace  $color10  $background   $color10
-#       binding_mode        $color5   $background   $color7
-#       urgent_workspace    $color7   $background   $color15
-#   }
+        #                   border    backgr.       text
+        focused_workspace   $color3   $foreground   $background
+        active_workspace    $color1   $background   $color1
+        inactive_workspace  $color10  $background   $color10
+        binding_mode        $color5   $background   $color7
+        urgent_workspace    $color7   $background   $color15
+    }
 }
 
 # Theme colors

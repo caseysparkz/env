@@ -12,7 +12,7 @@
 - name: "Install ~/.screen/"
   tags: ["screen"]
   ansible.builtin.file:
-    src: "screen/"
+    src: "{{ role_path }}/screen/"
     dest: "{{ ansible_env.HOME }}/.screen"
     state: "link"
     force: true

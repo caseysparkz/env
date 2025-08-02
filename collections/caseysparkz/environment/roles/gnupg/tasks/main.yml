@@ -24,7 +24,7 @@
 - name: "Install ~/.gnupg/gpg-agent.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "gpg-agent.conf"
+    src: "{{ role_path }}/gpg-agent.conf"
     dest: "{{ ansible_env.HOME }}/.gnupg/gpg-agent.conf"
     owner: "{{ ansible_effective_user_id }}"
     group: "{{ ansible_effective_group_id }}"
@@ -34,7 +34,7 @@
 - name: "Install ~/.gnupg/gpg.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "gpg.conf"
+    src: "{{ role_path }}/gpg.conf"
     path: "{{ ansible_env.HOME }}/.gnupg/gpg.conf"
     owner: "{{ ansible_effective_user_id }}"
     group: "{{ ansible_effective_group_id }}"
