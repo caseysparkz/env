@@ -7,24 +7,44 @@ on:
   pull_request:
     branches: ["main"]
     paths:
+      - "collections/**/*.yml"
       - "hosts/**/*.yml"
       - "playbooks/**/*.yml"
-      - "roles/**/*.yml"
+    types:
+      - "opened"
+      - "ready_for_review"
+      - "reopened"
+      - "synchronize"
 jobs:
   ansible_lint:
     name: "Ansible Lint"
     runs-on: "ubuntu-latest"
-    default:
-      run:
-        working-directory: "./ansible/"
+    env:
+      ANSIBLE_CACHE_KEY: "ansible-cache"
+      ANSIBLE_CACHE_PATH: "${{ github.workspace }}/ansible/collections/ansible_collections/"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"  # v4.2.2
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
         with:
           fetch-depth: 0
 
-      - name: "Run ansible-lint"
-        uses: "ansible/ansible-lint@44be233dbd6a8a6d8f3c5297c318ed4ed4644c32"  # v24.10.0
+      - name: "Restore Ansible cache"
+        id: "ansible-cache"
+        uses: "actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684" # v4.2.3
         with:
+          key: "${{ env.ANSIBLE_CACHE_KEY }}"
+          path: "${{ env.ANSIBLE_CACHE_PATH }}"
+
+      - name: "Run ansible-lint"
+        uses: "ansible/ansible-lint@9765b8704b2c3f4ab782815b528e0393662e1c04" # v25.7.0
+        with:
+          args: ""
+          working_directory: "${{ github.workspace }}/ansible/"
+          requirements_file: "requirements.yml"
           setup_python: true
-          working_directory: "."
+
+      - name: "Save Ansible cache"
+        uses: "actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684" # v4.2.3
+        with:
+          key: "${{ steps.ansible-cache.outputs.cache-primary-key }}"
+          path: "${{ env.ANSIBLE_CACHE_PATH }}"
