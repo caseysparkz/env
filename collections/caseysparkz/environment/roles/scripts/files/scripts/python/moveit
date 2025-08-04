@@ -11,8 +11,7 @@ from time import sleep
 from pyautogui import moveTo, size
 
 if not input("Press <ENTER> to start.\nPress any other key to abort. "):
-    x_center = size().width / 2  # Horizontal screen center
-    y_center = size().height / 2  # Vertical screen center
+    screen_center = size().width / 2, size().height / 2
 
     print("Move it, move it.")
 
@@ -21,9 +20,9 @@ if not input("Press <ENTER> to start.\nPress any other key to abort. "):
             c = randint(0, 10)  # noqa: S311 - Not using PRNG for cryptography
 
             sleep(3)
-            moveTo(x_center, y_center)  # Center the cursor
+            moveTo(*screen_center)  # Center the cursor
             sleep(3)
-            moveTo(x_center + c, y_center + c)  # Move by random vector (0px to 10px)
+            moveTo(*(x + c for x in screen_center))  # Move cursor by random vector (0px to 10px)
 
         except KeyboardInterrupt:
             break

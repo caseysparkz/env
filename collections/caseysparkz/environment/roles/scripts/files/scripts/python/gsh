@@ -16,13 +16,10 @@ To optionally encrypt the resultant script to yourself automatically:
 
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
-from logging import Formatter, StreamHandler, getLogger
 from pathlib import Path
 
 from gnupg import GPG
-from psutil import AccessDenied, ZombieProcess, process_iter
-
-LOG = getLogger(__name__)
+from psutil import process_iter
 
 
 def get_arguments() -> Namespace:
@@ -31,7 +28,7 @@ def get_arguments() -> Namespace:
     Returns:
         argparse.Namespace instance of user arguments.
     """
-    parser = ArgumentParser(description=__doc__)  # Instantiate parser.
+    parser = ArgumentParser(description=__doc__)
 
     parser.add_argument("file", type=Path, nargs="+", help="Specify files to encrypt.")
     parser.add_argument(  # --recipients
@@ -57,20 +54,6 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(log_level: int = 30) -> None:
-    """Enable logging and handle outputs.
-
-    Args:
-        log_level:   User-specified log level. Default NOTSET.
-    """
-    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
-    log_console = StreamHandler()  # Log to screen.
-
-    log_console.setFormatter(formatter)  # Set log stream format.
-    LOG.addHandler(log_console)  # Log to screen.
-    LOG.setLevel(log_level)  # User-specified log_level.
-
-
 def prechecks_pass(arguments: Namespace) -> bool:
     """Check that inputs and processes are as expected.
 
@@ -80,16 +63,10 @@ def prechecks_pass(arguments: Namespace) -> bool:
     Returns:
         Boolean indicating if prechecks have passed.
     """
-    for gpg_proc in ("gpg-agent", "gpgconf"):  # Check that a GPG agent is running.
+    for gpg_proc in ("gpg-agent", "gpgconf"):  # Check that a GPG agent is running
         for proc in process_iter():
-            try:
-                if gpg_proc in proc.name():
-                    LOG.debug("Found process %s.", gpg_proc)
-                    break  # Only process needs to be found
-
-            except (AccessDenied, ZombieProcess) as err:
-                LOG.exception("%s not running on host.", gpg_proc)
-                raise err  # noqa: TRY201
+            if gpg_proc in proc.name():
+                break  # Only one process needs to be found
 
         else:
             continue
@@ -97,14 +74,7 @@ def prechecks_pass(arguments: Namespace) -> bool:
         break
 
     for file in arguments.file:  # Check that the input files exist.
-        try:
-            file.resolve(strict=True)
-            LOG.debug("Found file %s", file)
-
-        except FileNotFoundError as file_err:
-            LOG.exception("File %s not found", file)
-
-            raise file_err  # noqa: TRY201
+        file.resolve(strict=True)
 
     return True
 
@@ -122,22 +92,14 @@ def encrypt(file: Path, recipients: list) -> Path:
     gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)
     outfile = file.with_suffix("")
 
-    LOG.debug("Encrypting file %s to %s.", file.name, outfile.name)
-
-    try:
-        with Path(file).open("rb") as infile:
-            gpg.encrypt_file(
-                infile,
-                recipients=recipients,
-                armor=True,  # Output as ASCII text
-                always_trust=True,
-                output=outfile,
-            )
-
-    except BaseException as err:
-        LOG.exception("Unhandled exception occured.\nEncryption failed for %s.", file)
-
-        raise err  # noqa: TRY201
+    with Path(file).open("rb") as infile:
+        gpg.encrypt_file(
+            infile,
+            recipients=recipients,
+            armor=True,  # Output as ASCII text
+            always_trust=True,
+            output=outfile,
+        )
 
     return outfile
 
@@ -150,7 +112,6 @@ def munge_cipherfile(cipherfile: Path) -> None:
     """
     newlines = [  # GSHscript cleartext header
         "#!/usr/bin/env bash\n",
-        "# -*- coding:utf-8 -*-\n",
         "# Author:       Casey Sparks\n",
         f"# Date:         {datetime.now().strftime('%B %d, %Y')}\n",  # noqa: DTZ005
         "\n",
@@ -158,20 +119,19 @@ def munge_cipherfile(cipherfile: Path) -> None:
         "\n",
     ]
 
-    with Path(cipherfile).open(encoding="utf-8") as prefile:
-        newlines.extend(prefile.readlines())  # Ciphertext
-        newlines.extend("\nEOF\n")  # Heredoc delimiter
+    with Path(cipherfile).open("r", encoding="utf-8") as file:  # Read ciphertext to newlines
+        newlines.extend(file.readlines())
 
-    with Path(cipherfile).open("w", encoding="utf-8") as postfile:
-        postfile.writelines(newlines)  # Write header/ciphertext/footer
+    newlines.extend("\nEOF\n")  # Add heredoc delimiter
+
+    with Path(cipherfile).open("w", encoding="utf-8") as file:  # Write newlines to ciphertext
+        file.writelines(newlines)
 
     cipherfile.chmod(0o755)  # Make cipherfile executable
 
 
 if __name__ == "__main__":
     args = get_arguments()
-
-    enable_log(args.log_level)
 
     if prechecks_pass(args):
         for clearfile in args.file:

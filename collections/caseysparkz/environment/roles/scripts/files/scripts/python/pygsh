@@ -15,13 +15,10 @@ To encrypt the resultant script to yourself:
 """
 
 from argparse import ArgumentParser, Namespace
-from logging import Formatter, StreamHandler, getLogger
 from pathlib import Path
 
 from gnupg import GPG
 from psutil import AccessDenied, NoSuchProcess, process_iter
-
-LOG = getLogger(__name__)
 
 
 def get_arguments() -> Namespace:
@@ -30,7 +27,7 @@ def get_arguments() -> Namespace:
     Returns:
         argparse.Namespace instance of user arguments.
     """
-    parser = ArgumentParser(description=__doc__)  # Instantiate parser.
+    parser = ArgumentParser(description=__doc__)
 
     parser.add_argument("file", type=Path, nargs="+", help="Specify files to encrypt.")
     parser.add_argument(  # --recipients
@@ -56,20 +53,6 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(log_level: int = 30) -> None:
-    """Enable logging and handle outputs.
-
-    Args:
-        log_level:   User-specified log level. Default WARNING.
-    """
-    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
-    log_console = StreamHandler()
-
-    log_console.setFormatter(formatter)
-    LOG.addHandler(log_console)
-    LOG.setLevel(log_level)
-
-
 def prechecks_pass(arguments: Namespace) -> bool:
     """Check that inputs and processes are as expected.
 
@@ -79,25 +62,20 @@ def prechecks_pass(arguments: Namespace) -> bool:
     Returns:
         Boolean indicating success.
     """
-    for gpg_proc in ("gpg-agent", "gpgconf"):  # Check that a GPG agent is running
+    for gpg_proc in ("gpg-agent", "gpgconf"):  # Check GPG agent is running
         for proc in process_iter():
             try:
                 if gpg_proc in proc.name():
-                    LOG.debug("Found process %s.", gpg_proc)
+                    break
 
             except (NoSuchProcess, AccessDenied):
-                LOG.exception("%s not running on host.", gpg_proc)
-
                 return False
 
-    for file in arguments.file:  # Check that the input files exist.
+    for file in arguments.file:  # Check input files exist
         try:
             file.resolve(strict=True)
-            LOG.debug("Found file %s.", file)
 
         except FileNotFoundError:
-            LOG.exception("File %s not found.", file)
-
             return False
 
     return True
@@ -110,30 +88,29 @@ def encrypt(file: Path, recipients: list) -> Path:
         file:        The path of the file to be encrypted.
         recipients:  The recipient emails of the cipherfile.
 
+    Raises:
+        OSError:    If the file cannot be encrypted.
+
     Returns:
-        Path of the resultant cipherfile.
+                    Path of the resultant cipherfile.
     """
-    gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)  # Instantiate GPG agent class.
-    outfile = file.with_suffix("")  # Strip suffix, if one exists.
+    gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)
+    outfile = file.with_suffix("")
 
     try:
-        LOG.debug("Encrypting file %s to %s.", file.name, outfile.name)
-
         with Path(file).open("rb") as infile:
-            cipherfile = gpg.encrypt_file(
+            gpg.encrypt_file(
                 infile,
                 recipients=recipients,
-                armor=True,  # Output as ASCII text
+                armor=True,  # This will be a script, so output as ASCII text
                 always_trust=True,
                 output=outfile,
             )
 
-    except BaseException as err:
-        LOG.exception("Unhandled exception occured.\nEncryption failed for %s.", file)
+    except OSError as err:
+        msg = f"Unhandled exception occured.\nEncryption failed for {file}."
 
-        raise err  # noqa: TRY201
-
-    LOG.debug("%s encrypted as %s.", file.name, cipherfile)
+        raise OSError(msg) from err
 
     return outfile
 
@@ -144,42 +121,38 @@ def munge_cipherfile(cipherfile: Path) -> None:
     Args:
         cipherfile: The path of the file to be encrypted.
     """
-    with Path(cipherfile).open("r", encoding="utf-8") as prefile:
-        script = [  # GSHscript cleartext doc stub
-            "#!/usr/bin/env python3\n",
-            "# -*- coding:utf-8 -*-\n",
-            "\n",
-            "from subprocess import PIPE, Popen, check_output\n",
-            "from gnupg import GPG\n",
-            "\n",
-            'CIPHERTEXT = """\n',
-        ].extend(prefile.readlines())  # Add ciphertext to script
+    with Path(cipherfile).open("r", encoding="utf-8") as file:
+        script = "\n".join(
+            [
+                "#!/usr/bin/env python3",  # Cleartext header
+                "# -*- coding:utf-8 -*-",
+                "",
+                "from subprocess import PIPE, Popen, check_output",
+                "from gnupg import GPG",
+                "",
+                'CIPHERTEXT = """',
+                *file.readlines(),  # Ciphertext body
+                '"""\n\n\n',  # Cleartext footer
+                "def decrypt_and_pipe(ciphertext):\n"
+                '    gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)',
+                "    cleartext = gpg.decrypt(ciphertext)",
+                "",
+                '    with Popen(("echo", str(cleartext)), stdout=PIPE, stderr=PIPE) as proc:',
+                '        return check_output(("python"), stdin=proc.stdout).decode("utf-8")',
+                "",
+                'if __name__ == "__main__":',
+                "    print(decrypt_and_pipe(CIPHERTEXT))",
+            ]
+        )
 
-    script.extend(
-        [  # Add footer to script
-            '"""\n\n\n',
-            "def decrypt_and_pipe(ciphertext):\n"
-            '    gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)\n',
-            "    cleartext = gpg.decrypt(ciphertext)\n",
-            "\n",
-            '    with Popen(("echo", str(cleartext)), stdout=PIPE, stderr=PIPE) as proc:\n',
-            '        return check_output(("python"), stdin=proc.stdout).decode("utf-8")\n',
-            "\n",
-            'if __name__ == "__main__":\n',
-            "    print(decrypt_and_pipe(CIPHERTEXT))\n",
-        ]
-    )
-
-    with Path(cipherfile).open("w", encoding="utf-8") as postfile:
-        postfile.writelines(script)
+    with Path(cipherfile).open("w", encoding="utf-8") as file:
+        file.write(script)
 
     cipherfile.chmod(0o755)  # Make executable
 
 
 if __name__ == "__main__":
     args = get_arguments()
-
-    enable_log(args.log_level)
 
     if prechecks_pass(args):
         for clearfile in args.file:

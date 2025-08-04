@@ -28,20 +28,20 @@ def get_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def run_regex(expression: str, test_string: (str, None) = None) -> None:
+def run_regex(expression: str, test_string: str | None = None) -> None:
     """Runs a regex expression against a string and prints if match.
 
     Args:
         expression:  The regular expression to test.
         test_string: The string to test the regex against.
     """
-    print(f'String "{test_string}": {search(expression, test_string)}')
+    print(f"String '{test_string}': {search(expression, test_string)}")
 
 
 if __name__ == "__main__":
     args = get_arguments()
 
-    print(header := f'Expression: "{args.expression}"')
+    print(header := f"Expression: '{args.expression}'")
     print("=" * len(header))
 
     for string in args.strings:

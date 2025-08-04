@@ -6,11 +6,10 @@
 
 HOSTNAME="$(cat /etc/hostname)"
 
-"${HOME}/.screenlayout/${HOSTNAME}/${1}"                                \
-        > /dev/null 2>&1                                                \
+"${HOME}/.screenlayout/${HOSTNAME}/${1}" > /dev/null 2>&1               \
     && exec betterlockscreen                                            \
         --update                                                        \
-        "${HOME}"/Pictures/backgrounds/"${HOSTNAME}".*                  \
+        "${HOME}/Pictures/backgrounds/${HOSTNAME}".*                    \
         >/dev/null 2>&1 &
 
 command exec bash

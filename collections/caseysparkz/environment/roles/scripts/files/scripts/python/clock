@@ -20,29 +20,28 @@ def get_arguments() -> Namespace:
     """
     parser = ArgumentParser(description=__doc__)
 
-    parser.add_argument("-12", action="store_true", dest="twelve", help="Set format to 12hr time.")  # -12
+    parser.add_argument("-12", action="store_true", dest="twelve", help="Set format to 12hr time.")
 
     return parser.parse_args()
 
 
-def run_clock(twelve_hour: bool = False) -> None:  # noqa: FBT001,FBT002
+def run_clock(time_string: str = "%H:%M:%S") -> None:
     """Continuously display a text-based clock.
 
     Args:
-        twelve_hour: Boolean indicating if clock should show twelve-hour time.
+        time_string: String to be passed to strftime() to format the clock.
     """
-    time_string = "%I:%M:%S %p" if twelve_hour else "%H:%M:%S"
     div = "=" * len(time_string)
 
     while True:
         try:
-            system("clear")  # noqa: S605,S607 - Clear screen
+            system("/usr/bin/clear")  # noqa: S605
             print(div)
             print(f"{datetime.now().strftime(time_string)}")  # noqa: DTZ005
             print(div)
-            sleep(1)  # Sleep one second.
+            sleep(1)
 
-        except KeyboardInterrupt:  # Exit without stack trace
+        except KeyboardInterrupt:
             print()
             sys_exit(0)
 
@@ -50,4 +49,4 @@ def run_clock(twelve_hour: bool = False) -> None:  # noqa: FBT001,FBT002
 if __name__ == "__main__":
     args = get_arguments()
 
-    run_clock(args.twelve)
+    run_clock("%I:%M:%S %p" if args.twelve else "%H:%M:%S")

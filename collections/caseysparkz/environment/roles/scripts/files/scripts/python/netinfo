@@ -8,14 +8,11 @@
 from argparse import ArgumentParser, Namespace
 from collections.abc import Iterator
 from fcntl import ioctl
-from logging import Formatter, StreamHandler, getLogger
 from pathlib import Path
 from socket import AF_INET, SOCK_DGRAM, inet_ntoa, socket
 from struct import pack
 
 from requests import get
-
-LOG = getLogger(__name__)
 
 
 def get_arguments() -> Namespace:
@@ -48,31 +45,13 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(log_level: int = 30) -> None:
-    """Enable logging and handle outputs.
-
-    Args:
-        log_level:   User-specified log level. Default WARNING.
-    """
-    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
-    log_console = StreamHandler()  # Log to screen.
-
-    log_console.setFormatter(formatter)  # Set log stream format.
-    LOG.addHandler(log_console)  # Log to screen.
-    LOG.setLevel(log_level)  # User-specified log_level.
-
-
 def get_wan_interface() -> str:
     """Read the default gateway directly from /proc.
 
     Returns:
         The name of the WAN interface.
     """
-    gw_iface_name = next(route for route in all_routes() if route[1] == "00000000")[0]
-
-    LOG.debug("Gateway interface: %s", gw_iface_name)
-
-    return gw_iface_name
+    return next(route for route in all_routes() if route[1] == "00000000")[0]
 
 
 def all_routes() -> Iterator[list]:
@@ -83,11 +62,7 @@ def all_routes() -> Iterator[list]:
     """
     with Path("/proc/net/route").open(encoding="utf-8") as route_file:
         for line in route_file:
-            route = line.strip().split()
-
-            LOG.debug("Route: %s", route)
-
-            yield route
+            yield line.strip().split()
 
 
 def public_ip(stun_server: str = "https://ipinfo.io/ip") -> str:
@@ -96,29 +71,7 @@ def public_ip(stun_server: str = "https://ipinfo.io/ip") -> str:
     Returns:
         The public IP address of the device.
     """
-    public_ip_addr = get(stun_server, timeout=2).text
-
-    LOG.debug("Public IP: %s", public_ip_addr)
-
-    return public_ip_addr
-
-
-def hex_to_octet(hex_data: str) -> str:
-    """Convert hexadecimal data to usable octets.
-
-    Args:
-        hex_data:    Hex data to convert to octet notation.
-
-    Returns:
-        Octal notation of the input hexadecimal notation.
-    """
-    LOG.debug("Converting hex data (%s) to octet.", hex_data)
-
-    octet = inet_ntoa(pack("<L", int(hex_data, 16)))
-
-    LOG.debug("Octet: %s", octet)
-
-    return octet
+    return get(stun_server, timeout=2).text
 
 
 def interface_info(iface: str) -> tuple:
@@ -130,6 +83,10 @@ def interface_info(iface: str) -> tuple:
     Returns:
         Tuple of: (str(iface_ip), str(iface_gateway), str(iface_netmask))
     """
+
+    def hex_to_octet(hex_data: str) -> str:
+        return inet_ntoa(pack("<L", int(hex_data, 16)))
+
     sock = socket(AF_INET, SOCK_DGRAM)  # Open a socket.
     iface_ip = inet_ntoa(ioctl(sock.fileno(), 0x8915, pack("256s", bytes(iface[:15], "utf-8")))[20:24])
     iface_gateway = hex_to_octet(
@@ -139,14 +96,9 @@ def interface_info(iface: str) -> tuple:
         next(
             route
             for route in all_routes()
-            if route[0] == iface  # Is spec'd iface
-            and route[7] != "00000000"  # Is not WAN gateway iface
+            if route[0] == iface and route[7] != "00000000"  # Is not WAN gateway iface
         )[7]
     )
-
-    LOG.debug("Netmask: %s", iface_netmask)
-    LOG.debug("Gateway: %s", iface_gateway)
-    LOG.debug("IP: %s", iface_ip)
 
     return iface_ip, iface_gateway, iface_netmask
 
@@ -157,18 +109,18 @@ def print_table(iface: str) -> None:
     Args:
         iface: The network interface to tabulate.
     """
-    head_foot = 34 * "-"  # For table formatting
+    div = 34 * "-"
     ip_address, gateway, netmask = interface_info(iface)
     table = [
-        [head_foot, ""],
+        [div, ""],
         [iface, ""],
-        [head_foot, ""],
+        [div, ""],
         ["Interface", iface],
         ["Public IP", public_ip()],
         ["Local IP", ip_address],
         ["Gateway", gateway],
         ["Netmask", netmask],
-        [head_foot, ""],
+        [div, ""],
     ]
 
     for heading, data in table:
@@ -178,8 +130,4 @@ def print_table(iface: str) -> None:
 if __name__ == "__main__":
     args = get_arguments()
 
-    enable_log(args.log_level)
-
-    interface = args.interface or get_wan_interface()
-
-    print_table(interface)
+    print_table(args.interface or get_wan_interface())

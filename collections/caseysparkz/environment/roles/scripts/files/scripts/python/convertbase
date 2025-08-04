@@ -6,13 +6,7 @@
 """Convert a number to a different base system."""
 
 from argparse import ArgumentParser, Namespace
-from locale import LC_ALL, setlocale
 from string import ascii_letters, digits
-from sys import exit as sys_exit
-
-setlocale(LC_ALL, "en_US.UTF-8")  # Set locale.
-
-DIGITS = digits + ascii_letters
 
 
 def get_arguments() -> Namespace:
@@ -21,50 +15,72 @@ def get_arguments() -> Namespace:
     Returns:
         argparse.Namespace instance of user arguments.
     """
-    parser = ArgumentParser(description=__doc__)  # Instantiate argument parser.
+    parser = ArgumentParser(description=__doc__)
 
     parser.add_argument("integer", type=str, help="The integer to convert.")
-    parser.add_argument("input_base", type=int, default=10, help="The base system of :arg integer:.")
-    parser.add_argument("output_base", type=int, default=2, help="The base system to convert to.")
+    parser.add_argument(  # --output-base
+        "--output-base",
+        "-o",
+        type=int,
+        default=2,
+        dest="output_base",
+        help="The base system to convert to.",
+    )
+    parser.add_argument(  # --input-base
+        "--input-base",
+        "-i",
+        type=int,
+        default=10,
+        dest="input_base",
+        help="The base system of :arg integer:.",
+    )
 
     return parser.parse_args()
 
 
-def convert(integer: (int, str), input_base: int = 10, output_base: int = 2) -> str:
+def convert(integer: int | str, input_base: int = 10, output_base: int = 2) -> str:
     """Convert an integer of an arbitrary base system to a different base system.
 
     Args:
-        integer:     The integer to convert.
-        input_base:  The input base system.
-        output_base: The output base system.
+        integer:        The integer to convert.
+        input_base:     The input base system.
+        output_base:    The output base system.
+
+    Raises:
+        ValueError:     If :arg integer: is invalid.
 
     Returns:
-        The converted integer string.
+                        The converted integer string.
     """
-    try:
-        if (inter_decimal := int(str(integer), input_base)) < 0:
-            sign = -1
-        elif inter_decimal == 0:
-            return DIGITS[0]
-        else:
-            sign = 1
+    chars = digits + ascii_letters
+    digit_stack = []
 
-        inter_decimal *= sign
-        digit_stack = []
+    try:
+        inter_decimal = int(str(integer), input_base)
+
+        if inter_decimal > 0:
+            sign = 1
+        elif inter_decimal < 0:
+            sign = -1
+        else:
+            return 0
+
+        inter_decimal *= sign  # Cast to positive integer
 
         while inter_decimal:
-            digit_stack.append(DIGITS[inter_decimal % output_base])
+            digit_stack.append(chars[inter_decimal % output_base])
 
             inter_decimal //= output_base
 
-        if sign < 0:
+        if sign < 0:  # Account for negative integers
             digit_stack.append("-")
 
         digit_stack.reverse()
 
-    except ValueError:
-        print(f"Invalid input: {integer}")
-        sys_exit(1)
+    except ValueError as exc:
+        msg = f"Invalid input: {integer}"
+
+        raise ValueError(msg) from exc
 
     return "".join(digit_stack)
 

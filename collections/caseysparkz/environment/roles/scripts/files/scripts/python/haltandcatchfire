@@ -6,15 +6,12 @@
 """Check an endpoint and wipe local user data. Should be cron on sensitive systems."""
 
 from argparse import ArgumentParser, Namespace
-from logging import Formatter, StreamHandler, getLogger
 from os import getlogin
 from pathlib import Path
 from shutil import rmtree
 from socket import gethostname
 
 from requests import get
-
-LOG = getLogger(__name__)
 
 
 def get_arguments() -> Namespace:
@@ -25,12 +22,6 @@ def get_arguments() -> Namespace:
     """
     parser = ArgumentParser(description=__doc__)
 
-    parser.add_argument(  # --debug
-        "--dry-run",
-        dest="debug",
-        action="store_true",
-        help="Run application in debug mode without performing any action.",
-    )
     parser.add_argument(  # --verbose
         "--verbose",
         "-v",
@@ -46,48 +37,26 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(log_level: int = 30) -> None:
-    """Enable logging and handle outputs.
-
-    Args:
-        log_level:   User-specified log level. Default WARNING.
-    """
-    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
-    log_console = StreamHandler()  # Log to screen.
-
-    log_console.setFormatter(formatter)  # Set log stream format.
-    LOG.addHandler(log_console)  # Log to screen.
-    LOG.setLevel(log_level)  # User-specified log_level.
-
-
 def remote_flag() -> bool:
     """Checks remote for hostname match and returns true if true.
 
     Returns:
         Boolean for the existence of the remote flag.
     """
-    LOG.info("Checking for remote flag.")
-
-    status_code = get(  # Check if flag exists
+    status_code = get(  # Check flag exists
         f"https://raw.githubusercontent.com/caseysparkz/haltandcatchfire/main/{gethostname()}",
         timeout=5,
     ).status_code
 
     match status_code:
         case 200:
-            flag = True
-
-            LOG.info("Flag found.")
+            return True
 
         case _:
-            flag = False
-
-            LOG.info("Flag not found.")
-
-    return flag
+            return False
 
 
-def destroy_user_data(debug: bool = True) -> None:  # noqa: FBT001,FBT002
+def destroy_user_data() -> None:
     """Wipe sensitive user data from disk.
 
     Args:
@@ -97,31 +66,22 @@ def destroy_user_data(debug: bool = True) -> None:  # noqa: FBT001,FBT002
         OSError:    If data cannot be removed.
     """
     dir_list = [  # List of directories to erase
-        Path.home(),  # Home directory
+        Path.home(),
         Path(f"/var/spool/cron/{getlogin()}"),  # User cronjobs
     ]
 
-    LOG.debug("Directory list: %s", dir_list)
-
     for directory in dir_list:
-        if debug:  # Log removal ONLY
-            LOG.debug("Debug mode. Not removing %s.", directory)
+        try:
+            rmtree(directory)
 
-        else:
-            try:  # Remove data
-                rmtree(directory)
-                LOG.info("Removed %s.", directory)
+        except OSError as exc:
+            msg = "Failed to remove %s.", directory
 
-            except OSError as exc:
-                LOG.critical(msg := "Failed to remove %s.", directory)
-
-                raise OSError(msg) from exc
+            raise OSError(msg) from exc
 
 
 if __name__ == "__main__":
     args = get_arguments()
 
-    enable_log(args.log_level)
-
-    if any([args.debug, remote_flag()]):
-        destroy_user_data(args.debug)
+    if remote_flag():
+        destroy_user_data()

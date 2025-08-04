@@ -10,7 +10,6 @@ from configparser import ConfigParser
 from io import TextIOWrapper
 from json import dumps as json_dumps
 from json import load as json_load
-from logging import Formatter, StreamHandler, getLogger
 from pathlib import Path
 from sys import exit as sys_exit
 from sys import stdout
@@ -22,8 +21,6 @@ from toml import load as toml_load
 from xmltodict import parse
 from yaml import dump as ydump
 from yaml import safe_load
-
-LOG = getLogger(__name__)
 
 SUPPORTED_TYPES = {  # Supported outfile types.
     "csv",
@@ -75,20 +72,6 @@ def get_arguments() -> Namespace:
     return arguments
 
 
-def enable_log(log_level: int = 30) -> None:
-    """Enable logging and handle outputs.
-
-    Args:
-        log_level:   User-specified log level. Default WARNING.
-    """
-    formatter = Formatter('{asctime} {threadName:12} {levelname:8}: "{message}"', style="{")
-    log_console = StreamHandler()
-
-    log_console.setFormatter(formatter)
-    LOG.addHandler(log_console)
-    LOG.setLevel(log_level)
-
-
 def ingest_data(infile: Path) -> dict:
     """Ingests a YAML or JSON object from a file or STDIN.
 
@@ -101,8 +84,6 @@ def ingest_data(infile: Path) -> dict:
     infile_suffix = infile.suffix.lower()
 
     with Path(infile).open(encoding="utf-8") as data:
-        LOG.debug("Reading from %s file: %s", infile_suffix.upper(), infile.name)
-
         match infile_suffix:
             case ".csv":
                 payload = read_csv(data, skip_blank_lines=True, encoding="utf-8", index_col=False).to_dict()
@@ -127,8 +108,6 @@ def ingest_data(infile: Path) -> dict:
                 print("Unsupported filetype. Please check the extension and try again.")
                 sys_exit(1)
 
-    LOG.debug("Input: %s\nInput filetype: %s\nPayload: %s\n\n", infile, infile.suffix.upper().replace(".", ""), payload)
-
     return payload
 
 
@@ -148,15 +127,6 @@ def output_data(  # noqa: C901
     """
 
     def _write_out(payload: dict, out_format: str, outfile: TextIOWrapper = stdout) -> None:
-        """Write data to a TextIOWrapper.
-
-        Args:
-            payload:     The Python dict to format and output.
-            out_format:  Output format of the data. One of ['ini', 'json', 'xml', 'yaml']
-            outfile:     TextIOWrapper to write data to. Either an open filehandle, or stdout.
-        """
-        LOG.debug("Writing %s output to %s.", out_format.upper(), outfile.name)
-
         match out_format.lower():
             case "csv":
                 json_normalize(payload).to_csv(outfile, index=False, encoding="utf-8")
@@ -170,14 +140,11 @@ def output_data(  # noqa: C901
                 keys_nested = False
 
                 for key in payload:
-                    if iter(key):  # Keys are nested.
+                    if iter(key):  # Keys are nested
                         keys_nested = True
 
                 if keys_nested:
-                    LOG.critical("Warning! INI does not support nested values.\nValues will be flattened to strings.")
-
                     if input("Proceed? [Y/n] ").lower().startswith("n"):
-                        LOG.critical("Exiting.")
                         sys_exit(0)
 
                     config.write(outfile)
@@ -200,8 +167,6 @@ def output_data(  # noqa: C901
 
 if __name__ == "__main__":
     args = get_arguments()
-
-    enable_log(args.log_level)
 
     output_data(
         payload=ingest_data(args.infile),
