@@ -1,7 +1,7 @@
 # ~/.screenrc
 startup_message off
 caption always
-shell -$SHELL
+shell -${SHELL}
 defshell -${SHELL}
 shelltitle "$ |${SHELL}"
 defscrollback 3000000
