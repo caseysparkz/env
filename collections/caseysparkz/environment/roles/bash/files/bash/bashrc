@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 #-*- coding:utf-8 -*-
 case $- in  # Do nothing if not interactive.
-    *i*) ;;
-      *) return;;
+    *i*                                                                     )
+        ;;
+    *                                                                       )
+        return;;
 esac
 
 HISTCONTROL=ignoreboth  # Don't save duplicate lines in history.
 HISTSIZE=1000  # Set history length.
 HISTFILESIZE=2000  # Set history file size.
-OS_TYPE="$(uname -s)"
+
+case "$(uname -s)" in
+    "Darwin"                                                                )
+        export BASH_SILENCE_DEPRECATION_WARNING=1;;
+    "Linux"                                                                 )
+        shopt -s globstar;;
+esac
 
 export TERM=xterm-256color
-export OS_TYPE
 
 # Shell options.
 shopt -s histappend  # Append to the history file.
 shopt -s checkwinsize  # Check the window size; update LIN/COL.
-shopt -s globstar
 set -o pipefail
 
 if ! shopt -oq posix; then  # Enable programmable completion features.

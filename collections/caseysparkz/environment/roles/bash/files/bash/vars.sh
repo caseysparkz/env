@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 #-*- coding:utf-8 -*-
 
+case "$(uname -s)" in
+    "Darwin"                                                                )
+        export HOMEBREW_NO_ENV_HINTS=1;;
+    "Linux"                                                                 )
+        export TERM="xterm-256color";;
+esac
+
 BROWSER="$(which google-chrome)"
 GPG_TTY="$(tty)"
 SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
@@ -8,12 +15,10 @@ SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 # Application defaults
 export BROWSER
 export EDITOR="/usr/bin/vim"
-#export TERM="xterm-256color"
 
 # Misc.
 export ALIASES="${HOME}/.bash_aliases"
 export DOCKER_HOST="unix:///var/run/docker.sock"
-export DOMAIN="taumotors.com"
 export GOPATH="${HOME}/.local/share/go"
 export FUNCTIONS="${HOME}/.bash/functions/"
 export GH="git@github.com"
@@ -28,7 +33,7 @@ export ANSIBLE_DUPLICATE_YAML_DICT_KEY=ignore
 #export DOCKER_BUILDKIT=1
 
 ## GAM
-export GOOGLE_CREDENTIALS_PATH="/home/caseysparkz/.local/bin/gam/client_secrets.json"
+export GOOGLE_CREDENTIALS_PATH="${HOME}/.local/bin/gam/client_secrets.json"
 
 ## PGP
 export GPG_TTY

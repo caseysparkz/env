@@ -45,7 +45,6 @@
     cmsg = "! echo 'fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest'"
     cp = "cherry-pick"
     diff = "difftool"
-    fucked = "reset HEAD --hard"
     graph = log                                                                                             \
         --all                                                                                               \
         --graph                                                                                             \
@@ -60,9 +59,9 @@
         | numfmt --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
     root-dir = "rev-parse --show-toplevel"
 [credential "https://github.com"]
-	helper = "!/usr/bin/gh auth git-credential"
+	helper = "!/opt/homebrew/bin/gh auth git-credential"
 [credential "https://gist.github.com"]
-	helper = "!/usr/bin/gh auth git-credential"
+	helper = "!/opt/homebrew/bin/gh auth git-credential"
 [advice]
     skippedCherryPicks = false
 [help]
