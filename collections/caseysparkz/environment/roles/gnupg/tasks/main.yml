@@ -43,7 +43,7 @@
 
 - name: "Find role pubkeys"
   tags: ["gnupg"]
-  register: "pgp_pubkeys"
+  register: "gnupg_pubkeys"
   ansible.builtin.find:
     paths: "{{ role_path }}/files/pubkeys/"
     patterns:
@@ -54,7 +54,7 @@
 
 - name: "Import role pubkeys"
   tags: ["gnupg"]
-  loop: "{{ pgp_pubkeys.files }}"
+  loop: "{{ gnupg_pubkeys.files }}"
   changed_when: false
   ansible.builtin.command:
     cmd: "gpg --import {{ item.path }}"

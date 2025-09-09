@@ -1,7 +1,7 @@
 ---
 namespace: "caseysparkz"
 name: "performance"
-version: "1.0.1"
+version: "1.0.2"
 readme: "README.md"
 authors: ["Casey Sparks <ansible@caseysparkz.com> (https://www.caseysparkz.com)"]
 description: "A collection of performance tweaks for Linux."

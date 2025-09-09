@@ -1,6 +1,6 @@
 ---
 - name: "Find su binary"
-  register: "su_path"
+  register: "privilegeescalation_supath"
   ansible.builtin.find:
     patterns: "^su$"
     paths:
@@ -9,7 +9,7 @@
 
 - name: "Disable su"
   become: true
-  loop: "{{ su_path.files }}"
+  loop: "{{ privilegeescalation_supath.files }}"
   ansible.builtin.file:
     dest: "{{ item.path }}"
     owner: "root"

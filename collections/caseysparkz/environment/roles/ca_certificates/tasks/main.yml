@@ -1,6 +1,6 @@
 ---
 - name: "Find role certificates"
-  register: "ca_certificates"
+  register: "ca_certificates_files"
   ansible.builtin.find:
     paths: "{{ role_path }}/files/"
     file_type: "file"
@@ -8,7 +8,7 @@
 
 - name: "Create CA trust directory"
   become: true
-  when: "ansible_os_family in ['ArchLinux', 'Debian'] and ca_certificates.matched >= 1"
+  when: "ansible_os_family in ['ArchLinux', 'Debian'] and ca_certificates_files.matched >= 1"
   ansible.builtin.file:
     path: "/usr/local/share/ca-certificates/"
     state: "directory"
@@ -18,8 +18,8 @@
 
 - name: "Install CA certificates"
   become: true
-  when: "ansible_os_family in ['ArchLinux', 'Debian'] and ca_certificates.matched >= 1"
-  loop: "{{ ca_certificates.files }}"
+  when: "ansible_os_family in ['ArchLinux', 'Debian'] and ca_certificates_files.matched >= 1"
+  loop: "{{ ca_certificates_files.files }}"
   ansible.builtin.copy:
     src: "{{ item.path }}"
     dest: "/usr/local/share/ca-certificates/{{ item.path | basename }}"
@@ -29,7 +29,7 @@
 
 - name: "Create CA trust directory"
   become: true
-  when: "ansible_os_family == 'RedHat' and ca_certificates.matched >= 1"
+  when: "ansible_os_family == 'RedHat' and ca_certificates_files.matched >= 1"
   ansible.builtin.file:
     path: "/etc/pki/ca-trust/source/anchors/"
     state: "directory"
@@ -39,8 +39,8 @@
 
 - name: "Install CA certificates"
   become: true
-  when: "ansible_os_family == 'RedHat' and ca_certificates.matched >= 1"
-  loop: "{{ ca_certificates.files }}"
+  when: "ansible_os_family == 'RedHat' and ca_certificates_files.matched >= 1"
+  loop: "{{ ca_certificates_files.files }}"
   ansible.builtin.copy:
     src: "{{ item.path }}"
     dest: "/etc/pki/ca-trust/source/anchors/{{ item.path | basename }}"
