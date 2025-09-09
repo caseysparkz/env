@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #-*- coding:utf-8 -*-
+export BASH_SILENCE_DEPRECATION_WARNING=1
 case $- in  # Do nothing if not interactive.
     *i*) ;;
       *) return;;
@@ -13,7 +14,7 @@ HISTFILESIZE=2000  # Set history file size.
 # Shell options.
 shopt -s histappend  # Append to the history file.
 shopt -s checkwinsize  # Check the window size; update LIN/COL.
-shopt -s globstar
+#shopt -s globstar
 set -o pipefail
 
 if ! shopt -oq posix; then  # Enable programmable completion features.
@@ -84,5 +85,3 @@ fi
 if [ -x /usr/bin/gpgconf ]; then gpgconf --launch gpg-agent; fi  # Launch gpg-agent.
 if [ -x "$(which thefuck)" ]; then eval "$(thefuck --alias)"; fi  # Enable thefuck.
 if [ -f "${HOME}/.cache/wal/sequences" ]; then cat "${HOME}/.cache/wal/sequences"; fi  # Enable wal
-
-getsecrets  # Get encrypted env vars.
