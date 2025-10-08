@@ -5,10 +5,13 @@ case $- in  # Do nothing if not interactive.
       *) return;;
 esac
 
-export TERM=xterm-256color
 HISTCONTROL=ignoreboth  # Don't save duplicate lines in history.
 HISTSIZE=1000  # Set history length.
 HISTFILESIZE=2000  # Set history file size.
+OS_TYPE="$(uname -s)"
+
+export TERM=xterm-256color
+export OS_TYPE
 
 # Shell options.
 shopt -s histappend  # Append to the history file.
@@ -84,5 +87,18 @@ fi
 if [ -x /usr/bin/gpgconf ]; then gpgconf --launch gpg-agent; fi  # Launch gpg-agent.
 if [ -x "$(which thefuck)" ]; then eval "$(thefuck --alias)"; fi  # Enable thefuck.
 if [ -f "${HOME}/.cache/wal/sequences" ]; then cat "${HOME}/.cache/wal/sequences"; fi  # Enable wal
+
+PATH_DIRS=(
+    "${HOME}/.local/bin"
+    "${HOME}/.local/lib/scripts/gsh"
+    "${HOME}/.local/lib/scripts/python"
+    "${HOME}/.local/lib/scripts/sh"
+)
+
+for DIR in "${PATH_DIRS[@]}"; do
+    if [ -d "${DIR}" ]; then
+        PATH="${PATH}:${DIR}"
+    fi
+done
 
 getsecrets  # Get encrypted env vars.
