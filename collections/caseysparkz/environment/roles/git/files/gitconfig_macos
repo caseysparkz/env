@@ -10,17 +10,17 @@
 [branch]
     sort = "-committerdate"
 [fetch]
-	prune = true
+    prune = true
     pruneTags = true
 [pull]
     default = "current"
-	rebase = true
+    rebase = true
     twohead = "ort"
 [push]
     default = "current"
     autoSetupRemote = true
 [commit]
-	gpgsign = true
+    gpgsign = true
     verbose = true
 [merge]
     tool = "kdiff3"
@@ -30,7 +30,7 @@
     enabled = true
     autoUpdate = true
 [tag]
-	gpgSign = true
+    gpgSign = true
     sort = "-version:refname"
 [diff]
     colorMoved = "zebra"
