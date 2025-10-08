@@ -58,10 +58,6 @@
         | cut -c 1-7,41-                                                                                    \
         | numfmt --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
     root-dir = "rev-parse --show-toplevel"
-[credential "https://github.com"]
-	helper = "!/opt/homebrew/bin/gh auth git-credential"
-[credential "https://gist.github.com"]
-	helper = "!/opt/homebrew/bin/gh auth git-credential"
 [advice]
     skippedCherryPicks = false
 [help]

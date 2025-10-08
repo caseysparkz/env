@@ -3,4 +3,5 @@
   ansible.builtin.import_tasks: "install.yml"
 
 - name: "Configure git"
+  gather_facts: true
   ansible.builtin.import_tasks: "configure.yml"
