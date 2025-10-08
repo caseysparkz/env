@@ -47,6 +47,7 @@
     diff = "difftool"
     fucked = "reset HEAD --hard"
     graph = log                                                                                             \
+        --all                                                                                               \
         --graph                                                                                             \
         --abbrev-commit                                                                                     \
         --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
