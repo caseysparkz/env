@@ -23,6 +23,7 @@ export TERM=xterm-256color
 # Shell options.
 shopt -s histappend  # Append to the history file.
 shopt -s checkwinsize  # Check the window size; update LIN/COL.
+shopt -s globstar  # Enable fs globbing
 set -o pipefail
 
 if ! shopt -oq posix; then  # Enable programmable completion features.
@@ -99,6 +100,7 @@ PATH_DIRS=(
     "${HOME}/.local/lib/scripts/gsh"
     "${HOME}/.local/lib/scripts/python"
     "${HOME}/.local/lib/scripts/sh"
+    "/opt/homebrew/lib/ruby/gems/3.4.0/bin"
 )
 
 for DIR in "${PATH_DIRS[@]}"; do

@@ -1,17 +1,6 @@
+if [ -f "${HOME}/.bash_profile" ];
+    then . "${HOME}/.bash_profile"
+fi
 if [ -f "${HOME}/.bashrc" ];
     then . "${HOME}/.bashrc"
 fi
-
-PATH_DIRS=(
-    "${HOME}/.local/bin"
-    "${HOME}/.local/lib/scripts/gsh"
-    "${HOME}/.local/lib/scripts/python"
-    "${HOME}/.local/lib/scripts/sh"
-    "/usr/local/bin"
-)
-
-for DIR in "${PATH_DIRS[@]}"; do
-    if [ -d "${DIR}" ]; then
-        PATH="${PATH}:${DIR}"
-    fi
-done

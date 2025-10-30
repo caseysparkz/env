@@ -1,9 +1,12 @@
 case "$(uname -s)" in
     "Darwin"                                                                )
-        alias clip='pbcopy';;
+        alias clip='pbcopy'
+        ;;
     "Linux"                                                                 )
         alias clip='xclip -sel clip'
-        alias open='xdg-open';;
+        alias open='xdg-open'
+        alias sed='gsed'
+        ;;
 esac
 
 alias ......='cd ../../../../..'
@@ -29,7 +32,7 @@ alias l='ls -1'
 alias la='ls -lFha'
 alias ll='ls -lFh'
 alias less='less -R'
-alias pclip='pwd | xclip -sel clip'
+alias pclip='pwd | clip'
 alias q='exit'
 alias rmf='rm -rf'
 alias tf='terraform'
