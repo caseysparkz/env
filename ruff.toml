@@ -1,0 +1,56 @@
+indent-width = 4
+line-length = 120
+target-version = "py311"
+exclude = [
+    ".git",
+    ".git-rewrite",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "site-packages",
+    "venv",
+]
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+exclude = ["collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/**/*.py"]
+
+[lint]
+preview = true
+pydocstyle.convention = "google"
+fixable = ["ALL"]
+unfixable = []
+select = ["ALL"]
+ignore = [
+    "T20",      # flake8-print
+    "COM812",   # flake8-commas::missing-trailing-comma
+    "D203",     # pydocstyle::incorrect-blank-line-before-class
+    "D213",     # pydocstyle::multi-line-summary-second-line
+    "FIX002",   # flake8-fixme::line-contains-todo
+    "TD002",    # flake8-todos::missing-todo-author
+    "TD003",    # flake8-todos::missing-todo-link
+]
+
+[lint.mccabe]
+max-complexity = 10
+
+[lint.per-file-ignores]
+"collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/**" = ["ALL"] # Other people's code
+"**/test_?*.py" = [
+    "ANN",      # flake8-annotations
+    "CPY001",   # flake8-copyright::missing-copyright-notice
+    "D",        # pydocstyle
+    "INP001",   # flake8-no-pep420::implicit-namespace-package
+    "PLR2004",  # Pylint Refactor::magic-value-comparison
+    "S101",     # flake8-bandit::assert
+    "SLF001",   # flake8-self::private-member-access
+    "T201",     # flake8-print::print
+]

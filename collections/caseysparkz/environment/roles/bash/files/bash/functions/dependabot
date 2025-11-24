@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+dbot(){
+    case "${*}" in
+        "")
+            echo;;
+        *)
+            gh pr comment --body "@dependabot ${*}";;
+    esac
+}

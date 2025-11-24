@@ -5,6 +5,7 @@
 [core]
     editor = "vim"
     compression = 9
+    pager = "less"
 [init]
     defaultBranch = "main"
 [branch]
@@ -45,12 +46,14 @@
     cmsg = "! echo 'fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest'"
     cp = "cherry-pick"
     diff = "difftool"
+    fdiff = "!f() { git diff \"${1:-main}\" --name-only; }; f"
+    hash = "rev-parse --short=8 HEAD"
+    ignore = "!gi() { local IFS=','; curl -sL https://www.toptal.com/developers/gitignore/api/\"$*\"; }; gi"
     plog = log                                                                                              \
         --graph                                                                                             \
         --abbrev-commit                                                                                     \
         --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-    graph = plog --all
-    ignore = "!gi() { local IFS=','; curl -sL https://www.toptal.com/developers/gitignore/api/\"$*\"; }; gi"
+    graph = "plog --all"
     largest = ! git rev-list --objects --all                                                                \
         | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)'                    \
         | sed -n 's/^blob //p'                                                                              \

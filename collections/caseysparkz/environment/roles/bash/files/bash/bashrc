@@ -103,10 +103,12 @@ PATH_DIRS=(
     "/opt/homebrew/lib/ruby/gems/3.4.0/bin"
 )
 
-for DIR in "${PATH_DIRS[@]}"; do
-    if [ -d "${DIR}" ]; then
-        PATH="${PATH}:${DIR}"
-    fi
-done
+#or DIR in "${PATH_DIRS[@]}"; do
+#   if [ -d "${DIR}" ]; then
+#       PATH="${PATH}:${DIR}"
+#   fi
+#one
+
+unset PATH_DIRS
 
 getsecrets  # Get encrypted env vars.

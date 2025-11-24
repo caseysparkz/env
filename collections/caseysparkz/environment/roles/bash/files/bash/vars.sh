@@ -3,8 +3,8 @@
 
 case "$(uname -s)" in
     "Darwin"                                                                )
-        export HOMEBREW_NO_ENV_HINTS=1
-        export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock";;
+        export HOMEBREW_NO_ENV_HINTS=1;;
+        #export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock";;
 
     "Linux"                                                                 )
         export TERM="xterm-256color"
