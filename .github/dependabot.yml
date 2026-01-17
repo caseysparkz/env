@@ -1,0 +1,27 @@
+---
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directories: [".github/workflows"]
+    target-branch: "main"
+    rebase-strategy: "auto"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "16:45"
+      timezone: "America/Los_Angeles"
+    commit-message:
+      prefix: "chore(github-actions)"
+
+  - package-ecosystem: "pip"
+    directories: ["./"]
+    target-branch: "main"
+    rebase-strategy: "auto"
+    versioning-strategy: "increase"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "16:45"
+      timezone: "America/Los_Angeles"
+    commit-message:
+      prefix: "chore(python-pip)"
