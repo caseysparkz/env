@@ -30,7 +30,7 @@ jobs:
 
       - name: "Restore Ansible cache"
         id: "ansible-cache"
-        uses: "actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684" # v4.2.3
+        uses: "actions/cache/restore@8b402f58fbc84540c8b491a91e594a4576fec3d7" # v5.0.2
         with:
           key: "${{ env.ANSIBLE_CACHE_KEY }}"
           path: "${{ env.ANSIBLE_CACHE_PATH }}"
@@ -44,7 +44,7 @@ jobs:
           setup_python: true
 
       - name: "Save Ansible cache"
-        uses: "actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684" # v4.2.3
+        uses: "actions/cache/save@8b402f58fbc84540c8b491a91e594a4576fec3d7" # v5.0.2
         with:
           key: "${{ steps.ansible-cache.outputs.cache-primary-key }}"
           path: "${{ env.ANSIBLE_CACHE_PATH }}"
