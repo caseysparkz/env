@@ -10,8 +10,8 @@ tags:
   - "linux"
   - "performance"
 dependencies: {}
-repository: &repo "https://github.com/caseysparkz/ansible"
-documentation: "https://github.com/caseysparkz/ansible/blob/collections/caseysparkz/performance/README.md"
+repository: &repo "https://github.com/caseysparkz/env"
+documentation: "https://github.com/caseysparkz/env/blob/collections/caseysparkz/performance/README.md"
 homepage: *repo
-issues: "https://github.com/caseysparkz/ansible/issues"
+issues: "https://github.com/caseysparkz/env/issues"
 build_ignore: []

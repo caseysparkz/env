@@ -2,7 +2,7 @@
 galaxy_info:
   author: "Casey Sparks"
   description: "Sets up my dotfiles"
-  issue_tracker_url: "https://github.com/caseysparkz/ansible"
+  issue_tracker_url: "https://github.com/caseysparkz/env"
   license: "GPL-2.0-or-later"
   min_ansible_version: "2.17.10"
   galaxy_tags:

@@ -9,8 +9,8 @@ license: ["GPL-2.0-or-later"]
 tags: ["linux"]
 dependencies:
   community.general: ">=10.7.0,<11.0.0"
-repository: &repo "https://github.com/caseysparkz/ansible"
-documentation: "https://github.com/caseysparkz/ansible/blob/main/collections/caseysparkz/environment/README.md"
+repository: &repo "https://github.com/caseysparkz/env"
+documentation: "https://github.com/caseysparkz/env/blob/main/collections/caseysparkz/environment/README.md"
 homepage: *repo
-issues: "https://github.com/caseysparkz/ansible/issues"
+issues: "https://github.com/caseysparkz/env/issues"
 build_ignore: []
