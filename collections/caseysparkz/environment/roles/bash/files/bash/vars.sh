@@ -22,9 +22,9 @@ export EDITOR="/usr/bin/vim"
 # Misc.
 export ALIASES="${HOME}/.bash_aliases"
 export GOPATH="${HOME}/.local/share/go"
-export FUNCTIONS="${HOME}/.bash/functions/"
+export FUNCTIONS="${HOME}/.bash/functions"
 export GH="git@github.com"
-export SCRIPTS="${HOME}/.local/lib/scripts/"
+export SCRIPTS="${HOME}/.local/lib/scripts"
 export TMPDIR="${HOME}/tmp"
 export VARS="${HOME}/.bash/vars.sh"
 

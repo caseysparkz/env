@@ -97,18 +97,17 @@ if [ -f "${HOME}/.cache/wal/sequences" ]; then cat "${HOME}/.cache/wal/sequences
 
 PATH_DIRS=(
     "${HOME}/.local/bin"
-    "${HOME}/.local/lib/scripts/gsh"
-    "${HOME}/.local/lib/scripts/python"
-    "${HOME}/.local/lib/scripts/sh"
-    "/opt/homebrew/lib/ruby/gems/3.4.0/bin"
+    "${SCRIPTS}/gsh"
+    "${SCRIPTS}/python"
+    "${SCRIPTS}/sh"
 )
 
-#or DIR in "${PATH_DIRS[@]}"; do
-#   if [ -d "${DIR}" ]; then
-#       PATH="${PATH}:${DIR}"
-#   fi
-#one
+for DIR in "${PATH_DIRS[@]}"; do
+    if [ -d "${DIR}" ]; then
+        PATH="${PATH}:${DIR}"
+    fi
+done
 
-unset PATH_DIRS
+#unset PATH_DIRS
 
 getsecrets  # Get encrypted env vars.
