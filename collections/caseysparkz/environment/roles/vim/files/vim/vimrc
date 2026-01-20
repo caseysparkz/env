@@ -25,7 +25,7 @@ set spellfile=~/.vim/spell.utf-8.add    " Spelling/dictionary (but don't enable 
 cnoreabbrev nt NERDTree
 cnoreabbrev nT NERDTreeToggle
 
-let g:ale_python_ruff_use_global = 1
+let g:ale_python_ruff_use_global = 0
 let g:ale_fix_on_save = 1
 let g:ale_linters={
 \   'docker': ['hadolint'],
