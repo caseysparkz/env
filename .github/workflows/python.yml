@@ -40,7 +40,7 @@ jobs:
 
       - name: "Auto-commit/push changes"
         id: "auto_commit"
-        uses: "stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403"  # v5.2.0
+        uses: "stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9"  # v7.1.0
         with:
           commit_author: "${{ steps.import_pgp.outputs.name }} <${{ steps.import_pgp.outputs.email }}>"
           commit_user_email: "${{ steps.import_pgp.outputs.email }}"
