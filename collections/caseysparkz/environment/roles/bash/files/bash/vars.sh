@@ -31,6 +31,9 @@ export VARS="${HOME}/.bash/vars.sh"
 ## Ansible
 export ANSIBLE_DUPLICATE_YAML_DICT_KEY=ignore
 
+# Dagger
+export DAGGER_NO_NAG=1
+
 ## Docker
 export DOCKER_BUILDKIT=1
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
@@ -49,6 +52,7 @@ export PYTHONBREAKPOINT="IPython.terminal.debugger.set_trace"
 export SSH_AUTH_SOCK
 
 ## Terraform
+#export TF_CLI_ARGS_test='-parallelism=30'
 export TF_CLI_CONFIG_FILE="${HOME}/.terraform.d/terraformrc"
 export TF_LOG="trace"
 export TF_LOG_PATH="./terraform.log"

@@ -1,6 +1,3 @@
-if [ -f "${HOME}/.bash_profile" ];
-    then . "${HOME}/.bash_profile"
-fi
-if [ -f "${HOME}/.bashrc" ];
-    then . "${HOME}/.bashrc"
-fi
+for BASHFILE in '.bash_profile' '.bashrc'; do
+    if [ -f "${HOME}/${BASHFILE}" ]; then . "${HOME}/${BASHFILE}"; fi
+done

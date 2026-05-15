@@ -1,41 +1,35 @@
 case "$(uname -s)" in
     "Darwin"                                                                )
         alias clip='pbcopy'
+        if [ -x "$(which gsed)" ]; then alias sed='gsed'; fi
         ;;
     "Linux"                                                                 )
+        alias betterlockscreen='betterlockscreen --update "${HOME}/Pictures/backgrounds/${HOSTNAME}.jpg"'
         alias clip='xclip -sel clip'
+        alias cputemp='sensors | grep Core'
+        alias free='free -h'
         alias open='xdg-open'
-        alias sed='gsed'
         ;;
 esac
 
-alias ......='cd ../../../../..'
-alias .....='cd ../../../..'
-alias ....='cd ../../..'
 alias ...='cd ../..'
 alias ..='cd ..'
 alias F='fuck'
 alias back='cd ${OLDPWD}'
-alias betterlockscreen='betterlockscreen --update "${HOME}/Pictures/backgrounds/${HOSTNAME}.jpg"'
 alias c='clear'
 alias chx='chmod 755'
 alias cl='clear;ls -lFh'
-alias cla='clear;ls -lFha'
-alias cputemp='sensors | grep Core'
 alias df='df -h'
-alias dgrep='l|grep'
-alias dirs='dirs -p'
-alias free='free -h'
+alias dgrep='ls |grep'
 alias hgrep='history|grep -E'
 alias k='kubectl'
 alias l='ls -1'
 alias la='ls -lFha'
-alias ll='ls -lFh'
 alias less='less -R'
+alias ll='ls -lFh'
 alias pclip='pwd | clip'
 alias q='exit'
 alias rmf='rm -rf'
 alias tf='terraform'
 alias va='source .venv/bin/activate'
 alias ve='python3 -m venv --prompt "$(basename ${PWD})_env" .venv'
-alias mm='micromamba'

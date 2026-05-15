@@ -1,77 +1,79 @@
 #!/usr/bin/env bash
 #-*- coding:utf-8 -*-
 case $- in  # Do nothing if not interactive.
-    *i*                                                                     )
-        ;;
-    *                                                                       )
-        return;;
+    *i*);;
+    *) return;;
 esac
 
 HISTCONTROL=ignoreboth  # Don't save duplicate lines in history.
 HISTSIZE=1000  # Set history length.
 HISTFILESIZE=2000  # Set history file size.
-
-case "$(uname -s)" in
-    "Darwin"                                                                )
-        export BASH_SILENCE_DEPRECATION_WARNING=1;;
-    "Linux"                                                                 )
-        shopt -s globstar;;
-esac
-
-export TERM=xterm-256color
+TERM=xterm-256color
+PATH_DIRS=(
+    "${HOME}/.local/bin"
+    "${SCRIPTS}/gsh"
+    "${SCRIPTS}/python"
+    "${SCRIPTS}/sh"
+)
 
 # Shell options.
 shopt -s histappend  # Append to the history file.
 shopt -s checkwinsize  # Check the window size; update LIN/COL.
-shopt -s globstar  # Enable fs globbing
 set -o pipefail
-
-if ! shopt -oq posix; then  # Enable programmable completion features.
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        source /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        source /etc/bash_completion
-    fi
-    complete -cf sudo
-fi
-
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"  # Make `less` more friendly.
 
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then  # Set variable identifying the chroot.
     debian_chroot=$(cat /etc/debian_chroot)
 fi
+
+case "$(uname -s)" in
+    "Linux"                                                                 )
+        shopt -s globstar
+        if [ "${color_prompt}" = yes ]; then
+            PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
+        else
+            PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$ "
+        fi
+        ;;
+    "Darwin"                                                                )
+        export BASH_SILENCE_DEPRECATION_WARNING=1
+        export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
+
+        PATH_DIRS=("${PATH_DIRS[@]}" "/opt/homebrew/opt/coreutils/libexec/gnubin")
+        ;;
+esac
+
+# Set PATH
+for DIR in "${PATH_DIRS[@]}"; do if [ -d "${DIR}" ]; then export PATH="${DIR}:${PATH}"; fi; done
+unset PATH_DIRS
+
+# shellcheck disable=SC1091
+if ! shopt -oq posix; then  # Enable programmable completion features.
+    if [ -f /usr/share/bash-completion/bash_completion ]; then source /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then source /etc/bash_completion
+    fi
+
+    complete -cf sudo
+fi
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"  # Make `less` friendly
 
 case "${TERM}" in  # Set a fancy prompt.
     xterm-color|*-256color) color_prompt=yes;;
     *) color_prompt=;;
 esac
 
-if [ -x "$(which tput)" ] && tput setaf 1 &> /dev/null; then
-    color_prompt=yes
-else
-    color_prompt=
-fi
-
-if [ "${color_prompt}" = yes ]; then
-    PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
-else
-    PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$ "
+if [ -x "$(which tput)" ] && tput setaf 1 &> /dev/null; then color_prompt=yes
+else color_prompt=
 fi
 
 case "${TERM}" in  # If this is an xterm set title.
-    xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        ;;
-
-    *)
-        ;;
+    xterm*|rxvt*) PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1";;
+    *) ;;
 esac
 
 # shellcheck disable=SC2015
 if [ -x "$(which dircolors)" ]; then  # Enable color support.
-    test -r "${HOME}/.dircolors"                                            \
-        && eval "$(dircolors -b "${HOME}/.dircolors")"                      \
-        || eval "$(dircolors -b)"
+    test -r "${HOME}/.dircolors" && eval "$(dircolors -b "${HOME}/.dircolors")" || eval "$(dircolors -b)"
 
     alias ls='ls --color=auto'
     alias dir='dir --color=auto'
@@ -81,33 +83,17 @@ if [ -x "$(which dircolors)" ]; then  # Enable color support.
     alias egrep='egrep --color=auto'
 fi
 
-# shellcheck disable=SC1091
-if [ -f "${HOME}/.bashrc.local" ]; then source "${HOME}/.bashrc.local"; fi  # For host-specific bash config.
-# shellcheck disable=SC1091
-if [ -f "${HOME}/.bash/vars.sh" ]; then source "${HOME}/.bash/vars.sh"; fi  # Load shell vars
-# shellcheck disable=SC1091
-if [ -f "${HOME}/.bash_aliases" ]; then source "${HOME}/.bash_aliases"; fi  # Source alias definitions.
+# shellcheck disable=SC1090
+for BASHFILE in ".bashrc.local" ".bash/vars.sh" ".bash_aliases"; do
+    if [ -f "${HOME}/${BASHFILE}" ]; then source "${HOME}/${BASHFILE}"; fi
+done
+
 # shellcheck disable=SC1090
 if [ -d "${HOME}/.bash/functions" ]; then  # Source function definitions.
     for FUNC in "${HOME}"/.bash/functions/*; do source "${FUNC}"; done
 fi
+
 if [ -x /usr/bin/gpgconf ]; then gpgconf --launch gpg-agent; fi  # Launch gpg-agent.
 if [ -x "$(which thefuck)" ]; then eval "$(thefuck --alias)"; fi  # Enable thefuck.
 if [ -f "${HOME}/.cache/wal/sequences" ]; then cat "${HOME}/.cache/wal/sequences"; fi  # Enable wal
-
-PATH_DIRS=(
-    "${HOME}/.local/bin"
-    "${SCRIPTS}/gsh"
-    "${SCRIPTS}/python"
-    "${SCRIPTS}/sh"
-)
-
-for DIR in "${PATH_DIRS[@]}"; do
-    if [ -d "${DIR}" ]; then
-        PATH="${PATH}:${DIR}"
-    fi
-done
-
-#unset PATH_DIRS
-
-getsecrets  # Get encrypted env vars.
+if [ -f "${SECRETS}" ]; then getsecrets; fi # Get encrypted env vars
