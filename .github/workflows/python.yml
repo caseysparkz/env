@@ -1,49 +1,57 @@
 # Author:       Casey Sparks
 # Date:         November 15, 2023
-# Description:  Lint all Python files with both Pylint and Flake8.
+# Description:  Validate Python code
 ---
-name: "Validate Python code"
+name: "Python"
 on:
   pull_request:
     branches: ["main"]
-    paths: ["**/*.py"]
+    paths:
+      - "**/*.py"                       # Any Python file.
+      - "**/pyproject.toml"             # Any Python project file.
+      - ".github/actions/*python*"      # Any action referencing Python.
+      - ".github/workflows/python.yml"  # This workflow file.
+env:
+  PYTHON_VERSION: "3.14"
 jobs:
   ruff:
-    name: "ruff format --check"
+    name: "ruff"
     runs-on: "ubuntu-latest"
-    env:
-      PYTHON_MAX_LINES: 120
+    permissions:
+      contents: "read"
     steps:
       - name: "Checkout"
         uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"  # v6.0.2
         with:
           fetch-depth: 0
 
-      - name: "Reformat all Python code"
-        id: "ruff"
-        uses: "astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1"  # v3.5.1
+      - name: "Setup venv"
+        uses: "./.github/actions/setup-python-venv"
         with:
-          args: "format --config --line-length ${{ env.PYTHON_MAX_LINES }}"
-          changed-files: "true"
+          python-version: "${{ env.PYTHON_VERSION }}"
+          package: ".[test]"
 
-      - name: "Get files changed by lint"
-        run: "git fetch origin main:main"
+      - name: "ruff check ."
+        run: "ruff check ."
 
-      - name: "Import PGP identity"
-        id: "import_pgp"
-        uses: "crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec"  # v6.3.0
+      - name: "ruff format --check ."
+        run: "ruff format --check ."
+  mypy:
+    name: "mypy"
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"  # v6.0.2
         with:
-          gpg_private_key: "${{ secrets.ORG_SIGNING_KEY }}"
-          passphrase: "${{ secrets.ORG_SIGNING_KEY_PASSPHRASE }}"
-          git_user_signingkey: true
-          git_commit_gpgsign: true
+          fetch-depth: 0
 
-      - name: "Auto-commit/push changes"
-        id: "auto_commit"
-        uses: "stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403"  # v5.2.0
+      - name: "Setup venv"
+        uses: "./.github/actions/setup-python-venv"
         with:
-          commit_author: "${{ steps.import_pgp.outputs.name }} <${{ steps.import_pgp.outputs.email }}>"
-          commit_user_email: "${{ steps.import_pgp.outputs.email }}"
-          commit_user_name: "${{ steps.import_pgp.outputs.name }}"
-          commit_message: "style(python): Auto-reformatted Terraform configs"
-          file_pattern: "*.py"
+          python-version: "${{ env.PYTHON_VERSION }}"
+          package: ".[test]"
+
+      - name: "mypy ."
+        run: "mypy ."
