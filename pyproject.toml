@@ -1,0 +1,135 @@
+[project]
+name = "environment"
+description = "Ansible collections and playbooks for configuring Linux systems."
+requires-python = ">= 3.14"
+version = "0.0.1"
+readme = { file = "README.md", content-type = "text/markdown" }
+dependencies = [
+    "ansible==13.*",
+    "ansible-core==2.*",
+    "ansible-lint==26.*",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipython==9.*",
+    "ruff==0.*",
+]
+test = [
+    "ipython==9.*",
+    "mypy==1.*",
+    #pytest>=9.0.2,<10.0.0",
+    #pytest_cov==7.*",
+    "ruff==0.*",
+]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires-python = ">= 3.14"
+requires = ["setuptools-git-versioning==3.0.1"]
+
+[tool.setuptools.packages.find]
+where = []
+
+# ====================================================================================
+[tool.ipdb]
+context = 20
+
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.ruff]
+indent-width = 4
+line-length = 120
+preview = true
+target-version = "py314"
+exclude = [ # Sane defaults
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "ansible_collections",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+future-annotations = true
+preview = true
+fixable = ["ALL"]
+unfixable = []
+select = ["ALL"]
+ignore = [
+    "ANN1",     # flake8-annotations::missing-type-* [DEPRECATED]
+    "COM812",   # flake8-commas::missing-trailing-comma
+    "CPY",      # flake8-copyright [Not needed/used]
+    "D203",     # pydocstyle::incorrect-blank-line-before-class
+    "D213",     # pydocstyle::multi-line-summary-second-line
+    'COM812',   # flake8-commas::missing-trailing-comma [Doesn't work well with ruff]
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"**/test_*.py" = [
+    "C901",     # mccabe::complex-structure
+    "D1",       # pydocstyle
+    "INP001",   # flake8-no-pep420::unnecessary-placeholder
+    "PLR2004",  # Pylint Refactor::magic-value-comparison
+    "S101",     # flake8-bandit::assert
+    "TID252",   # flake8-tidy-imports::relative-imports
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "collections/caseysparkz/",
+]
+addopts = [
+    "--cov=.",                                              # Produce a coverage report
+    "--cov-fail-under=95",                                  # Fail if test coverage drops below 95%
+    "--pdbcls=IPython.terminal.debugger:TerminalPdb",       # Use ipdb debugger
+    "--ignore=ansible_collections",                         # Installed by ansible-galaxy
+    "--ignore-glob=*/vim/pack/plugins/start/*.py",
+]
+
+[tool.coverage.run]
+omit = [
+    "collections/ansible_collections/*",
+    "**/test_*.py",
+    "**/tests/**/*.py",
+]
