@@ -3,12 +3,12 @@
   become: true
   block:
     - name: "Check bootloader"
-      register: "efi_boot"
+      register: "kernel_efiboot"
       ansible.builtin.stat:
         path: "/sys/firmware/efi/efivars"
 
     - name: "Run grub2-mkconfig"
-      when: "not efi_boot.exists"
+      when: "not kernel_efiboot.exists"
       changed_when: false
       ansible.builtin.command: "grub2-mkconfig"
 
