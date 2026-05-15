@@ -42,23 +42,28 @@
 [gc]
     pruneexpire = "14 days"
 [alias]
-    cmsg = "! echo 'build\nchore\nci\ndocs\nfeat\nfix\nperf\nrefactor\nstyle\ntest'"
+    ac = "commit --amend --no-edit"
+    cmsg = "! echo 'build\nchore\nci\ndocs\nfeat\nfix\nperf\nrefactor\nrevert\nstyle\ntest'"
     cp = "cherry-pick"
     fdiff = "diff --name-only"
-    hash = "rev-parse --short HEAD"
-    ignore = "!gi() { local IFS=','; curl -sL https://www.toptal.com/developers/gitignore/api/\"$*\"; }; gi"
-    plog = log                                                                                              \
+    graph = """log                                                                                          \
+        --all                                                                                               \
         --graph                                                                                             \
         --abbrev-commit                                                                                     \
-        --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-    pf = "push --force-with-lease"
-    graph = "plog --all"
-    largest = ! git rev-list --objects --all                                                                \
+        --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"""
+    hash = "rev-parse --short HEAD"
+    ignore = "!gi() { local IFS=','; curl -sL https://www.toptal.com/developers/gitignore/api/\"$*\"; }; gi"
+    largest = """! git rev-list --objects --all                                                             \
         | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)'                    \
         | sed -n 's/^blob //p'                                                                              \
         | sort --numeric-sort --key=2 --reverse                                                             \
         | cut -c 1-7,41-                                                                                    \
-        | numfmt --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+        | numfmt --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest"""
+    pf = "push --force-with-lease"
+    plog = """log                                                                                           \
+        --graph                                                                                             \
+        --abbrev-commit                                                                                     \
+        --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"""
     root-dir = "rev-parse --show-toplevel"
 [credential "https://github.com"]
     helper = "!/opt/homebrew/bin/gh auth git-credential"
