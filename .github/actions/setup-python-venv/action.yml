@@ -1,0 +1,32 @@
+---
+name: "Setup Python Venv"
+description: "Set up repository Python virtual environment for testing."
+inputs:
+  python-version: # TODO: check
+    description: "Version of Python to install."
+    type: "string"
+    required: true
+  package: # TODO: check
+    description: "Argument passed to `pip install`, ie '.[test]'."
+    type: "string"
+    required: false
+    default: "."
+runs:
+  using: "composite"
+  steps:
+    - name: "Set up Python"
+      uses: "actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405" # v6.2.0
+      with:
+        python-version: "${{ inputs.python-version }}"
+
+    - name: "Create virtual environment"
+      shell: "bash"
+      run: "python3 -m venv .venv"
+
+    - name: "Activate virtual environment"
+      shell: "bash"
+      run: "source .venv/bin/activate"
+
+    - name: "Install package"
+      shell: "bash"
+      run: "pip install -e ${{ inputs.package }}"
