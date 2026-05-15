@@ -1,51 +1,60 @@
 [project]
 name = "DIR"
-authors = [{name = "Casey Sparks", email = "python@caseysparkz.com"}]
-version = "0.0.1"
 description = "{DESCRIPTION}"  # TODO
-requires-python = ">= 3.10"
-readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">= 3.14"
+version = "0.0.1"
+
+authors = [{ name = "Casey Sparks", email = "python@caseysparkz.com" }]
+readme = { file = "README.md", content-type = "text/markdown" }
 license = "GPL-3.0-or-later"
 keywords = []  # TODO
 classifiers = [  # TODO
     "Development Status :: 3 - Alpha",
     "Natural Language :: English",
 ]
-dynamic = [
-    "dependencies",
-    "optional-dependencies",
+dependencies = [
+    # TODO
 ]
 
-[project.urls]
-Homepage = "https://github.com/caseysparkz/DIR"
-Repository = "https://github.com/caseysparkz/DIR"
-Issues = "https://github.com/caseysparkz/DIR/issues"
-Documentation = "https://github.com/caseysparkz/DIR/blob/main/README.md"
-
-[project.scripts]
-{NAME} = "{NAME}:{SCRIPT}"  # TODO
+[project.optional-dependencies]
+dev = [
+    "ipdb==0.*",
+    "ipython==9.*",
+    "ruff==0.*",
+]
+test = [
+    "ipdb==0.*",
+    "ipython==9.*",
+    "mypy==1.*",
+    "pytest==9.*",
+    "pytest_cov==7.*",
+    "ruff==0.*",
+]
 
 [build-system]
-requires-python = ">= 3.10"
-requires = ["setuptools>=64", "setuptools_scm>=7.1"]
 build-backend = "setuptools.build_meta"
+requires-python = ">= 3.14"
+requires = ["setuptools-git-versioning==3.0.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-"ccf" = ["__assets__/**"]
+# ====================================================================================
+[tool.ipdb]
+context = 20
 
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-#optional-dependencies.dev = {file = ["requirements-dev.txt"]}
-#optional-dependencies.test = {file = ["requirements-test.txt"]}
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
 
 [tool.ruff]
 indent-width = 4
 line-length = 120
-target-version = "py311"
-exclude = [
+preview = true
+target-version = "py314"
+exclude = [ # Sane defaults
     ".bzr",
     ".direnv",
     ".eggs",
@@ -69,22 +78,26 @@ exclude = [
     "buck-out",
     "build",
     "dist",
-    "node_modules",
-    "site-packages",
     "venv",
 ]
 
 [tool.ruff.lint]
+future-annotations = true
 preview = true
-pydocstyle.convention = "google"
 fixable = ["ALL"]
 unfixable = []
 select = ["ALL"]
 ignore = [
+    "ANN1",     # flake8-annotations::missing-type-* [DEPRECATED]
     "COM812",   # flake8-commas::missing-trailing-comma
+    "CPY",      # flake8-copyright [Not needed/used]
     "D203",     # pydocstyle::incorrect-blank-line-before-class
     "D213",     # pydocstyle::multi-line-summary-second-line
+    'COM812',   # flake8-commas::missing-trailing-comma [Doesn't work well with ruff]
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -94,13 +107,28 @@ line-ending = "auto"
 quote-style = "double"
 skip-magic-trailing-comma = false
 
+[tool.ruff.lint.mccabe]
+max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
 "**/test_*.py" = [
     "C901",     # mccabe::complex-structure
+    "D1",       # pydocstyle
+    "INP001",   # flake8-no-pep420::unnecessary-placeholder
     "PLR2004",  # Pylint Refactor::magic-value-comparison
     "S101",     # flake8-bandit::assert
+    "TID252",   # flake8-tidy-imports::relative-imports
 ]
 
-[tool.ruff.lint.mccabe]
-max-complexity = 10
+[tool.pytest.ini_options]
+addopts = [
+    "--cov=.",                                          # Produce a coverage report
+    "--cov-fail-under=95",                              # Fail if test coverage drops below 95%
+    "--pdbcls=IPython.terminal.debugger:TerminalPdb",   # Use ipdb debugger
+]
+
+[tool.coverage.run]
+omit = [
+    "**/test_*.py",
+    "**/tests/**/*.py",
+]

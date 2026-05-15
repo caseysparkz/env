@@ -1,9 +1,4 @@
 " Terraform configs -----------------------------------------------------------
-autocmd Filetype terraform
-    \ set textwidth=120                                                     |
-    \ set linebreak                                                         |
-    \ set wrap
-
 autocmd BufNewFile *.tf
     \ :0r ~/.vim/templates/terraform.d/default.tf
 
