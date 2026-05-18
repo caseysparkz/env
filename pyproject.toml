@@ -26,7 +26,7 @@ test = [
 [build-system]
 build-backend = "setuptools.build_meta"
 requires-python = ">= 3.14"
-requires = ["setuptools-git-versioning==3.0.1"]
+requires = ["setuptools-git-versioning==3.1.0"]
 
 [tool.setuptools.packages.find]
 where = []
