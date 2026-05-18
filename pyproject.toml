@@ -17,10 +17,10 @@ dev = [
 ]
 test = [
     "ipython==9.*",
-    "mypy==2.*",
+    #ruff==0.*",
+    #mypy==2.*",
     #pytest>=9.0.2,<10.0.0",
     #pytest_cov==7.*",
-    "ruff==0.*",
 ]
 
 [build-system]
