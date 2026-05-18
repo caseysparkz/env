@@ -40,6 +40,10 @@ mypy_path = "$MYPY_CONFIG_FILE_DIR/"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
+exclude = [
+    "collections/ansible_collections/.*.py$",
+    "collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/.*.pyi?$",
+]
 
 [tool.ruff]
 indent-width = 4
