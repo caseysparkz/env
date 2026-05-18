@@ -46,11 +46,11 @@ def convert(integer: int | str, input_base: int = 10, output_base: int = 2) -> s
         input_base:     The input base system.
         output_base:    The output base system.
 
-    Raises:
-        ValueError:     If :arg integer: is invalid.
-
     Returns:
                         The converted integer string.
+
+    Raises:
+        ValueError:     If :arg integer: is invalid.
     """
     chars = digits + ascii_letters
     digit_stack = []

@@ -59,9 +59,6 @@ def remote_flag() -> bool:
 def destroy_user_data() -> None:
     """Wipe sensitive user data from disk.
 
-    Args:
-        debug:   Run steps without taking any action.
-
     Raises:
         OSError:    If data cannot be removed.
     """

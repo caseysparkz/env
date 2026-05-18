@@ -9,8 +9,9 @@ from argparse import ArgumentParser, Namespace
 from logging import Formatter, StreamHandler, getLogger
 from pathlib import Path
 from pprint import pp
+from shutil import which
 from socket import AF_INET, SO_BROADCAST, SOCK_DGRAM, SOL_SOCKET, socket
-from subprocess import run  # noqa: S404
+from subprocess import CalledProcessError, run  # noqa: S404
 from sys import exit as sys_exit
 from sys import stderr
 
@@ -182,16 +183,30 @@ class Network:
 
     @staticmethod
     def get_default_interface() -> str:
-        """Return the default network interface."""
-        return (
-            run(  # noqa: S603
-                ["ip", "route", "show"],  # noqa: S607
-                capture_output=True,
-                check=True,
-            )
-            .stdout.decode("utf-8")
-            .split()[4]
-        )
+        """Return the default network interface.
+
+        Returns:
+            Name of the default interface.
+
+        Raises:
+            CalledProcessError:
+            OSError:
+        """
+        if ip_bin := which("ip"):
+            try:
+                sp = run([ip_bin, "route", "show"], capture_output=True, check=True)  # noqa:S603
+
+            except CalledProcessError as exc:
+                err_msg = f"Command failed with return code: {exc.returncode}"
+
+                LOG.fatal(err_msg)
+
+                raise CalledProcessError(msg=err_msg) from exc
+
+            else:
+                return sp.stdout.decode("utf-8").split()[4]
+
+        raise OSError(msg="ip binary not found on system.")
 
     @staticmethod
     def magic_packet(mac_address: str) -> bytes:

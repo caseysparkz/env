@@ -88,11 +88,11 @@ def encrypt(file: Path, recipients: list) -> Path:
         file:        The path of the file to be encrypted.
         recipients:  The recipient emails of the cipherfile.
 
-    Raises:
-        OSError:    If the file cannot be encrypted.
-
     Returns:
                     Path of the resultant cipherfile.
+
+    Raises:
+        OSError:    If the file cannot be encrypted.
     """
     gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)
     outfile = file.with_suffix("")
@@ -132,8 +132,11 @@ def munge_cipherfile(cipherfile: Path) -> None:
                 "",
                 'CIPHERTEXT = """',
                 *file.readlines(),  # Ciphertext body
-                '"""\n\n\n',  # Cleartext footer
-                "def decrypt_and_pipe(ciphertext):\n"
+                '"""',
+                "",
+                "",
+                "",
+                "def decrypt_and_pipe(ciphertext):",
                 '    gpg = GPG(gpgbinary="/usr/bin/gpg2", use_agent=True, verbose=False)',
                 "    cleartext = gpg.decrypt(ciphertext)",
                 "",
@@ -145,8 +148,7 @@ def munge_cipherfile(cipherfile: Path) -> None:
             ]
         )
 
-    with Path(cipherfile).open("w", encoding="utf-8") as file:
-        file.write(script)
+    Path(cipherfile).write_text(script, encoding="utf-8")
 
     cipherfile.chmod(0o755)  # Make executable
 

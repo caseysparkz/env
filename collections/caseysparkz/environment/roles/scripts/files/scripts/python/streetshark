@@ -11,7 +11,8 @@ from logging import FileHandler, Formatter, StreamHandler, getLogger
 from os import system
 from pathlib import Path
 from re import compile as re_compile
-from subprocess import PIPE, Popen, run  # noqa: S404
+from shutil import which
+from subprocess import PIPE, CalledProcessError, Popen, run  # noqa:S404
 from time import sleep
 
 LOG = getLogger(__name__)
@@ -97,17 +98,27 @@ def get_default_interface() -> str:
     """Gets the name of the current WAN-connected interface.
 
     Returns:
-        Name of the default gateway interface.
+                    Name of the default gateway interface.
+
+    Raises:
+        CalledProcessError: If calling `ip` returns a non-zero exit code.
+        OSError:            If the `ip` binary cannot be found on the system.
     """
-    return (
-        run(  # noqa: S603
-            ["ip", "route", "show"],  # noqa: S607
-            capture_output=True,
-            check=True,
-        )
-        .stdout.decode("utf-8")
-        .split()[4]
-    )
+    if ip_bin := which("ip"):
+        try:
+            sp = run([ip_bin, "route", "show"], capture_output=True, check=True)  # noqa:S603
+
+        except CalledProcessError as exc:
+            err_msg = f"Command failed with return code: {exc.returncode}"
+
+            LOG.fatal(err_msg)
+
+            raise CalledProcessError(msg=err_msg) from exc
+
+        else:
+            return sp.stdout.decode("utf-8").split()[4]
+
+    raise OSError(msg="ip binary not found on system.")
 
 
 def iwlist(interface: str = "wlan0") -> list:
