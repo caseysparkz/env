@@ -1,0 +1,87 @@
+# Author:       Casey Sparks
+# Date:         November 13, 2024
+# Description:  Config file for the pull request labeler action.
+# Notes:        Read the [docs](https://github.com/actions/labeler) for configuration settings.
+---
+# PR type labels
+bot:
+  - head-branch: ["^dependabot/*"]
+chore:
+  - head-branch:
+      - "^chore*"
+      - "^dependabot*"
+feature:
+  - head-branch: ["^feat*"]
+fix:
+  - head-branch: ["^fix*"]
+build:
+  - head-branch: ["^build*"]
+ci:
+  - head-branch: ["^ci*"]
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/*.yml"
+          - ".github/config/*"
+performance:
+  - head-branch: ["^perf*"]
+refactor:
+  - head-branch: ["^refactor*"]
+revert:
+  - head-branch: ["^revert*"]
+style:
+  - head-branch: ["^style*"]
+test:
+  - head-branch: ["^test*"]
+
+# Filetype/language labels
+ansible:
+  - changed-files:
+      - any-glob-to-any-file: ["ansible/**"]
+codeowners:
+  - changed-files:
+      - any-glob-to-any-file: ["./github/CODEOWNERS"]
+dependabot:
+  - changed-files:
+      - any-glob-to-any-file: ["./github/dependabot.yml"]
+docs:
+  - head-branch: ["^docs*"]
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "**/doc/**"
+          - "**/docs/**"
+git:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/.gitignore"
+          - ".git*"
+          - ".gitattributes"
+          - ".gitmodules"
+github:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**"]
+javascript:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.js"
+          - "**/*.jsx"
+          - "**/*.ts"
+          - "**/*.tsx"
+python:
+  - changed-files:
+      - any-glob-to-any-file: ["**/*.py"]
+shell:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.bash"
+          - "**/*.rsc"
+          - "**/*.sh"
+terraform:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.hcl"
+          - "**/*.hcl.json"
+          - "**/*.tf"
+          - "**/*.tf.json"
+          - "**/*.tftpl"
+          - "**/*.tfvars"
