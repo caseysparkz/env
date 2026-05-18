@@ -36,7 +36,7 @@ jobs:
           path: "${{ env.ANSIBLE_CACHE_PATH }}"
 
       - name: "Run ansible-lint"
-        uses: "ansible/ansible-lint@7f6abc5ef97d0fb043a0f3d416dfbc74399fbda0" # v26.1.1
+        uses: "ansible/ansible-lint@5fac056c45595896c973fbde871f01f6cb14d74c" # v26.4.0
         with:
           args: ""
           working_directory: "${{ github.workspace }}/ansible/"
