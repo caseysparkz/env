@@ -11,7 +11,6 @@ galaxy_info:
       versions: ["bookworm"]
 dependencies:
   - role: "caseysparkz.environment.bash"
-  - role: "caseysparkz.environment.ca_certificates"
   - role: "caseysparkz.environment.dotfiles"
   - role: "caseysparkz.environment.filesystem"
   - role: "caseysparkz.environment.git"
