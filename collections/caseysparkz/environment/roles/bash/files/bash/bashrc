@@ -25,6 +25,11 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then  # Set variabl
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+case "${TERM}" in  # Set a fancy prompt.
+    xterm-color|*-256color) color_prompt=yes;;
+    *) color_prompt=;;
+esac
+
 case "$(uname -s)" in
     "Linux"                                                                 )
         shopt -s globstar
@@ -56,11 +61,6 @@ if ! shopt -oq posix; then  # Enable programmable completion features.
 fi
 
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"  # Make `less` friendly
-
-case "${TERM}" in  # Set a fancy prompt.
-    xterm-color|*-256color) color_prompt=yes;;
-    *) color_prompt=;;
-esac
 
 if [ -x "$(which tput)" ] && tput setaf 1 &> /dev/null; then color_prompt=yes
 else color_prompt=
@@ -97,3 +97,11 @@ if [ -x /usr/bin/gpgconf ]; then gpgconf --launch gpg-agent; fi  # Launch gpg-ag
 if [ -x "$(which thefuck)" ]; then eval "$(thefuck --alias)"; fi  # Enable thefuck.
 if [ -f "${HOME}/.cache/wal/sequences" ]; then cat "${HOME}/.cache/wal/sequences"; fi  # Enable wal
 if [ -f "${SECRETS}" ]; then getsecrets; fi # Get encrypted env vars
+
+# pnpm
+export PNPM_HOME="/home/bellflower/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
