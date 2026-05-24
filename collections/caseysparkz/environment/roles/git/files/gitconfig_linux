@@ -23,8 +23,6 @@
 [commit]
     gpgsign = true
     verbose = true
-[merge]
-    tool = "kdiff3"
 [status]
     branch = true
 [rerere]
@@ -36,6 +34,7 @@
 [diff]
     colorMoved = "zebra"
     algorithm = "histogram"
+    tool = "diff -y"
 [http]
     postBuffer = 1048576000
 [ssh]
@@ -43,9 +42,9 @@
 [gc]
     pruneexpire = "14 days"
 [alias]
+    ac = "commit --amend --no-edit"
     cmsg = "! echo 'fix\nfeat\nbuild\nchore\nci\ndocs\nstyle\nrefactor\nperf\ntest'"
     cp = "cherry-pick"
-    diff = "difftool"
     fdiff = "!f() { git diff \"${1:-main}\" --name-only; }; f"
     graph = "log                                                                                                    \
         --all                                                                                                       \
@@ -60,6 +59,7 @@
         | sort --numeric-sort --key =2 --reverse                                                                    \
         | cut -c 1-7,41-                                                                                            \
         | numfmt --field =2 --to=iec-i --suffix=B --padding=7 --round=nearest"
+    pf = "push --force-with-lease"
     plog = "log                                                                                                     \
         --graph                                                                                                     \
         --abbrev-commit                                                                                             \
