@@ -2,58 +2,58 @@
 - name: "Symlink ~/.bash directory"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "bash/"  # TODO
-    dest: "{{ ansible_env.HOME }}/.bash"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ role_path }}/files/bash/"  # TODO
+    dest: "{{ ansible_facts.env.HOME }}/.bash"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
 - name: "Symlink ~/.profile"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/.bash/profile"
-    dest: "{{ ansible_env.HOME }}/.profile"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ ansible_facts.env.HOME }}/.bash/profile"
+    dest: "{{ ansible_facts.env.HOME }}/.profile"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
 - name: "Symlink ~/.bashrc"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/.bash/bashrc"
-    dest: "{{ ansible_env.HOME }}/.bashrc"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ ansible_facts.env.HOME }}/.bash/bashrc"
+    dest: "{{ ansible_facts.env.HOME }}/.bashrc"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
 - name: "Symlink ~/.bash_aliases"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/.bash/bash_aliases"
-    dest: "{{ ansible_env.HOME }}/.bash_aliases"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ ansible_facts.env.HOME }}/.bash/bash_aliases"
+    dest: "{{ ansible_facts.env.HOME }}/.bash_aliases"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
 - name: "Symlink ~/.bash_logout"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/.bash/bash_logout"
-    dest: "{{ ansible_env.HOME }}/.bash_logout"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ ansible_facts.env.HOME }}/.bash/bash_logout"
+    dest: "{{ ansible_facts.env.HOME }}/.bash_logout"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
 - name: "Touch ~/.bashrc.local"
   tags: ["bash"]
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.bashrc.local"
+    path: "{{ ansible_facts.env.HOME }}/.bashrc.local"
     state: "touch"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_user_id }}"
     mode: "0755"
