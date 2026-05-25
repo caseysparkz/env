@@ -1,7 +1,7 @@
 ---
 - name: "Install fail2ban"
   become: true
-  when: "ansible_os_family == 'Debian'"
+  when: "ansible_facts.os_family == 'Debian'"
   ansible.builtin.apt:
     name: "fail2ban"
     state: "present"
