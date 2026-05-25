@@ -3,6 +3,6 @@ collections:
   - name: "./collections/caseysparkz/environment"
     version: ">=1,<2"
   - name: "./collections/caseysparkz/performance"
-    version: ">=1,<2"
+    version: ">=2,<3"
   - name: "./collections/caseysparkz/security"
     version: ">=2,<3"
