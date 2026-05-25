@@ -1,22 +1,22 @@
 ---
 - name: "Configure git"
   tags: ["git"]
-  when: "ansible_system == 'Linux'"
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.file:
-    src: "{{ role_path }}/gitconfig_linux"
-    dest: "{{ ansible_env.HOME }}/.gitconfig"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ role_path }}/files/gitconfig_linux"
+    dest: "{{ ansible_facts.env.HOME }}/.gitconfig"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true
 
 - name: "Configure git"
   tags: ["git"]
-  when: "ansible_system == 'Darwin'"
+  when: "ansible_facts.system == 'Darwin'"
   ansible.builtin.file:
-    src: "{{ role_path }}/gitconfig_macos"
-    dest: "{{ ansible_env.HOME }}/.gitconfig"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ role_path }}/files/gitconfig_macos"
+    dest: "{{ ansible_facts.env.HOME }}/.gitconfig"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true
