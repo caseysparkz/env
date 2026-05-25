@@ -3,8 +3,8 @@
   tags: ["filesystem"]
   loop: "{{ filesystem_paths }}"
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    path: "{{ ansible_facts.env.HOME }}/{{ item }}"
     state: "directory"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_group_id }}"
     mode: "0700"
