@@ -2,7 +2,7 @@
 - name: "Install gpg"
   become: true
   tags: ["apt"]
-  when: "ansible_os_family == 'Debian'"
+  when: "ansible_facts.os_family == 'Debian'"
   ansible.builtin.apt:
     pkg:
       - "gnupg"
@@ -15,29 +15,29 @@
 - name: "Create ~/.gnupg"
   tags: ["gnupg"]
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.gnupg/"
+    path: "{{ ansible_facts.env.HOME }}/.gnupg/"
     state: "directory"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_group_id }}"
     mode: "0700"
 
 - name: "Install ~/.gnupg/gpg-agent.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "{{ role_path }}/gpg-agent.conf"
-    dest: "{{ ansible_env.HOME }}/.gnupg/gpg-agent.conf"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ role_path }}/files/gpg-agent.conf"
+    dest: "{{ ansible_facts.env.HOME }}/.gnupg/gpg-agent.conf"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true
 
 - name: "Install ~/.gnupg/gpg.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "{{ role_path }}/gpg.conf"
-    path: "{{ ansible_env.HOME }}/.gnupg/gpg.conf"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
+    src: "{{ role_path }}/files/gpg.conf"
+    path: "{{ ansible_facts.env.HOME }}/.gnupg/gpg.conf"
+    owner: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true
 
