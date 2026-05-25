@@ -6,8 +6,5 @@ dotfiles_symlinks:
   - src: "{{ role_path }}/files/config/Yubico/u2f_keys"
     dest: "{{ ansible_facts.env.HOME }}/.config/Yubico/u2f_keys"
 
-  - src: "{{ role_path }}/files/screen/screenrc"
-    dest: "{{ ansible_facts.env.HOME }}/.screenrc"
-
   - src: "{{ role_path }}/files/config/i3"
     dest: "{{ ansible_facts.env.HOME }}/.config/i3"

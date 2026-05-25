@@ -1,7 +1,7 @@
 ---
 - name: "Install Gnu Screen"
   become: true
-  when: "ansible_os_family == 'Debian'"
+  when: "ansible_facts.os_family == 'Debian'"
   tags: ["screen"]
   ansible.builtin.apt:
     pkg: "screen"
@@ -12,15 +12,15 @@
 - name: "Install ~/.screen/"
   tags: ["screen"]
   ansible.builtin.file:
-    src: "{{ role_path }}/screen/"
-    dest: "{{ ansible_env.HOME }}/.screen"
+    src: "{{ role_path }}/files/screen/"
+    dest: "{{ ansible_facts.env.HOME }}/.screen"
     state: "link"
     force: true
 
 - name: "Install ~/.screenrc"
   tags: ["screen"]
   ansible.builtin.file:
-    src: "${{ ansible_env.HOME }}/.screen/screenrc"
-    dest: "{{ ansible_env.HOME }}/.screenrc"
+    src: "{{ ansible_facts.env.HOME }}/.screen/screenrc"
+    dest: "{{ ansible_facts.env.HOME }}/.screenrc"
     state: "link"
     force: true
