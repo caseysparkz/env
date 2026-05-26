@@ -58,7 +58,6 @@ for DIR in "${PATH_DIRS[@]}"; do
       *) if [ -d "${DIR}" ]; then export PATH="${DIR}:${PATH}"; fi;;
     esac
 done
-echo "${PATH}"
 unset PATH_DIRS
 
 # shellcheck disable=SC1091
@@ -107,6 +106,3 @@ if [ -x /usr/bin/gpgconf ]; then gpgconf --launch gpg-agent; fi  # Launch gpg-ag
 if [ -x "$(which thefuck)" ]; then eval "$(thefuck --alias)"; fi  # Enable thefuck.
 if [ -f "${HOME}/.cache/wal/sequences" ]; then cat "${HOME}/.cache/wal/sequences"; fi  # Enable wal
 if [ -f "${SECRETS}" ]; then getsecrets; fi # Get encrypted env vars
-
-# pnpm
-# pnpm end

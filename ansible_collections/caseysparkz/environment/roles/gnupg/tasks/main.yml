@@ -24,7 +24,7 @@
 - name: "Install ~/.gnupg/gpg-agent.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/gpg-agent.conf"
+    src: "{{ role_path }}/files/gpg-agent.conf.{{ ansible_facts.os_family }}"
     dest: "{{ ansible_facts.env.HOME }}/.gnupg/gpg-agent.conf"
     owner: "{{ ansible_facts.effective_user_id }}"
     group: "{{ ansible_facts.effective_group_id }}"
