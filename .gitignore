@@ -27,7 +27,6 @@ tags
 # Ansible
 **/.ansible/
 *.retry
-collections/ansible_collections
 
 # Python
 ## Byte-compiled / optimized / DLL files
