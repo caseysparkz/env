@@ -1,20 +1,12 @@
-[submodule "vim-nerdtree"]
-	path = collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/nerdtree
-	url = https://github.com/preservim/nerdtree.git
-	branch = master
-	shallow = true
 [submodule "vim-gnupg"]
-	path = collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/gnupg
-	url = https://github.com/jamessan/vim-gnupg.git
-	branch = main
-	shallow = true
+    path = ansible_collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/gnupg
+    url = https://github.com/jamessan/vim-gnupg.git
+    branch = main
 [submodule "vim-terraform"]
-	path = collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/terraform
-	url = https://github.com/hashivim/vim-terraform.git
-	branch = master
-	shallow = true
+    path = ansible_collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/terraform
+    url = https://github.com/hashivim/vim-terraform.git
+    branch = master
 [submodule "vim-ale"]
-	path = collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/ale
-	url = https://github.com/dense-analysis/ale.git
-	branch = master
-	shallow = true
+    path = ansible_collections/caseysparkz/environment/roles/vim/files/vim/pack/plugins/start/ale
+    url = https://github.com/dense-analysis/ale.git
+    branch = master
