@@ -1,11 +1,19 @@
 ---
+- name: "Get group ID"
+  become: true
+  tags: ["bash"]
+  register: "bash_user"
+  ansible.builtin.user:
+    name: "{{ ansible_facts.effective_user_id }}"
+    state: "present"
+
 - name: "Symlink ~/.bash directory"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/bash/"  # TODO
+    src: "{{ role_path }}/files/bash/"
     dest: "{{ ansible_facts.env.HOME }}/.bash"
     owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ bash_user.group }}"
     state: "link"
     force: true
 
@@ -15,7 +23,7 @@
     src: "{{ ansible_facts.env.HOME }}/.bash/profile"
     dest: "{{ ansible_facts.env.HOME }}/.profile"
     owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ bash_user.group }}"
     state: "link"
     force: true
 
@@ -25,7 +33,7 @@
     src: "{{ ansible_facts.env.HOME }}/.bash/bashrc"
     dest: "{{ ansible_facts.env.HOME }}/.bashrc"
     owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ bash_user.group }}"
     state: "link"
     force: true
 
@@ -35,7 +43,7 @@
     src: "{{ ansible_facts.env.HOME }}/.bash/bash_aliases"
     dest: "{{ ansible_facts.env.HOME }}/.bash_aliases"
     owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ bash_user.group }}"
     state: "link"
     force: true
 
@@ -45,7 +53,7 @@
     src: "{{ ansible_facts.env.HOME }}/.bash/bash_logout"
     dest: "{{ ansible_facts.env.HOME }}/.bash_logout"
     owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ bash_user.group }}"
     state: "link"
     force: true
 
@@ -55,5 +63,5 @@
     path: "{{ ansible_facts.env.HOME }}/.bashrc.local"
     state: "touch"
     owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
+    group: "{{ bash_user.group }}"
     mode: "0755"
