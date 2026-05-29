@@ -1,6 +1,7 @@
 ---
 - name: "Create /etc/audit/rules.d/"
   become: true
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.file:
     path: "/etc/audit/rules.d/"
     state: "directory"
@@ -10,6 +11,7 @@
 
 - name: "Configure auditd"
   become: true
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.copy:
     src: "audit.rules"
     dest: "/etc/audit/rules.d/audit.rules"

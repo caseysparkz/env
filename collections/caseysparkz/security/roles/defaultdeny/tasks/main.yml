@@ -14,6 +14,7 @@
 - name: "Drop all"
   notify: "Restart iptables"
   become: true
+  when: "ansible_os_family == 'Debian'"
   ansible.builtin.iptables:
     action: "append"
     chain: "INPUT"

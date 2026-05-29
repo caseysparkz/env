@@ -1,13 +1,25 @@
 ---
 - name: "Stat SSHD"
   register: "ssh_daemonpath"
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.stat:
     path: "/usr/bin/sshd"
 
+- name: "Stat SSHD"
+  register: "ssh_daemonpath"
+  when: "ansible_facts.system == 'Darwin'"
+  ansible.builtin.stat:
+    path: "/usr/sbin/sshd"
+
+- name: "Stat /etc/ssh/"
+  register: "ssh_configpath"
+  ansible.builtin.stat:
+    path: "/etc/ssh"
+
 - name: "Harden SSH"
-  when: "ssh_daemonpath.stat.exists"
+  when: "ssh_configpath.stat.exists"
   ansible.builtin.include_tasks: "harden_config.yml"
 
 - name: "Remove short Diffie-Helman curves"
-  when: "ssh_daemonpath.stat.exists"
+  when: "ssh_configpath.stat.exists"
   ansible.builtin.include_tasks: "dh_curves.yml"

@@ -12,4 +12,4 @@
     group: "root"
     mode: "0644"
     create: true
-    validate: "/usr/bin/sshd -t -f %s"
+    validate: "{{ ssh_daemonpath.stat.path }} -t -f %s"

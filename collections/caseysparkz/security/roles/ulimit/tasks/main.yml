@@ -2,6 +2,7 @@
 - name: "Create /etc/security/limits.d"
   become: true
   tags: ["ulimit"]
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.file:
     path: "/etc/security/limits.d/"
     owner: "root"
@@ -12,6 +13,7 @@
 - name: "Configure ulimits"
   become: true
   tags: ["ulimit"]
+  when: "ansible_facts.system == 'Linux'"
   loop: "{{ ulimit_values }}"
   community.general.pam_limits:
     dest: "/etc/security/limits.d/hardening.conf"

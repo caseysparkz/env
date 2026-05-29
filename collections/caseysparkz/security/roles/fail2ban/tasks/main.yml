@@ -10,6 +10,7 @@
 
 - name: "Create local jail"
   become: true
+  when: "ansible_facts.os_family == 'Debian'"
   ansible.builtin.copy:
     src: "/etc/fail2ban/jail.conf"
     dest: &config "/etc/fail2ban/jail.local"
@@ -19,6 +20,7 @@
 
 - name: "Enable default jail"
   become: true
+  when: "ansible_facts.os_family == 'Debian'"
   ansible.builtin.replace:
     path: *config
     after: "[DEFAULT]"
@@ -28,6 +30,7 @@
 - name: "Enable default jails"
   become: true
   notify: "Enable fail2ban"
+  when: "ansible_facts.os_family == 'Debian'"
   loop: "{{ fail2ban_services }}"
   ansible.builtin.lineinfile:
     path: *config

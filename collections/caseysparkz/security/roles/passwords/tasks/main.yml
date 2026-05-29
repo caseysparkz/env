@@ -1,6 +1,7 @@
 ---
 - name: "Install libpam-pwquality"
   become: true
+  when: "ansible_facts.distribution == 'Debian'"
   ansible.builtin.apt:
     pkg:
       - "libpam-pwquality"
@@ -11,6 +12,7 @@
 
 - name: "Get common-passward PAM config"
   register: "passwords_pamfile"
+  when: "ansible_facts.distribution == 'Debian'"
   ansible.builtin.stat:
     path: &file "/etc/pam.d/common-password"
 

@@ -2,6 +2,7 @@
 - name: "Disable Apport"
   become: true
   tags: ["apport"]
+  when: "ansible_facts.os_family == 'Debian'"
   ansible.builtin.apt:
     pkg: "apport"
     state: "absent"

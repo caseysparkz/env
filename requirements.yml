@@ -5,4 +5,4 @@ collections:
   - name: "./collections/caseysparkz/performance"
     version: "2.0.0"
   - name: "./collections/caseysparkz/security"
-    version: "2.0.0"
+    version: "2.0.1"
