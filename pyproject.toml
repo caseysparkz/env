@@ -5,27 +5,26 @@ requires-python = ">= 3.13"
 version = "0.0.1"
 readme = { file = "README.md", content-type = "text/markdown" }
 dependencies = [
-    "ansible==13.*",
-    "ansible-core==2.*",
-    "ansible-lint==26.*",
+    "ansible-core==2.21.0",
+    "ansible-lint==26.4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "ipython==9.*",
-    "ruff==0.*",
+    "ipython==9.13.0",
+    "ruff==0.15.15",
 ]
 test = [
-    "ipython==9.*",
-    #ruff==0.*",
-    #mypy==2.*",
-    #pytest>=9.0.2,<10.0.0",
-    #pytest_cov==7.*",
+    "ipython==9.13.0",
+    "mypy==2.1.0",
+    "pytest==9.0.3",
+    "pytest_cov==7.1.0",
+    "ruff==0.15.15",
 ]
 
 [build-system]
 build-backend = "setuptools.build_meta"
-requires-python = ">= 3.14"
+requires-python = ">= 3.13"
 requires = ["setuptools-git-versioning==3.1.0"]
 
 [tool.setuptools.packages.find]
