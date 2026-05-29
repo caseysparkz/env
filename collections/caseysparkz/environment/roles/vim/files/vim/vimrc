@@ -30,12 +30,13 @@ let g:ale_completion_enabled = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 let g:ale_linters={
-\   'docker': ['hadolint'],
+\   'docker': ['hadolint', 'trivy'],
 \   'go': ['gofmt'],
 \   'javascript': ['eslint'],
 \   'markdown': ['mdl', 'markdownlint'],
 \   'python': ['ruff', 'ruff_format'],
 \   'shell': ['shellcheck'],
+\   'terraform': ['trivy'],
 \   'yaml': ['yamllint --config-data ~/.config/yamllint.yml'],
 \   }
 let g:ale_fixers={
@@ -43,3 +44,48 @@ let g:ale_fixers={
 \   'python': ['ruff', 'ruff_format'],
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   }
+
+call ale#linter#Define('terraform', {
+\   'name': 'trivy',
+\   'executable': 'trivy',
+\   'command': 'trivy config %t',
+\   'output_stream': 'stdout',
+\   'callback': 'AleTrivyCallback',
+\})
+
+function! AleTrivyCallback(buffer, lines) abort
+    let l:output = join(a:lines, '')
+
+    if empty(l:output)
+        return []
+    endif
+
+    try
+        let l:decoded = json_decode(l:output)
+    catch
+        return []
+    endtry
+
+    let l:loclist = []
+
+    " Check if Results array exists in Trivy JSON response
+    if has_key(l:decoded, 'Results')
+        for l:result in l:decoded.Results
+            if has_key(l:result, 'Misconfigurations')
+                for l:issue in l:result.Misconfigurations
+                    let l:loc = {
+                    \   'bufnr': a:buffer,
+                    \   'lnum': get(l:issue, 'PrimaryURL', 0) ? l:issue.CauseMetadata.StartLine : 1,
+                    \   'col': 1,
+                    \   'text': l:issue.Title . ' - ' . l:issue.Description,
+                    \   'type': l:issue.Severity ==# 'CRITICAL' || l:issue.Severity ==# 'HIGH' ? 'E' : 'W',
+                    \   'nr': 0,
+                    \}
+                    call add(l:loclist, l:loc)
+                endfor
+            endif
+        endfor
+    endif
+
+    return l:loclist
+endfunction

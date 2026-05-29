@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
-#-*- coding:utf-8 -*-
 
 case "$(uname -s)" in
     "Darwin"                                                                )
-        export HOMEBREW_NO_ENV_HINTS=1;;
-        #export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock";;
+        export HOMEBREW_NO_ENV_HINTS=1
+        #export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+        ;;
 
     "Linux"                                                                 )
+        export BROWSER='firefox'
+        export DOCKER_HOST="unix:///var/run/docker.sock"
         export TERM="xterm-256color"
-        export DOCKER_HOST="unix:///var/run/docker.sock";;
+        ;;
 esac
 
-BROWSER="$(which google-chrome)"
+# Crypto
 GPG_TTY="$(tty)"
 SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 
 # Application defaults
-export BROWSER
 export EDITOR="/usr/bin/vim"
 
 # Misc.
@@ -25,18 +26,20 @@ export GOPATH="${HOME}/.local/share/go"
 export FUNCTIONS="${HOME}/.bash/functions"
 export GH="git@github.com"
 export SCRIPTS="${HOME}/.local/lib/scripts"
+export PYSCRIPTS="${HOME}/.local/lib/scripts/python"
+export SHSCRIPTS="${HOME}/.local/lib/scripts/sh"
 export TMPDIR="${HOME}/tmp"
 export VARS="${HOME}/.bash/vars.sh"
 
 ## Ansible
-export ANSIBLE_DUPLICATE_YAML_DICT_KEY=ignore
+export ANSIBLE_DUPLICATE_YAML_DICT_KEY='ignore'
 
 # Dagger
-export DAGGER_NO_NAG=1
+export DAGGER_NO_NAG='1'
 
 ## Docker
-export DOCKER_BUILDKIT=1
-export DOCKER_DEFAULT_PLATFORM=linux/amd64
+export DOCKER_BUILDKIT='1'
+export DOCKER_DEFAULT_PLATFORM='linux/amd64'
 
 ## GAM
 export GOOGLE_CREDENTIALS_PATH="${HOME}/.local/bin/gam/client_secrets.json"

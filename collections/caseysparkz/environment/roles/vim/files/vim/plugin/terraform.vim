@@ -1,9 +1,11 @@
 " Terraform configs -----------------------------------------------------------
 autocmd BufNewFile *.tf
     \ :0r ~/.vim/templates/terraform.d/default.tf
+    \ :set filetype=terraform
 
 autocmd BufNewFile *.hcl
     \ :0r ~/.vim/templates/terraform.d/default.tf
+    \ :set filetype=terraform
 
 autocmd BufNewFile main.tf
     \ :%d                                                                   |
