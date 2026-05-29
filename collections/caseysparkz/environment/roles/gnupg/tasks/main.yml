@@ -12,13 +12,21 @@
     update_cache: true
     cache_valid_time: 3600
 
+- name: "Install gpg"
+  tags: ["homebrew"]
+  when: "ansible_facts.os_family == 'Darwin'"
+  community.general.homebrew:
+    name:
+      - "gnupg"
+      - "gnupg-pkcs11-scd"
+    state: "present"
+    update_homebrew: true
+
 - name: "Create ~/.gnupg"
   tags: ["gnupg"]
   ansible.builtin.file:
     path: "{{ ansible_facts.env.HOME }}/.gnupg/"
     state: "directory"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_group_id }}"
     mode: "0700"
 
 - name: "Install ~/.gnupg/gpg-agent.conf"
@@ -26,8 +34,6 @@
   ansible.builtin.file:
     src: "{{ role_path }}/files/gpg-agent.conf.{{ ansible_facts.os_family }}"
     dest: "{{ ansible_facts.env.HOME }}/.gnupg/gpg-agent.conf"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true
 
@@ -36,8 +42,6 @@
   ansible.builtin.file:
     src: "{{ role_path }}/files/gpg.conf"
     path: "{{ ansible_facts.env.HOME }}/.gnupg/gpg.conf"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true
 
@@ -49,8 +53,8 @@
     patterns:
       - "*.asc"
       - "*.gpg"
-    recurse: false
     file_type: "file"
+    recurse: false
 
 - name: "Import role pubkeys"
   tags: ["gnupg"]

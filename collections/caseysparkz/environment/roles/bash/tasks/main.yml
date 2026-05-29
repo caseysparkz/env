@@ -4,8 +4,6 @@
   ansible.builtin.file:
     src: "{{ role_path }}/files/bash/"
     dest: "{{ ansible_facts.env.HOME }}/.bash"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
@@ -14,8 +12,6 @@
   ansible.builtin.file:
     src: "{{ ansible_facts.env.HOME }}/.bash/profile"
     dest: "{{ ansible_facts.env.HOME }}/.profile"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
@@ -24,8 +20,6 @@
   ansible.builtin.file:
     src: "{{ ansible_facts.env.HOME }}/.bash/bashrc"
     dest: "{{ ansible_facts.env.HOME }}/.bashrc"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
@@ -34,8 +28,6 @@
   ansible.builtin.file:
     src: "{{ ansible_facts.env.HOME }}/.bash/bash_aliases"
     dest: "{{ ansible_facts.env.HOME }}/.bash_aliases"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
@@ -44,16 +36,19 @@
   ansible.builtin.file:
     src: "{{ ansible_facts.env.HOME }}/.bash/bash_logout"
     dest: "{{ ansible_facts.env.HOME }}/.bash_logout"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
     state: "link"
     force: true
 
+- name: "Stat ~/.bashrc.local"
+  tags: ["bash"]
+  register: "bash_bashrclocal"
+  ansible.builtin.stat:
+    path: &bashrclocal "{{ ansible_facts.env.HOME }}/.bashrc.local"
+
 - name: "Touch ~/.bashrc.local"
   tags: ["bash"]
+  when: "not bash_bashrclocal.stat.exists"
   ansible.builtin.file:
-    path: "{{ ansible_facts.env.HOME }}/.bashrc.local"
+    path: *bashrclocal
     state: "touch"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_user_id }}"
     mode: "0755"

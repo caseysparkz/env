@@ -3,15 +3,11 @@
   ansible.builtin.file:
     path: "{{ ansible_facts.env.HOME }}/.local/lib/"
     state: "directory"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_group_id }}"
     mode: "0700"
 
 - name: "Symlink scripts directory"
   ansible.builtin.file:
     src: "{{ role_path }}/files/scripts/"
     dest: "{{ ansible_facts.env.HOME }}/.local/lib/scripts"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_group_id }}"
     state: "link"
     force: true

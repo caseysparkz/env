@@ -5,6 +5,4 @@
   ansible.builtin.file:
     path: "{{ ansible_facts.env.HOME }}/{{ item }}"
     state: "directory"
-    owner: "{{ ansible_facts.effective_user_id }}"
-    group: "{{ ansible_facts.effective_group_id }}"
     mode: "0700"
