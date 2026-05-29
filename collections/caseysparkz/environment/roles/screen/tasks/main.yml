@@ -1,4 +1,8 @@
 ---
+- name: "Set 'screen_symlink_src_dir'"
+  ansible.builtin.set_fact:
+    screen_symlink_src_dir: "{{ role_path | replace(collections_path, inventory_dir ~ '/collections') }}"
+
 - name: "Install Gnu Screen"
   become: true
   when: "ansible_facts.os_family == 'Debian'"
@@ -12,7 +16,7 @@
 - name: "Install ~/.screen/"
   tags: ["screen"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/screen/"
+    src: "{{ screen_symlink_src_dir }}/files/screen/"
     dest: "{{ ansible_facts.env.HOME }}/.screen"
     state: "link"
     force: true

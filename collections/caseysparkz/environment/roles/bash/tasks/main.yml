@@ -1,8 +1,12 @@
 ---
+- name: "Set 'bash_symlink_src_dir'"
+  ansible.builtin.set_fact:
+    bash_symlink_src_dir: "{{ role_path | replace(collections_path, inventory_dir ~ '/collections') }}"
+
 - name: "Symlink ~/.bash directory"
   tags: ["bash"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/bash/"
+    src: "{{ bash_symlink_src_dir }}/files/bash/"
     dest: "{{ ansible_facts.env.HOME }}/.bash"
     state: "link"
     force: true

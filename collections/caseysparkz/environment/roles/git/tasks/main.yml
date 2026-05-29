@@ -1,4 +1,8 @@
 ---
+- name: "Set 'symlink_src_dir'"
+  ansible.builtin.set_fact:
+    git_symlink_src_dir: "{{ role_path | replace(collections_path, inventory_dir ~ '/collections') }}"
+
 - name: "Install git packages"
   ansible.builtin.import_tasks: "install.yml"
 

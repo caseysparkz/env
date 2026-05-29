@@ -2,7 +2,7 @@
 - name: "Create ~/.vim"
   tags: ["vim"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/vim/"
+    src: "{{ vim_symlink_src_dir }}/files/vim/"
     dest: "{{ ansible_facts.env.HOME }}/.vim"
     state: "link"
     force: true
@@ -10,7 +10,7 @@
 - name: "Symlink ~/.vimrc"
   tags: ["vim"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/vim/vimrc"
+    src: "{{ vim_symlink_src_dir }}/files/vim/vimrc"
     dest: "{{ ansible_facts.env.HOME }}/.vimrc"
     state: "link"
     force: true

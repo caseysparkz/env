@@ -1,4 +1,8 @@
 ---
+- name: "Set 'vim_symlink_src_dir'"
+  ansible.builtin.set_fact:
+    vim_symlink_src_dir: "{{ role_path | replace(collections_path, inventory_dir ~ '/collections') }}"
+
 - name: "Install vim"
   ansible.builtin.import_tasks: "install.yml"
 

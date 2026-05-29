@@ -1,4 +1,8 @@
 ---
+- name: "Set 'gnupg_symlink_src_dir'"
+  ansible.builtin.set_fact:
+    gnupg_symlink_src_dir: "{{ role_path | replace(collections_path, inventory_dir ~ '/collections') }}"
+
 - name: "Install gpg"
   become: true
   tags: ["apt"]
@@ -32,7 +36,7 @@
 - name: "Install ~/.gnupg/gpg-agent.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/gpg-agent.conf.{{ ansible_facts.os_family }}"
+    src: "{{ gnupg_symlink_src_dir }}/files/gpg-agent.conf.{{ ansible_facts.os_family }}"
     dest: "{{ ansible_facts.env.HOME }}/.gnupg/gpg-agent.conf"
     state: "link"
     force: true
@@ -40,7 +44,7 @@
 - name: "Install ~/.gnupg/gpg.conf"
   tags: ["gnupg"]
   ansible.builtin.file:
-    src: "{{ role_path }}/files/gpg.conf"
+    src: "{{ gnupg_symlink_src_dir }}/files/gpg.conf"
     path: "{{ ansible_facts.env.HOME }}/.gnupg/gpg.conf"
     state: "link"
     force: true
@@ -49,7 +53,7 @@
   tags: ["gnupg"]
   register: "gnupg_pubkeys"
   ansible.builtin.find:
-    paths: "{{ role_path }}/files/pubkeys/"
+    paths: "{{ gnupg_symlink_src_dir }}/files/pubkeys/"
     patterns:
       - "*.asc"
       - "*.gpg"
