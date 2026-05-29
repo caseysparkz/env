@@ -2,6 +2,7 @@
 - name: "Configure IO scheduler"
   become: true
   tags: ["ioscheduler"]
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.blockinfile:
     path: "/etc/modules-load.d/iosched.conf"
     owner: "root"

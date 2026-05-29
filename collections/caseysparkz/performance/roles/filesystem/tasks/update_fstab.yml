@@ -2,6 +2,7 @@
 - name: "Update /etc/fstab"
   become: true
   tags: ["filesystem"]
+  when: "ansible_facts.system == 'Linux'"
   ansible.builtin.lineinfile:
     path: "/etc/fstab"
     regexp: "tmpfs /tmp tmpfs"
