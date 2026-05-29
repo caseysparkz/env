@@ -10,7 +10,7 @@ tags:
   - "linux"
   - "security"
 dependencies:
-  ansible.posix: ">=2.0.0,<3.0.0"
+  ansible.posix: ">=2.2.0,<3.0.0"
   community.general: ">=13.0.0,<14.0.0"
 repository: &repo "https://github.com/caseysparkz/env"
 documentation: "https://github.com/caseysparkz/env/blob/main/collections/caseysparkz/security/README.md"

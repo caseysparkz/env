@@ -1,0 +1,3 @@
+---
+exclude_paths:
+  - "collections/*/*/roles/*/files/**"  # Some files are YAML and ansible-lint doesn't discriminate
