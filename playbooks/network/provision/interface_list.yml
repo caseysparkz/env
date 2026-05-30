@@ -1,0 +1,20 @@
+---
+- name: "/interface/list/add name=trunks"
+  tags: ["interface"]
+  register: "interface_list"
+  community.routeros.api_modify:
+    path: "interface list"
+    data:
+      - name: "trunks"
+        exclude: "dynamic"
+        include: ""
+
+- name: "/interface/list/member add"
+  tags: ["interface"]
+  loop: "{{ trunks }}"
+  community.routeros.api_modify:
+    path: "interface list member"
+    data:
+      - list: "trunks"
+        interface: "{{ item.interface }}"
+        comment: "{{ item.comment }}"

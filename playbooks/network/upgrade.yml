@@ -1,0 +1,62 @@
+---
+- name: "Upgrade RouterOS devices"
+  hosts: "routeros"
+  gather_facts: false
+  module_defaults:
+    group/community.routeros.api:
+      hostname: "{{ ansible_host }}"
+      username: "{{ ansible_user }}"
+      password: "{{ password }}"
+      tls: true
+      validate_certs: false  # FIXME
+      validate_cert_hostname: true
+      ca_path: "/etc/ssl/certs/ca-certificates.crt"
+  tasks:
+    - name: "Gather RouterOS facts"
+      register: "routeros_facts"
+      community.routeros.api_facts:
+
+    - name: "Set update channel"
+      community.routeros.api:
+        path: "system package update"
+        cmd: "set channel=long-term"
+
+    - name: "Check for updates"
+      register: "updates"
+      community.routeros.api:
+        path: "system package update"
+        cmd: "check-for-updates"
+
+    - name: "Download updates"
+      when: &os_ood "updates.msg[-1]['installed-version'] != updates.msg[-1]['latest-version']"
+      community.routeros.api:
+        path: "system package update"
+        cmd: "download"
+
+    - name: "Reboot"
+      when: *os_ood
+      community.routeros.api:
+        path: "system"
+        cmd: "reboot"
+
+    - name: "Ping"
+      ansible.builtin.ping:
+
+- name: "Upgrade pfSense devices"
+  hosts: "pfsense"
+  become: true
+  tasks:
+    - name: "Check for updates"
+      register: "update_check"
+      changed_when: false
+      failed_when: "update_check.rc != 0"
+      ansible.builtin.command: "pfSense-upgrade -c"
+
+    # name: "Rehash certificates"
+    # ansible.builtin.command: "certctl rehash"
+
+    # name: "Clean pkg-static cache"
+    # ansible.builtin.command: "pkg-static clean -ay"
+
+    # name: "Update pkg-static cache"
+    # ansible.builtin.command: "pkg-static update -f"

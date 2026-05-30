@@ -1,0 +1,13 @@
+---
+- name: "/interface/bridge/vlan/add vlan-ids={{ item.value }}"
+  tags: ["vlan"]
+  community.routeros.api_modify:
+    path: "interface bridge vlan"
+    data:
+      - vlan-ids: "{{ item.value }}"
+        comment: "VLAN{{ '%04d' | format(item.value | int) }}_{{ item.key }}"
+        bridge: "bridge01"
+        disabled: false
+        mvrp-forbidden: ""
+        tagged: "bridge01,trunks"
+        untagged: ""

@@ -1,0 +1,131 @@
+---
+- name: "/system/logging"
+  community.routeros.api_modify:
+    path: "system logging"
+    handle_absent_entries: "remove"
+    handle_entries_content: "remove_as_much_as_possible"
+    ensure_order: true
+    data:
+      - topics: "info"
+        action: "memory"
+        disabled: false
+        prefix: ""
+        regex: ""
+      - topics: "error"
+        action: "memory"
+        disabled: false
+        prefix: ""
+        regex: ""
+      - topics: "warning"
+        action: "memory"
+        disabled: false
+        prefix: ""
+        regex: ""
+      - topics: "critical"
+        action: "echo"
+        disabled: false
+        prefix: ""
+        regex: ""
+
+- name: "/system/logging/action"
+  community.routeros.api_modify:
+    path: "system logging action"
+    handle_absent_entries: "remove"
+    handle_entries_content: "remove_as_much_as_possible"
+    ensure_order: true
+    data:
+      - name: "memory"
+        target: "memory"
+        memory-lines: "1000"
+        memory-stop-on-full: "no" # TODO
+      - name: "disk"
+        target: "disk"
+        disk-file-count: "2"
+        disk-file-name: "flash/log"
+        disk-lines-per-file: "1000"
+        disk-stop-on-full: false
+      - name: "echo"
+        target: "echo"
+        remember: true
+      - name: "remote"
+        target: "remote"
+        remote: "0.0.0.0"
+        remote-port: "514"
+        remote-log-format: "default"
+        remote-protocol: "udp"
+        src-address: "0.0.0.0"
+        vrf: "main"
+
+- name: "/system/clock"
+  community.routeros.api_modify:
+    path: "system clock"
+    data:
+      - time-zone-name: "{{ system_tz | default('UTC') }}"
+
+- name: "/system/clock/manual"
+  community.routeros.api_modify:
+    path: "system clock manual"
+    data:
+      - time-zone: "+00:00"
+        dst-delta: "+00:00"
+        dst-start: "1970-01-01 00:00:00"
+        dst-end: "1970-01-01 00:00:00"
+
+- name: "/system/console"
+  community.routeros.api_find_and_modify:
+    path: "system console"
+    require_matches_min: 0
+    require_matches_max: 1
+    find:
+      port: "serial0"
+    values:
+      channel: "0"
+      disabled: "yes"
+      term: "vt102"
+
+- name: "/system/health/settings"
+  community.routeros.api_modify:
+    path: "system health settings"
+    data:
+      - cpu-overtemp-check: false
+        cpu-overtemp-startup-delay: "1m"
+        cpu-overtemp-threshold: "105"
+
+- name: "/system/note"
+  community.routeros.api_modify:
+    path: "system note"
+    data:
+      - note: "DO NOT EDIT!!! This system is managed by Ansible."
+        show-at-cli-login: true
+        show-at-login: true
+
+- name: "Set fact: ntp_server_list"
+  loop: "{{ ntp_servers | default(['pool.ntp.org']) }}"
+  ansible.builtin.set_fact:
+    ntp_server_list: "{{ ntp_server_list | default([]) + [{'address': item}] }}"
+
+- name: "/system/ntp client"
+  community.routeros.api_modify:
+    path: "system ntp client"
+    data:
+      - enabled: true
+
+- name: "/system/ntp client servers"
+  community.routeros.api_modify:
+    path: "system ntp client servers"
+    handle_absent_entries: "remove"
+    handle_entries_content: "remove_as_much_as_possible"
+    ensure_order: true
+    data: "{{ ntp_server_list }}"
+
+- name: "/system/package update set channel"
+  community.routeros.api_modify:
+    path: "system package update"
+    data:
+      - channel: "{{ system_package_update_channel | default('long-term') }}"
+
+- name: "/system/routerboard/settings set auto-upgrade"
+  community.routeros.api_modify:
+    path: "system routerboard settings"
+    data:
+      - auto-upgrade: true

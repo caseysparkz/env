@@ -1,0 +1,49 @@
+---
+- name: "/ip/ssh"
+  tags:
+    - "ssh"
+    - "crypto"
+  community.routeros.api_modify:
+    path: "ip ssh"
+    data:
+      - password-authentication: false
+        publickey-authentication-options: "touch-required"
+        strong-crypto: true
+
+- name: "/ip/service/webserver"
+  tags: ["settings"]
+  community.routeros.api_modify:
+    path: "ip service webserver"
+    data:
+      - index-plain: false
+        webfig-plain: false
+        graphs-plain: false
+        rest-plain: false
+        crl-plain: true
+        scep-plain: true
+        acme-plain: true
+        index-secure: true
+        webfig-secure: true
+        graphs-secure: true
+        rest-secure: true
+
+- name: "/ip/ipsec/profile"
+  tags: ["ip"]
+  community.routeros.api_find_and_modify:
+    path: "ip ipsec profile"
+    find:
+      default: true
+    values:
+      dpd-interval: "2m"
+      dpd-maximum-failures: 5
+
+- name: "/ip/dhcp-client"
+  tags: ["ip"]
+  community.routeros.api_modify:
+    path: "ip dhcp-client"
+    handle_absent_entries: "remove"
+    handle_entries_content: "remove_as_much_as_possible"
+    ensure_order: true
+    data:
+      - dhcp-options: "hostname,clientid,clientid_duid"
+        interface: "{{ interface_vlan.new_data[0].name }}"

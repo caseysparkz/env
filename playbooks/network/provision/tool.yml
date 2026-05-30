@@ -1,0 +1,6 @@
+---
+- name: "/tool/romon set enabled"
+  community.routeros.api_modify:
+    path: "tool romon"
+    data:
+      - enabled: true

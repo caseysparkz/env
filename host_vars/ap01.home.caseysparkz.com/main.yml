@@ -1,0 +1,6 @@
+---
+cap: true
+bridge_priority: "0x8000"
+trunks:
+  - interface: "ether01"
+    comment: "sw01"

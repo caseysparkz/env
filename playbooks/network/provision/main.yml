@@ -1,0 +1,60 @@
+---
+- name: "Provision RouterOS devices"
+  hosts: "routeros"
+  gather_facts: false
+  vars:
+    secure_setup: "{{ initial_setup | default(false) | ansible.builtin.ternary(false, true) }}"
+  module_defaults:
+    group/community.routeros.api:
+      hostname: "{{ ansible_host }}"
+      username: "{{ ansible_user }}"
+      password: "{{ password }}"
+      tls: "{{ secure_setup }}"
+      validate_certs: false
+      validate_cert_hostname: "{{ secure_setup }}"
+  tasks:
+    - name: "Gather RouterOS facts"  # noqa:args[module]
+      community.routeros.api_facts:
+
+    - name: "Rename interfaces"
+      tags: ["interface"]
+      when: "initial_setup | default(false)"
+      loop:
+        - "ether"
+        - "sfp-sfpplus"
+      loop_control:
+        loop_var: "iface"
+      ansible.builtin.include_tasks: "interface_ethernet_set_name.yml"
+
+    - name: "Provision management VLAN"
+      tags: ["vlan"]
+      ansible.builtin.import_tasks: "interface_vlan.yml"
+
+    - name: "Provision /interface/list"
+      tags: ["interface"]
+      ansible.builtin.import_tasks: "interface_list.yml"
+
+    - name: "Provision /interface/bridge/vlans"
+      tags: ["vlan"]
+      loop: "{{ vlans | dict2items }}"
+      ansible.builtin.include_tasks: "interface_bridge_vlan.yml"
+
+    - name: "Provision /ip"
+      tags: ["ip"]
+      ansible.builtin.import_tasks: "ip.yml"
+
+    - name: "Provision /tool"
+      tags: ["tool"]
+      ansible.builtin.import_tasks: "tool.yml"
+
+    - name: "Provision /system"
+      tags: ["system"]
+      ansible.builtin.import_tasks: "system.yml"
+
+    - name: "Provision /interface/wifi"
+      tags: ["wifi"]
+      ansible.builtin.import_tasks: "interface_wifi.yml"
+
+    - name: "Provision /interface/bridge"
+      tags: ["bridge"]
+      ansible.builtin.import_tasks: "interface_bridge.yml"

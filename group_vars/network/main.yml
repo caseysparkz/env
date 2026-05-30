@@ -1,0 +1,26 @@
+---
+ansible_user: "{{ vault_ansible_user }}"
+ansible_become_password: "{{ vault_ansible_become_password }}"
+ntp_servers: ["192.168.200.1"]
+vlans:
+  Default: 1
+  IoT: 10
+  Trusted: 100
+  Servers: 200
+  Management: 4000
+wifi_configuration:
+  - name: "cfg0001_Default"
+    ssid: "guest.caseysparkz.com"
+    security.passphrase: "{{ vault_wifi_passphrase_Default }}"
+    security.ft: true
+    security.ft-over-ds: true
+  - name: "cfg0010_IoT"
+    ssid: "iot.caseysparkz.com"
+    security.passphrase: "{{ vault_wifi_passphrase_IoT }}"
+    datapath.vlan-id: "{{ vlans.IoT }}"
+  - name: "cfg0100_Trusted"
+    ssid: "home.caseyspar.kz"
+    security.passphrase: "{{ vault_wifi_passphrase_Trusted }}"
+    datapath.vlan-id: "{{ vlans.Trusted }}"
+    security.ft: true
+    security.ft-over-ds: true

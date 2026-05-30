@@ -1,0 +1,30 @@
+---
+pfsense_aliases:
+  - name: "RFC1918"
+    descr: "Address allocation for private Internets."
+    type: "network"
+    address:
+      "10.0.0.0/8": "Class A"
+      "172.16.0.0/12": "Class B"
+      "192.168.0.0/16": "Class C"
+  - name: "RFC5771"
+    descr: "IPv4 Multicast Address Assignments"
+    type: "network"
+    address:
+      "224.0.0.0/24": "Local Network Control Block"
+      "224.0.1.0/24": "Internetwork Control Block"
+      "224.2.0.0/16": "SDP/SAP Block"
+      "232.0.0.0/8": "Source-specific Multicast Block"
+      "233.0.0.0/8": "GLOP Block"
+      "239.0.0.0/8": "Administratively Scoped Block"
+  - name: "WAN_DNS"
+    descr: "Permitted DNS servers"
+    type: "host"
+    address:
+      "1.1.1.1": "one.one.one.one (primary)"
+      "1.0.0.1": "one.one.one.one (secondary)"
+  - name: "WG"
+    descr: "Wireguard"
+    type: "port"
+    address:
+      "51820": "Wireguard default port"

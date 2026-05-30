@@ -1,0 +1,21 @@
+---
+- name: "/interface/vlan"
+  register: "interface_vlan"
+  community.routeros.api_modify: # TODO
+    path: "interface vlan"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "ignore"
+    handle_read_only: "ignore"
+    data:
+      - name: "vlan{{ vlans.Management }}_Mgmt"
+        vlan-id: "{{ vlans.Management }}"
+        arp: "enabled"
+        arp-timeout: "auto"
+        disabled: false
+        interface: "bridge01"
+        loop-protect: "default"
+        loop-protect-disable-time: "5m"
+        loop-protect-send-interval: "5s"
+        mvrp: false
+        use-service-tag: false

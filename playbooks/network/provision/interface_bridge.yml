@@ -1,0 +1,49 @@
+---
+- name: "Configure bridge"
+  tags: ["bridge"]
+  community.routeros.api_find_and_modify:
+    path: "interface bridge"
+    ignore_dynamic: true
+    ignore_builtin: true
+    require_matches_min: 1
+    require_matches_max: 1
+    find:
+      name: "bridge01"
+    values:
+      name: "bridge01"
+      mtu: "auto"
+      arp: "enabled"
+      arp-timeout: "auto"
+      ageing-time: "5m"
+      max-learned-entries: "auto"
+      igmp-snooping: "yes"
+      dhcp-snooping: "yes"
+      add-dhcp-option82: "yes"
+      fast-forward: "yes"
+      # STP
+      protocol-mode: "rstp"
+      priority: "{{ bridge_priority | default('0x8000') }}"
+      port-cost-mode: "short"
+      max-message-age: "20s"
+      forward-delay: "15s"
+      transmit-hold-count: "6"
+      # VLAN
+      vlan-filtering: "yes"
+      ether-type: "0x8100"
+      pvid: "1"
+      frame-types: "admit-all"
+      ingress-filtering: "yes"
+      mvrp: "no"
+      # IGMP Snooping
+      igmp-version: 2
+      mld-version: 1
+      multicast-router: "temporary-query"
+      multicast-querier: "{{ bridge_multicast_querier | default('no') }}"
+      startup-query-count: "2"
+      last-member-query-count: "2"
+      last-member-interval: "1s"
+      membership-interval: "4m20s"
+      querier-interval: "4m15s"
+      query-interval: "2m5s"
+      query-response-interval: "10s"
+      startup-query-interval: "31s250ms"

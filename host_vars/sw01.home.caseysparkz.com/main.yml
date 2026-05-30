@@ -1,0 +1,9 @@
+---
+bridge_multicast_querier: "yes"
+bridge_priority: "0"
+capsman: true
+trunks:
+  - interface: "ether04"
+    comment: "ap01"
+  - interface: "ether24"
+    comment: "fw01"

@@ -1,0 +1,167 @@
+---
+- name: "/interface/wifi/channel"
+  register: "interface_wifi_channel"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  community.routeros.api_modify:
+    path: "interface wifi channel"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "ignore"
+    handle_read_only: "ignore"
+    data:
+      - name: "channel01"
+        reselect-interval: "10m..15m"
+        skip-dfs-channels: "10min-cac"
+
+- name: "/interface/wifi/datapath"
+  register: "interface_wifi_datapath"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  community.routeros.api_modify:
+    path: "interface wifi datapath"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "ignore"
+    handle_read_only: "ignore"
+    data:
+      - name: "datapath01"
+        bridge: "bridge01"
+        vlan-id: "{{ vlans.Default }}"
+        disabled: false
+
+- name: "/interface/wifi/security"
+  register: "interface_wifi_security"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  community.routeros.api_modify:
+    path: "interface wifi security"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "ignore"
+    handle_read_only: "ignore"
+    data:
+      - name: "security01"
+        authentication-types: "wpa2-psk,wpa3-psk"
+        connect-priority: "0/1"
+        disable-pmkid: true
+        group-key-update: "10m"
+        wps: "disable"
+        ft: false
+        ft-over-ds: false
+
+- name: "/interface/wifi/steering"
+  register: "interface_wifi_steering"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  community.routeros.api_modify:
+    path: "interface wifi steering"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "ignore"
+    handle_read_only: "ignore"
+    data:
+      - name: "steering01"
+        neighbor-group: "ng1"
+        rrm: true
+        wnm: true
+
+- name: "/interface/wifi/cap print"
+  register: "interface_wifi_cap"
+  when: "cap | default(false)"
+  tags: ["cap"]
+  community.routeros.api_info:
+    path: "interface wifi cap"
+    hide_defaults: true
+    include_dynamic: false
+    include_read_only: false
+
+- name: "/interface/wifi/cap"
+  when: "cap | default(false)"
+  tags: ["cap"]
+  community.routeros.api_modify:
+    path: "interface wifi cap"
+    data:
+      - discovery-interfaces: "bridge01"
+        enabled: true
+        slaves-static: false
+        certificate: "{{ interface_wifi_cap.result[0].certificate | default('request') }}"
+
+- name: "/interface/wifi/capsman print"
+  register: "interface_wifi_capsman"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  community.routeros.api_info:
+    path: "interface wifi capsman"
+    hide_defaults: true
+    include_dynamic: false
+    include_read_only: false
+
+- name: "/interface/wifi/capsman"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  community.routeros.api_modify:
+    path: "interface wifi capsman"
+    data:
+      - interfaces: "bridge01"
+        enabled: true
+        ca-certificate: "{{ interface_wifi_capsman.result[0]['ca-certificate'] | default('auto') }}"
+        certificate: "{{ interface_wifi_capsman.result[0].certificate | default('auto') }}"
+        require-peer-certificate: true
+        upgrade-policy: "suggest-same-version"
+
+- name: "Set fact: default wifi configuration"
+  when: "capsman | default(false)"
+  tags: ["capsman"]
+  ansible.builtin.set_fact:
+    default_wifi_configuration:
+      mode: "ap"
+      hide-ssid: false
+      channel: "{{ interface_wifi_channel.new_data[0].name }}"
+      datapath: "{{ interface_wifi_datapath.new_data[0].name }}"
+      disabled: false
+      installation: "indoor"
+      security: "{{ interface_wifi_security.new_data[0].name }}"
+      steering: "{{ interface_wifi_steering.new_data[0].name }}"
+
+- name: "/interface/wifi/configuration"
+  when: "capsman | default(false)"
+  register: "interface_wifi_configuration"
+  community.routeros.api_modify:
+    path: "interface wifi configuration"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "remove_as_much_as_possible"
+    handle_read_only: "ignore"
+    data: "{{ wifi_configuration | map('combine', default_wifi_configuration) | list }}"
+
+- name: "Set fact: wifi configurations"
+  ansible.builtin.set_fact:
+    wifi_configuration_names: "{{ interface_wifi_configuration.new_data | map(attribute='name') }}"
+
+- name: "/interface/wifi/provisioning"
+  when: "capsman | default(false)"
+  register: "interface_wifi_configuration"
+  community.routeros.api_modify:
+    path: "interface wifi provisioning"
+    ensure_order: true
+    handle_absent_entries: "remove"
+    handle_entries_content: "remove_as_much_as_possible"
+    handle_read_only: "ignore"
+    data:
+      - supported-bands: "2ghz-ax"
+        comment: "2.4Ghz"
+        action: "create-dynamic-enabled"
+        disabled: false
+        master-configuration: "{{ wifi_configuration_names[0] }}"
+        name-format: "%I-2.4Ghz-wlan"
+        slave-configurations: "{{ wifi_configuration_names[1:] | join(',') }}"
+        slave-name-format: "%I-2.4Ghz-wlan%v"
+      - supported-bands: "5ghz-ax"
+        comment: "5Ghz"
+        action: "create-dynamic-enabled"
+        disabled: false
+        master-configuration: "{{ wifi_configuration_names[0] }}"
+        name-format: "%I-5Ghz-wlan"
+        slave-configurations: "{{ wifi_configuration_names[1:] | join(',') }}"
+        slave-name-format: "%I-5Ghz-wlan%v"

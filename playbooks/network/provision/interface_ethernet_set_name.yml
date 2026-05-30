@@ -1,0 +1,12 @@
+---
+- name: "/interface/ethernet/set name={{ iface }}"
+  tags: ["interface"]
+  loop: "{{ range(10) | list }}"
+  community.routeros.api_find_and_modify:
+    path: "interface ethernet"
+    require_matches_min: 0
+    require_matches_max: 1
+    find:
+      default-name: "{{ iface }}{{ item }}"
+    values:
+      name: "{{ iface }}0{{ item }}"
