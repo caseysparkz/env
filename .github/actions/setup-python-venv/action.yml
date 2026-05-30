@@ -2,11 +2,11 @@
 name: "Setup Python Venv"
 description: "Set up repository Python virtual environment for testing."
 inputs:
-  python-version: # TODO: check
+  python-version:  # TODO: check
     description: "Version of Python to install."
     type: "string"
     required: true
-  package: # TODO: check
+  package:  # TODO: check
     description: "Argument passed to `pip install`, ie '.[test]'."
     type: "string"
     required: false
@@ -15,7 +15,7 @@ runs:
   using: "composite"
   steps:
     - name: "Set up Python"
-      uses: "actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405" # v6.2.0
+      uses: "actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405"  # v6.2.0
       with:
         python-version: "${{ inputs.python-version }}"
 

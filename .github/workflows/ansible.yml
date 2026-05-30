@@ -24,19 +24,19 @@ jobs:
       ANSIBLE_CACHE_PATH: "${{ github.workspace }}/ansible/collections/ansible_collections/"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd" # v6.0.2
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"  # v6.0.2
         with:
           fetch-depth: 0
 
       - name: "Restore Ansible cache"
         id: "ansible-cache"
-        uses: "actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae" # v5.0.5
+        uses: "actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae"  # v5.0.5
         with:
           key: "${{ env.ANSIBLE_CACHE_KEY }}"
           path: "${{ env.ANSIBLE_CACHE_PATH }}"
 
       - name: "Run ansible-lint"
-        uses: "ansible/ansible-lint@5fac056c45595896c973fbde871f01f6cb14d74c" # v26.4.0
+        uses: "ansible/ansible-lint@5fac056c45595896c973fbde871f01f6cb14d74c"  # v26.4.0
         with:
           args: ""
           working_directory: "${{ github.workspace }}/ansible/"
@@ -44,7 +44,7 @@ jobs:
           setup_python: true
 
       - name: "Save Ansible cache"
-        uses: "actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae" # v5.0.5
+        uses: "actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae"  # v5.0.5
         with:
           key: "${{ steps.ansible-cache.outputs.cache-primary-key }}"
           path: "${{ env.ANSIBLE_CACHE_PATH }}"
