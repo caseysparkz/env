@@ -11,11 +11,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "ipython==9.13.0",
+    "ipython==9.14.0",
     "ruff==0.15.15",
 ]
 test = [
-    "ipython==9.13.0",
+    "ipython==9.14.0",
     "mypy==2.1.0",
     "pytest==9.0.3",
     "pytest_cov==7.1.0",
