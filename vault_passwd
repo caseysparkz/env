@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+# Author:       Casey Sparks
+# Date:         May 30, 2026
+# Description:  Retrieve the vault password from AWS SecretsManager.
+
+# Log in to AWS if needed
+if ! aws sts get-caller-identity > /dev/null 2>&1; then aws sso login; fi
+
+# Retreive secret
+if which aws > /dev/null 2>&1; then
+    aws secretsmanager get-secret-value                                     \
+        --secret-id ansible/vault                                           \
+        --query SecretString                                                \
+        --output text                                                       \
+    || printf 'Could not retreive secret from AWS' >&2
+else
+    printf 'AWS CLI not installed' >&2
+fi
