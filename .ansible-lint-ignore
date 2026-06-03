@@ -1,0 +1,11 @@
+# This file contains ignores rule violations for ansible-lint
+playbooks/network/provision/interface_bridge.yml            args[module] skip
+playbooks/network/provision/interface_bridge_vlan.yml       args[module] skip
+playbooks/network/provision/interface_ethernet_set_name.yml args[module] skip
+playbooks/network/provision/interface_list.yml              args[module] skip
+playbooks/network/provision/interface_vlan.yml              args[module] skip
+playbooks/network/provision/interface_wifi.yml              args[module] skip
+playbooks/network/provision/ip.yml                          args[module] skip
+playbooks/network/provision/system.yml                      args[module] skip
+playbooks/network/provision/tool.yml                        args[module] skip
+playbooks/network/upgrade.yml                               args[module] skip
