@@ -1,7 +1,8 @@
 ---
+# CAPsMan
 - name: "/interface/wifi/channel"
-  register: "interface_wifi_channel"
   when: "capsman | default(false)"
+  register: "interface_wifi_channel"
   tags: ["capsman"]
   community.routeros.api_modify:
     path: "interface wifi channel"
@@ -15,8 +16,8 @@
         skip-dfs-channels: "10min-cac"
 
 - name: "/interface/wifi/datapath"
-  register: "interface_wifi_datapath"
   when: "capsman | default(false)"
+  register: "interface_wifi_datapath"
   tags: ["capsman"]
   community.routeros.api_modify:
     path: "interface wifi datapath"
@@ -31,8 +32,8 @@
         disabled: false
 
 - name: "/interface/wifi/security"
-  register: "interface_wifi_security"
   when: "capsman | default(false)"
+  register: "interface_wifi_security"
   tags: ["capsman"]
   community.routeros.api_modify:
     path: "interface wifi security"
@@ -66,27 +67,6 @@
         rrm: true
         wnm: true
 
-- name: "/interface/wifi/cap print"
-  register: "interface_wifi_cap"
-  when: "cap | default(false)"
-  tags: ["cap"]
-  community.routeros.api_info:
-    path: "interface wifi cap"
-    hide_defaults: true
-    include_dynamic: false
-    include_read_only: false
-
-- name: "/interface/wifi/cap"
-  when: "cap | default(false)"
-  tags: ["cap"]
-  community.routeros.api_modify:
-    path: "interface wifi cap"
-    data:
-      - discovery-interfaces: "bridge01"
-        enabled: true
-        slaves-static: false
-        certificate: "{{ interface_wifi_cap.result[0].certificate | default('request') }}"
-
 - name: "/interface/wifi/capsman print"
   register: "interface_wifi_capsman"
   when: "capsman | default(false)"
@@ -116,11 +96,11 @@
   ansible.builtin.set_fact:
     default_wifi_configuration:
       mode: "ap"
+      installation: "indoor"
       hide-ssid: false
+      disabled: false
       channel: "{{ interface_wifi_channel.new_data[0].name }}"
       datapath: "{{ interface_wifi_datapath.new_data[0].name }}"
-      disabled: false
-      installation: "indoor"
       security: "{{ interface_wifi_security.new_data[0].name }}"
       steering: "{{ interface_wifi_steering.new_data[0].name }}"
 
@@ -141,7 +121,6 @@
 
 - name: "/interface/wifi/provisioning"
   when: "capsman | default(false)"
-  register: "interface_wifi_configuration"
   community.routeros.api_modify:
     path: "interface wifi provisioning"
     ensure_order: true
@@ -165,3 +144,25 @@
         name-format: "%I-5Ghz-wlan"
         slave-configurations: "{{ wifi_configuration_names[1:] | join(',') }}"
         slave-name-format: "%I-5Ghz-wlan%v"
+
+# CAP
+- name: "/interface/wifi/cap print"
+  register: "interface_wifi_cap"
+  when: "cap | default(false)"
+  tags: ["cap"]
+  community.routeros.api_info:
+    path: "interface wifi cap"
+    hide_defaults: true
+    include_dynamic: false
+    include_read_only: false
+
+- name: "/interface/wifi/cap"
+  when: "cap | default(false)"
+  tags: ["cap"]
+  community.routeros.api_modify:
+    path: "interface wifi cap"
+    data:
+      - discovery-interfaces: "bridge01"
+        enabled: true
+        slaves-static: false
+        certificate: "{{ interface_wifi_cap.result[0].certificate | default('request') }}"
